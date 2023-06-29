@@ -1,0 +1,922 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.apache</groupId>
+        <artifactId>apache</artifactId>
+        <version>24</version>
+    </parent>
+
+    <groupId>org.apache.torque</groupId>
+    <artifactId>torque</artifactId>
+    <packaging>pom</packaging>
+    <name>Torque Maven Parent</name>
+    <version>5.1</version>
+    <description>Torque parent project</description>
+    <url>https://db.apache.org/torque/</url>
+
+    <modules>
+        <module>torque-runtime</module>
+        <module>torque-generator</module>
+        <module>torque-templates</module>
+        <module>torque-maven-plugin</module>
+        <module>torque-ant-tasks</module>
+        <module>torque-site</module>
+    </modules>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://issues.apache.org/jira/browse/TORQUE</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>jenkins</system>
+        <url>https://ci-builds.apache.org/</url>
+        <notifiers>
+            <notifier>
+                <type>email</type>
+                <sendOnError>true</sendOnError>
+                <sendOnFailure>true</sendOnFailure>
+            </notifier>
+        </notifiers>
+    </ciManagement>
+
+    <inceptionYear>2000</inceptionYear>
+
+    <mailingLists>
+        <mailingList>
+            <name>Torque User List</name>
+            <subscribe>torque-user-subscribe@db.apache.org</subscribe>
+            <unsubscribe>torque-user-unsubscribe@db.apache.org</unsubscribe>
+            <archive>http://mail-archives.apache.org/mod_mbox/db-torque-user/</archive>
+        </mailingList>
+        <mailingList>
+            <name>Torque Developer List</name>
+            <subscribe>torque-dev-subscribe@db.apache.org</subscribe>
+            <unsubscribe>torque-dev-unsubscribe@db.apache.org</unsubscribe>
+            <archive>http://mail-archives.apache.org/mod_mbox/db-torque-dev/</archive>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <name>Jeffrey D. Brekke</name>
+            <id>brekke</id>
+            <email>brekke@apache.org</email>
+            <organization />
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Eric Dobbs</name>
+            <id>dobbs</id>
+            <email>dobbs@apache.org</email>
+            <organization />
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Scott Eade</name>
+            <id>seade</id>
+            <email>seade@backstagetech.com.au</email>
+            <organization>Backstage Technologies Pty. Ltd.</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+        <developer>
+            <name>Thomas Fox</name>
+            <id>tfischer</id>
+            <email>thomas.fox@seitenbau.com</email>
+            <organization>Seitenbau GmbH</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <name>Stephen Haberman</name>
+            <id>stephenh</id>
+            <email>stephenh@chase3000.com</email>
+            <organization />
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Humberto Hernandez</name>
+            <id>hhernandez</id>
+            <email>hhernandez@itweb.com.mx</email>
+            <organization>Integrated Technology S.C.</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Fedor Karpelevitch</name>
+            <id>fedor</id>
+            <email>fedor@karpelevitch.net</email>
+            <organization />
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Quinton McCombs</name>
+            <id>quintonm</id>
+            <email>quintonm@bellsouth.net</email>
+            <organization>NEqualsOne</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>John McNally</name>
+            <id>jmcnally</id>
+            <email>jmcnally@collab.net</email>
+            <organization>CollabNet</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Greg Monroe</name>
+            <id>gmonroe</id>
+            <email>greg.monroe@dukece.com</email>
+            <organization>Duke Corporate Education</organization>
+            <timezone>-5</timezone>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Martin Poeschl</name>
+            <id>mpoeschl</id>
+            <email>mpoeschl@marmot.at</email>
+            <organization>Tucana.at</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+            <timezone>+18</timezone>
+        </developer>
+        <developer>
+            <name>Daniel Rall</name>
+            <id>dlr</id>
+            <email>dlr@finemaltcoding.com</email>
+            <organization>CollabNet, Inc.</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Henning P. Schmiedehausen</name>
+            <id>henning</id>
+            <email>hps@intermeta.de</email>
+            <organization>INTERMETA - Gesellschaft fuer Mehrwertdienste mbH</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
+        <developer>
+            <name>Kurt Schrader</name>
+            <id>kschrader</id>
+            <email>kschrader@karmalab.org</email>
+            <organization />
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Jon Scott Stevens</name>
+            <id>jon</id>
+            <email>jon@latchkey.com</email>
+            <organization>CollabNet, Inc.</organization>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>James Taylor</name>
+            <id>jtaylor</id>
+            <email>james@jamestaylor.org</email>
+            <organization />
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Thomas Vandahl</name>
+            <id>tv</id>
+            <email>tv@apache.org</email>
+            <organization />
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <name>Georg Kallidis</name>
+            <id>gk</id>
+            <email>gk@apache.org</email>
+            <organization />
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <contributors>
+        <contributor>
+            <name>Patrick Carl</name>
+            <email>patrick.carl@coi.de</email>
+        </contributor>
+        <contributor>
+            <name>Roger A. Caron</name>
+            <email>roger.caron@pw.utc.com</email>
+        </contributor>
+        <contributor>
+            <name>Martin Goulet</name>
+            <email>martin.goulet@sungard.com</email>
+        </contributor>
+        <contributor>
+            <name>M. Sean Gilligan</name>
+            <email>Sean_Gilligan@catalla.com</email>
+        </contributor>
+        <contributor>
+            <name>James Hillyerd</name>
+            <email>james@hillyerd.com</email>
+        </contributor>
+        <contributor>
+            <name>Thierry Lach</name>
+            <email>thierry.lach@bbdodetroit.com</email>
+        </contributor>
+        <contributor>
+            <name>Johnny Macchione</name>
+            <email>johnnymac@tiscali.be</email>
+        </contributor>
+        <contributor>
+            <name>Markus M. May</name>
+            <email>mmay@javafreedom.org</email>
+        </contributor>
+        <contributor>
+            <name>Raphael Pieroni</name>
+            <email>rafale_at_codehaus.org</email>
+        </contributor>
+        <contributor>
+            <name>Jonathan Purvis</name>
+            <email>jon@reeltwo.com</email>
+        </contributor>
+        <contributor>
+            <name>Thoralf Rickert</name>
+            <email>thoralf.rickert@cadooz.de</email>
+        </contributor>
+        <contributor>
+            <name>J. Russell Smyth</name>
+            <email>drfish@cox.net</email>
+        </contributor>
+        <contributor>
+            <name>Tarlika Elisabeth Schmitz</name>
+            <email>tes@numerixtechnology.de</email>
+        </contributor>
+        <contributor>
+            <name>Hilco Wijbenga</name>
+            <email>hilco.wijbenga@elasticpath.com</email>
+        </contributor>
+        <contributor>
+            <name>Christoph Zenger</name>
+            <email>Christoph.Zenger@jentro.com</email>
+        </contributor>
+    </contributors>
+
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/db/torque/tags/torque-5-1</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/db/torque/tags/torque-5-1</developerConnection>
+        <url>http://svn.apache.org/viewvc/db/torque/tags/torque-5-1</url>
+    </scm>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jcl</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-1.2-api</artifactId>
+                <version>${log4j2.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-configuration2</artifactId>
+                <version>2.7</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>1.9.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>1.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-dbcp2</artifactId>
+                <version>2.9.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-jcs-core</artifactId>
+                <version>2.2.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.12.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.11.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>4.2.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.avalon.framework</groupId>
+                <artifactId>avalon-framework-api</artifactId>
+                <version>4.3.1</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.avalon.framework</groupId>
+                <artifactId>avalon-framework-impl</artifactId>
+                <version>4.3.1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-launcher</artifactId>
+                <version>${junit.launcher.version}</version>
+                <scope>test</scope>
+            </dependency>
+                              
+            
+             <dependency>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+                <version>${junit.jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.13.2</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.fulcrum</groupId>
+                <artifactId>fulcrum-yaafi</artifactId>
+                <version>1.0.8</version>
+                <scope>test</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.xmlunit</groupId>
+                <artifactId>xmlunit-core</artifactId>
+                <version>2.8.4</version>
+                <scope>test</scope>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derby</artifactId>
+                <version>${derby.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <!--required for derby 15 / java 11: 
+                dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derbyshared</artifactId>
+                <version>${derby.version}</version>
+                 <scope>test</scope>
+            </dependency-->
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derbytools</artifactId>
+                <version>${derby.version}</version>
+                 <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- pmd and jxr plugins are used only for developing - they are not included with pmd/xref reports 
+                in the final site building process using the ant build tool in module site  -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <!-- with error https://issues.apache.org/jira/browse/MPMD-325 and workaround -->
+                    <version>3.15.0</version>
+                    <configuration>
+                        <linkXRef>true</linkXRef>
+                        <targetJdk>${maven.compiler.source}</targetJdk>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.ow2.asm</groupId>
+                            <artifactId>asm</artifactId>
+                            <version>9.2</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jxr-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>4.5.2.0</version>
+                    <configuration>
+                        <excludeFilterFile>${basedir}/src/main/plugin-config/findbugs-exclude.xml</excludeFilterFile>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <executions>
+                        <execution>
+                            <id>enforce-maven</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>3.3.9</version>
+                                    </requireMavenVersion>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>xml-maven-plugin</artifactId>
+                    <version>1.0.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>6.5.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.10.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <fork>${torque.compiler.fork}</fork>
+                        <compilerVersion>${torque.compiler.compilerVersion}</compilerVersion>
+                        <executable>${torque.compiler.javac}</executable>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.3.1</version>
+                    <configuration>
+                        <doclint>none</doclint>
+                        <source>1.8</source>
+                    </configuration>
+                    <executions>
+                      <execution>
+                            <goals>
+                                <goal>javadoc</goal>
+                                <goal>test-javadoc</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>3.0.0</version>
+                 </plugin>
+                  <plugin>
+		                <groupId>org.codehaus.mojo</groupId>
+		                <artifactId>build-helper-maven-plugin</artifactId>
+		                <version>3.2.0</version>
+                   </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <workspace>..</workspace>
+                    <downloadSources>true</downloadSources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>velocity.log</exclude>
+                        <exclude>.checkstyle</exclude>
+                        <exclude>checkstyle-cache.ccf</exclude>
+                        <exclude>**/derby.log</exclude>
+                        <exclude>**/LICENSE-EDL.txt</exclude>
+                        <exclude>DEPENDENCIES</exclude>
+                        <!-- special excludes for torque-test because this is not a module
+                          in the normal build process -->
+                        <exclude>torque-test/src/main/generated-java/**/*</exclude>
+                        <!-- hsqldb-jenkins -->
+                        <exclude>torque-test/torque-test/**</exclude>
+                        <exclude>torque-test/README.md</exclude>
+                        <exclude>**/target/**</exclude>
+                        <exclude>**/.classpath</exclude>
+                        <exclude>**/.project</exclude>
+                        <exclude>**/.settings/**</exclude>
+                        <exclude>**/torque.usersettings.properties</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                    <check/>
+                </configuration>
+            </plugin-->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.7</version>
+                <configuration>
+                    <excludes>
+                        <exclude>*/*Test*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!--default setting is forkCount=1/reuseForks=true -->
+                    <reuseForks>false</reuseForks>
+                    <forkCount>1</forkCount>
+                    <systemPropertyVariables>
+                        <derby.stream.error.file>target/derby.log</derby.stream.error.file>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+            <!-- hint: mvn verify -Ddependency.check.skip=false -->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skip>${dependency.check.skip}</skip>
+                    <!-- include in sub modules if needed -->
+                    <!-- suppressionFiles>
+                    <suppressionFile>${project.basedir}/suppression-owasp-fp.xml</suppressionFile>
+                    </suppressionFiles-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <!-- to generate only in root -->
+                <reportSets>
+                  <reportSet>
+                    <id>aggregate</id>
+                    <inherited>false</inherited>        
+                    <reports>
+                      <report>aggregate</report>
+                    </reports>
+                  </reportSet>
+                  <reportSet>
+                    <id>default</id>
+                    <reports>
+                      <report>javadoc</report>
+                      <report>test-javadoc</report>
+                    </reports>
+                  </reportSet>
+                </reportSets>
+                <configuration>
+                    <!-- test project javadoc is not needed in the main site and javadoc fails during the release build, so skip -->
+                    <skippedModules>torque-test</skippedModules>
+                </configuration>
+            </plugin>
+            <plugin> 
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                 <reportSets>
+                    <reportSet>
+                      <reports>
+                       <report>jxr-no-fork</report>
+                       <report>test-jxr-no-fork</report>
+                     </reports>
+                    </reportSet>
+                   </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <version>0.13</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <minimumTokens>200</minimumTokens>
+                    <rulesets>
+                        <ruleset>/category/java/bestpractices.xml</ruleset>
+                        <ruleset>/category/java/codestyle.xml</ruleset>
+                        <ruleset>/category/java/errorprone.xml</ruleset>
+                        <ruleset>/category/java/multithreading.xml</ruleset>
+                        <ruleset>/category/java/performance.xml</ruleset>
+                        <ruleset>/category/java/design.xml</ruleset>
+                        <!-- comment default rule sets: basic, imports, unusedcode -->
+                        <!--ruleset>/rulesets/java/basic.xml</ruleset>
+                        <ruleset>/rulesets/java/finalizers.xml</ruleset>
+                        <ruleset>/rulesets/java/imports.xml</ruleset>
+                        <ruleset>/rulesets/java/unusedcode.xml</ruleset-->
+                    </rulesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <threshold>Normal</threshold>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-changes-plugin</artifactId>
+                <version>2.12.1</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>changes-report</report>
+                        </reports>
+                        <configuration>
+                            <xmlPath>src/changes/changes.xml</xmlPath>
+                        </configuration>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <!-- select non-aggregate reports -->
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <properties>
+        <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <dependency.check.skip>true</dependency.check.skip>
+
+        <junit.jupiter.version>5.8.2</junit.jupiter.version>
+        <junit.launcher.version>1.8.2</junit.launcher.version>
+        <log4j2.version>2.17.1</log4j2.version>
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <torque.compiler.fork>false</torque.compiler.fork>
+        <torque.compiler.compilerVersion>1.8</torque.compiler.compilerVersion>
+        <!--suppress UnresolvedMavenProperty -->
+        <torque.compiler.javac>${JAVA_HOME}/bin/javac</torque.compiler.javac>
+        <!-- derby 10.15 requires java 11 -->
+        <derby.version>10.14.2.0</derby.version>
+        <project.build.outputTimestamp>1</project.build.outputTimestamp>
+
+
+        <scmPubCheckoutDirectory>${user.home}/torque-site/${project.artifactId}</scmPubCheckoutDirectory>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>apache-release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>site-for-package</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>net.nicoulaj.maven.plugins</groupId>
+                        <artifactId>checksum-maven-plugin</artifactId>
+                        <version>1.11</version>
+                        <configuration>
+                            <algorithms>
+                                <algorithm>SHA-512</algorithm>
+                            </algorithms>
+                            <!-- generate only sha for binaries and source zip/tar files from assembly -->
+                            <excludeMainArtifact>true</excludeMainArtifact>
+                            <excludeClassifiers>sha512</excludeClassifiers>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>artifacts</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <modules>
+                <module>torque-test</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>test</id>
+            <modules>
+                <module>torque-test</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>java8</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <doclint>none</doclint><!-- since javadoc v.3 this is required instead of -Xdoclint:none -->
+            </properties>
+        </profile>
+        <profile>
+            <id>owasp</id>
+            <properties>
+                <dependency.check.skip>false</dependency.check.skip>
+            </properties>
+        </profile>
+        <profile>
+            <id>java12</id>
+            <activation>
+                <jdk>[12,)</jdk>
+            </activation>
+            <properties>
+                <java.version>12</java.version>
+                <!--torque.compiler.fork>true</torque.compiler.fork>
+                <torque.compiler.compilerVersion>1.12</torque.compiler.compilerVersion>
+                <torque.compiler.release>8</torque.compiler.release-->
+            </properties>
+        </profile>
+    </profiles>
+
+</project>

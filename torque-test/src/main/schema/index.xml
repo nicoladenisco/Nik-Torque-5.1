@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<!-- This schema contains tables to test index creation. -->
+
+<database name="@DATABASE_DEFAULT@" 
+    defaultIdMethod="@DATABASE_ID_METHOD@"
+    xmlns="http://db.apache.org/torque/4.0/templates/database"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/5.0/templates/database 
+        http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0.xsd">
+
+  <table name="single_named_index" idMethod="none">
+    <column name="id" required="true" primaryKey="true" type="INTEGER" />
+    <column name="value" required="true" type="INTEGER" />
+    <index name="single_idx">
+      <index-column name="value"/>
+    </index>
+  </table>
+
+  <table name="single_unnamed_index" idMethod="none">
+    <column name="id" required="true" primaryKey="true" type="INTEGER" />
+    <column name="value" required="true" type="INTEGER" />
+    <index>
+      <index-column name="value"/>
+    </index>
+  </table>
+
+  <table name="multiple_index" idMethod="none">
+    <column name="id" required="true" primaryKey="true" type="INTEGER" />
+    <column name="value1" required="true" type="INTEGER" />
+    <column name="value2" required="true" type="INTEGER" />
+    <index name="multiple_idx">
+      <index-column name="value1"/>
+      <index-column name="value2"/>
+    </index>
+  </table>
+
+  <table name="single_named_unique" idMethod="none">
+    <column name="id" required="true" primaryKey="true" type="INTEGER" />
+    <column name="value" required="true" type="INTEGER" />
+    <unique name="single_unq">
+      <unique-column name="value"/>
+    </unique>
+  </table>
+
+  <table name="single_unnamed_unique">
+    <column name="id" required="true" primaryKey="true" type="INTEGER" />
+    <column name="value" required="true" type="INTEGER" />
+    <unique>
+      <unique-column name="value"/>
+    </unique>
+  </table>
+
+  <table name="multiple_unique">
+    <column name="id" required="true" primaryKey="true" type="INTEGER" />
+    <column name="value1" required="true" type="INTEGER" />
+    <column name="value2" required="true" type="INTEGER" />
+    <unique name="multiple_unq">
+      <unique-column name="value1"/>
+      <unique-column name="value2"/>
+    </unique>
+  </table>
+</database>
+
+  

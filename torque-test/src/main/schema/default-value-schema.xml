@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no" ?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<database name="@DATABASE_DEFAULT@"
+    defaultIdMethod="@DATABASE_ID_METHOD@"
+    xmlns="http://db.apache.org/torque/5.0/templates/database">
+
+  <domain name="myTimestamp" type="TIMESTAMP" @CURRENT_TIMESTAMP_DEFAULT@/>
+
+  <table name="database_default_values">
+    <column
+      name="id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <!-- one normal field is required otherwise one gets syntax errors
+         on inserts where no value is changed. -->
+    <column
+      name="normal_payload"
+      type="INTEGER"
+    />
+    <column
+      name="o_integer"
+      required="true"
+      type="INTEGER"
+      javaType="object"
+      default="2"
+      useDatabaseDefaultValue="true"
+    />
+    <column
+      name="p_int"
+      required="true"
+      type="INTEGER"
+      javaType="primitive"
+      default="4"
+      useDatabaseDefaultValue="true"
+    />
+    <column
+      name="varchar_field"
+      required="true"
+      type="VARCHAR"
+      size="100"
+      default="Default!"
+      useDatabaseDefaultValue="true"
+    />
+    <column
+      name="date_field"
+      type="DATE"
+      default="2010-09-08 00:00:00.0 GMT"
+      useDatabaseDefaultValue="true"
+    />
+    <column
+      name="time_field"
+      type="TIME"
+      default="1970-01-01 10:20:30.0"
+      useDatabaseDefaultValue="true"
+    />
+    <column
+      name="timestamp_field"
+      type="TIMESTAMP"
+      default="2010-09-08 11:12:13.0"
+      useDatabaseDefaultValue="true"
+    />
+  </table>
+
+  <table name="java_default_values">
+    <column
+      name="id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="o_integer"
+      required="true"
+      type="INTEGER"
+      javaType="object"
+      default="2"
+    />
+    <column
+      name="p_int"
+      required="true"
+      type="INTEGER"
+      javaType="primitive"
+      default="4"
+    />
+    <column
+      name="varchar_field"
+      required="true"
+      type="VARCHAR"
+      size="100"
+      default="Default!"
+    />
+    <column
+      name="date_field"
+      required="true"
+      type="DATE"
+      default="2010-09-08 00:00:00.0 GMT"
+    />
+    <column
+      name="time_field"
+      required="true"
+      type="TIME"
+      default="1970-01-01 10:20:30.0 GMT"
+    />
+    <column
+      name="timestamp_field"
+      required="true"
+      type="TIMESTAMP"
+      default="2010-09-08 11:12:13.123"
+    />
+    <column
+      name="CURRENT_DATE_VALUE"
+      type="DATE"
+      @CURRENT_DATE_DEFAULT@
+      useDatabaseDefaultValue="true"
+    />
+    <column
+      name="CURRENT_TIME_VALUE"
+      type="TIME"
+      @CURRENT_TIME_DEFAULT@
+      useDatabaseDefaultValue="true"
+    />
+    <column
+      name="CURRENT_TIMESTAMP_VALUE"
+      domain="myTimestamp"
+    />
+  </table>
+
+  <table name="CURRENT_DATE_TABLE" 
+       description="Table which has a column which uses CURRENT_DATE from the database as default">
+    <column
+      name="ID"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="PAYLOAD"
+      required="false"
+      type="INTEGER"
+    />
+    <column
+      name="CURRENT_DATE_VALUE"
+      required="true"
+      type="DATE"
+      @CURRENT_DATE_DEFAULT@
+      useDatabaseDefaultValue="true"
+    />
+  </table>
+
+  <table name="CURRENT_TIME_TABLE" 
+       description="Table to test the CURRENT_TIME function">
+    <column
+      name="ID"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="PAYLOAD"
+      required="false"
+      type="INTEGER"
+    />
+    <column
+      name="CURRENT_TIME_VALUE"
+      required="true"
+      type="TIME"
+      @CURRENT_TIME_DEFAULT@
+      useDatabaseDefaultValue="true"
+    />
+  </table>
+
+  <table name="CURRENT_TIMESTAMP_TABLE" 
+       description="Table to test the CURRENT_TIMESTAMP function">
+    <column
+      name="ID"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="PAYLOAD"
+      required="false"
+      type="INTEGER"
+    />
+    <column
+      name="CURRENT_TIMESTAMP_VALUE"
+      required="true"
+      domain="myTimestamp"
+      useDatabaseDefaultValue="true"
+    />
+  </table>
+</database>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no" ?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<database name="@DATABASE_DEFAULT@"
+    defaultIdMethod="@DATABASE_ID_METHOD@"
+    xmlns="http://db.apache.org/torque/5.0/templates/database"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/5.0/templates/database 
+        http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0-strict.xsd">
+
+  <!-- =================================================== -->
+  <!-- B O O K  T A B L E                                  -->
+  <!-- =================================================== -->
+
+  <table name="book" description="Book table">
+    <column
+      name="book_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="Book Id"
+    />
+    <column
+      name="isbn"
+      required="false"
+      type="VARCHAR"
+      size="15"
+      description="ISBN"
+    />
+    <column
+      name="author_id"
+      required="true"
+      type="INTEGER"
+      description="Foreign Key Author"
+    />
+    <column
+      name="title"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Book Title"
+    />
+
+    <foreign-key foreignTable="author">
+      <reference local="author_id" foreign="author_id"/>
+    </foreign-key>
+
+  </table>
+
+
+  <!-- =================================================== -->
+  <!-- A U T H O R  T A B L E                              -->
+  <!-- =================================================== -->
+
+  <table name="author" description="Author table">
+    <column
+      name="author_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="50"
+    />
+
+  </table>
+
+  <!-- =================================================== -->
+  <!-- B O O K _ A U T H O R  V I E W                      -->
+  <!-- =================================================== -->
+
+  <view name="BOOK_AUTHORS" sqlSuffix="from book join author on book.author_id=author.author_id">
+    <column name="book_id" type="INTEGER" select="book.book_id"/>
+    <column name="author_id" type="INTEGER" select="author.author_id"/>
+    <column name="book_title" type="VARCHAR" select="book.title"/>
+    <column name="author_name" type="VARCHAR" select="author.name"/>
+  </view>
+
+</database>

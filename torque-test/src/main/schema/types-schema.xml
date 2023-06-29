@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<!-- This schema contains tables with data types to test. -->
+
+<database name="@DATABASE_DEFAULT@" 
+    defaultIdMethod="@DATABASE_ID_METHOD@"
+    xmlns="http://db.apache.org/torque/4.0/templates/database"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/5.0/templates/database 
+        http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0.xsd">
+
+<!-- Used by TestOMSetByName but can be used to test all types as needed. 
+     Modified from Generator domaintest-schema.xml -->  
+
+  <table name="types_object" description="used to test the handling for all supported types">
+    <column name="id" type="INTEGER" javaType="object" primaryKey="true"/>
+    <column name="o_bit" type="@BIT_DATA_TYPE@" javaType="object" />
+    <column name="o_tinyint" type="TINYINT" javaType="object" />
+    <column name="o_smallint" type="SMALLINT" javaType="object" />
+    <column name="o_bigint" type="BIGINT" javaType="object" />
+    <column name="o_float" type="FLOAT" javaType="object" />
+    <column name="o_real" type="REAL" javaType="object" />
+    <column name="o_numeric" type="NUMERIC" javaType="object" />
+    <column name="o_decimal" type="DECIMAL" javaType="object" />
+    <column name="o_char" type="CHAR" javaType="object" />
+    <column name="o_varchar" type="VARCHAR" size="255" javaType="object" />
+    <column name="o_longvarchar" type="LONGVARCHAR" javaType="object" />
+    <column name="o_date" type="DATE" javaType="object" />
+    <column name="o_time" type="TIME"  javaType="object"/>
+    <column name="o_integer" type="INTEGER"  javaType="object"/>
+    <column name="o_timestamp" type="TIMESTAMP"  javaType="object"/>
+    <column name="o_binary" type="BINARY" javaType="object"/>
+    <column name="o_varbinary" type="VARBINARY" size="255"  javaType="object"/>
+    <column name="o_longvarbinary" type="LONGVARBINARY" javaType="object"  />
+    <column name="o_blob" type="BLOB" javaType="object" />
+    <column name="o_clob" type="CLOB" javaType="object" />
+    <column name="o_booleanint" type="BOOLEANINT" javaType="object" />
+    <column name="o_booleanchar" type="BOOLEANCHAR" javaType="object" />
+    <column name="o_double" type="DOUBLE" javaType="object" />
+
+<!--
+Column.getJavaObject() not implimented for these types, so skipping them for now
+
+    <column name="cnull" type="NULL" />
+    <column name="cother" type="OTHER" />
+    <column name="cjavaobject" type="JAVA_OBJECT" />
+    <column name="cdistinct" type="DISTINCT" />
+    <column name="cstruct" type="STRUCT" />
+    <column name="carray" type="ARRAY" />
+    <column name="cref" type="REF" />
+-->
+  </table>
+
+<!--  Primitive types in separate table to keep row size from exceeding limits -->
+  <table name="types_primitive" description="used to test the handling for all supported types">
+    <column name="id" type="INTEGER" javaType="primitive" primaryKey="true"/>
+    <column name="p_bit" type="@BIT_DATA_TYPE@" javaType="primitive" />
+    <column name="p_tinyint" type="TINYINT" javaType="primitive" />
+    <column name="p_smallint" type="SMALLINT" javaType="primitive" />
+    <column name="p_bigint" type="BIGINT" javaType="primitive" />
+    <column name="p_float" type="FLOAT" javaType="primitive" />
+    <column name="p_real" type="REAL" javaType="primitive" />
+    <column name="p_numeric" type="NUMERIC" javaType="primitive" />
+    <column name="p_decimal" type="DECIMAL" javaType="primitive" />
+    <column name="p_char" type="CHAR" javaType="primitive" />
+    <column name="p_varchar" type="VARCHAR" size="255" javaType="primitive" />
+    <column name="p_longvarchar" type="LONGVARCHAR" javaType="primitive" />
+    <column name="p_date" type="DATE" javaType="primitive" />
+    <column name="p_time" type="TIME"  javaType="primitive"/>
+    <column name="p_integer" type="INTEGER"  javaType="primitive"/>
+    <column name="p_timestamp" type="TIMESTAMP"  javaType="primitive"/>
+    <column name="p_binary" type="BINARY" javaType="primitive"/>
+    <column name="p_varbinary" type="VARBINARY" size="255" javaType="primitive"/>
+    <column name="p_longvarbinary" type="LONGVARBINARY" javaType="primitive"  />
+    <column name="p_blob" type="BLOB" javaType="primitive" />
+    <column name="p_clob" type="CLOB" javaType="primitive" />
+    <column name="p_booleanint" type="BOOLEANINT" javaType="primitive" />
+    <column name="p_booleanchar" type="BOOLEANCHAR" javaType="primitive" />
+    <column name="p_double" type="DOUBLE" javaType="primitive" />
+  </table>
+
+  <table name="BIT_TYPE" idMethod="none">
+    <column name="ID" primaryKey="true" type="VARCHAR" size="10"/>
+    <column name="BIT_VALUE" type="@BIT_DATA_TYPE@" />
+    <column name="BIT_OBJECT_VALUE" type="@BIT_DATA_TYPE@" javaType="object"/>
+  </table>
+
+  <table name="BLOB_TYPE">
+    <column name="ID" primaryKey="true" type="BIGINT"/>
+    <column name="BLOB_VALUE" type="BLOB"/>
+    <column name="BLOB_OBJECT_VALUE" type="BLOB" javaType="object"/>
+  </table>
+
+  <table name="CLOB_TYPE">
+    <column name="ID" primaryKey="true" type="INTEGER"/>
+    <column name="CLOB_VALUE" type="CLOB"/>
+    <column name="CLOB_OBJECT_VALUE" type="CLOB" javaType="object"/>
+  </table>
+  
+  <table name="BINARY_TYPE" description="Table to test BINARY type">
+    <column name="ID" primaryKey="true" type="INTEGER"/>
+    <column name="BINARY_VALUE" type="BINARY" size="100"/>
+    <column name="BINARY_OBJECT_VALUE" type="BINARY" size="100" javaType="object"/>
+  </table>
+  
+  <table name="VARBINARY_TYPE" description="Table to test VARBINARY type">
+    <column name="ID" primaryKey="true" type="INTEGER"/>
+    <column name="VARBINARY_VALUE" type="VARBINARY" size="100"/>
+    <column name="VARBINARY_OBJECT_VALUE" type="VARBINARY" size="100" javaType="object"/>
+  </table>
+  
+  <table name="LONGVARBINARY_TYPE" description="Table to test LONGVARBINARY type">
+    <column name="ID" primaryKey="true" type="INTEGER"/>
+    <column name="LONGVARBINARY_VALUE" type="LONGVARBINARY"/>
+    <column name="LONGVARBINARY_OBJECT_VALUE" type="LONGVARBINARY" javaType="object"/>
+  </table>
+  
+  <table name="BINT_BCHAR_TYPE" idMethod="none">
+    <column name="ID" required="true" primaryKey="true" type="VARCHAR" size="20"/>
+    <column name="BINT_VALUE" required="true" type="BOOLEANINT"/>
+    <column name="BCHAR_VALUE" required="true" type="BOOLEANCHAR"/>
+    <column name="BINT_OBJECT_VALUE" type="BOOLEANINT" javaType="object"/>
+    <column name="BCHAR_OBJECT_VALUE" type="BOOLEANCHAR" javaType="object"/>
+  </table>
+
+  <table name="DATE_TIME_TIMESTAMP_TYPE" description="Table to test Date formats">
+    <column name="ID" primaryKey="true" type="INTEGER"/>
+    <column name="DATE_VALUE" required="true" type="DATE"/>
+    <column name="TIME_VALUE" required="true" type="TIME"/>
+    <column name="TIMESTAMP_VALUE" required="true" type="TIMESTAMP"/>
+  </table>
+
+  <!-- table name="TINYINT_TYPE" description="Table to test TINYINT type">
+    <column name="ID" primaryKey="true" type="TINYINT"/>
+    <column name="TINYINT_VALUE" type="TINYINT"/>
+    <column name="TINYINT_OBJECT_VALUE" type="TINYINT" javaType="object"/>
+  </table>
+  
+  <table name="SMALLINT_TYPE" description="Table to test SMALLINT type">
+    <column name="ID" primaryKey="true" type="SMALLINT"/>
+    <column name="SMALLINT_VALUE" type="SMALLINT"/>
+    <column name="SMALLINT_OBJECT_VALUE" type="SMALLINT" javaType="object"/>
+  </table-->
+  
+  <table name="INTEGER_TYPE" description="Table to test INTEGER type">
+    <column name="ID" primaryKey="true" type="INTEGER"/>
+    <column name="INTEGER_VALUE" type="INTEGER"/>
+    <column name="INTEGER_OBJECT_VALUE" type="INTEGER" javaType="object"/>
+  </table>
+  
+  <table name="BIGINT_TYPE" description="Table to test BIGINT type">
+    <column name="ID" primaryKey="true" type="BIGINT"/>
+    <column name="BIGINT_VALUE" type="BIGINT"/>
+    <column name="BIGINT_OBJECT_VALUE" type="BIGINT" javaType="object"/>
+  </table>
+  
+  <!-- table name="FLOAT_TYPE" description="Table to test FLOAT type">
+    <column name="ID" primaryKey="true" type="FLOAT"/>
+    <column name="FLOAT_VALUE" type="FLOAT"/>
+    <column name="FLOAT_OBJECT_VALUE" type="FLOAT" javaType="object"/>
+  </table>
+  
+  <table name="REAL_TYPE" description="Table to test REAL type">
+    <column name="ID" primaryKey="true" type="REAL"/>
+    <column name="REAL_VALUE" type="REAL"/>
+    <column name="REAL_OBJECT_VALUE" type="REAL" javaType="object"/>
+  </table>
+  
+  <table name="DOUBLE_TYPE" description="Table to test DOUBLE type">
+    <column name="ID" primaryKey="true" type="DOUBLE"/>
+    <column name="DOUBLE_VALUE" type="DOUBLE"/>
+    <column name="DOUBLE_OBJECT_VALUE" type="DOUBLE" javaType="object"/>
+  </table>
+  
+  <table name="DECIMAL_TYPE" description="Table to test DECIMAL type">
+    <column name="ID" primaryKey="true" type="DECIMAL"/>
+    <column name="DECIMAL_VALUE" type="DECIMAL"/>
+    <column name="DECIMAL_OBJECT_VALUE" type="DECIMAL" javaType="object"/>
+  </table>
+  
+  <table name="NUMERIC_TYPE" description="Table to test NUMERIC type">
+    <column name="ID" primaryKey="true" type="NUMERIC"/>
+    <column name="NUMERIC_VALUE" type="NUMERIC" size="10" scale="2"/>
+    <column name="NUMERIC_OBJECT_VALUE" type="NUMERIC" javaType="object"/>
+  </table>
+  
+  <table name="CHAR_TYPE" idMethod="none" description="Table to test CHAR type">
+    <column name="ID" primaryKey="true" type="CHAR" size="5"/>
+    <column name="CHAR_VALUE" type="CHAR" size="10"/>
+    <column name="CHAR_OBJECT_VALUE" type="CHAR" javaType="object" size="20"/>
+  </table-->
+  
+  <table name="VARCHAR_TYPE" idMethod="none" description="Table to test VARCHAR type">
+    <column name="ID" primaryKey="true" type="VARCHAR" size="20"/>
+    <column name="VARCHAR_VALUE" type="VARCHAR" size="20"/>
+    <column name="VARCHAR_OBJECT_VALUE" type="VARCHAR" javaType="object" size="20"/>
+  </table>
+  
+  <!-- table name="LONGVARCHAR_TYPE" idMethod="none" description="Table to test LONGVARCHAR type">
+    <column name="ID" primaryKey="true" type="LONGVARCHAR" size="20"/>
+    <column name="LONGVARCHAR_VALUE" type="LONGVARCHAR" size="20"/>
+    <column name="LONGVARCHAR_OBJECT_VALUE" type="LONGVARCHAR" javaType="object" size="20"/>
+  </table-->
+  
+</database>

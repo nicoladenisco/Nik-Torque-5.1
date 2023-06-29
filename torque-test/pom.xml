@@ -1,0 +1,1602 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<!--
+  To run the tests for Torque for any of the databases,
+  adjust any of the profiles below for your needs and then run
+  mvn -P${profileName} test, e.g. mvn -Pmysql test
+  
+  To ignore errors when executing the generated sql 
+  (e.g. because your database is in an inconsistent state) run
+  mvn -P${profileName} -DonSqlError=continue test
+  
+  Troubleshooting:
+  Exception org.apache.torque.generator.source.transform.SourceTransformerException: Option torque.database must be set:
+  You did not specify a correct profile name, see above.
+  
+  Eclipse classpath generation: 
+  First run mvn test -Pmysql -DskipTests=true, then mvn eclipse:eclipse -Dmaven.antrun.skip=true -Pmysql
+ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.apache.torque</groupId>
+        <artifactId>torque</artifactId>
+        <version>5.1</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>torque-test</artifactId>
+    <packaging>jar</packaging>
+    <name>Torque Test Project</name>
+
+    <properties>
+        <onSqlError>abort</onSqlError>
+        
+        <!-- log4j2.version and derby.version now renamed in parent pom as shared in other modules -->
+        <torque.test.hsqldb.version>2.5.1</torque.test.hsqldb.version><!-- 2.5.1 as of june 2020 -->
+        <torque.test.mssql.version>1.2.7</torque.test.mssql.version>
+        <torque.test.mysql.version>8.0.27</torque.test.mysql.version><!-- 5.1.48  -->
+        <torque.test.oracle.version>10.2.0.4.0</torque.test.oracle.version>
+        <torque.test.postgres.jdbc.version>42.2.14</torque.test.postgres.jdbc.version><!-- 9.1-901.jdbc4, -->
+        <torque.test.postgres.version>13.1</torque.test.postgres.version>
+        <torque.test.testcontainer.version>1.16.2</torque.test.testcontainer.version>
+        <!-- -->
+        <torque.test.idmethod>native</torque.test.idmethod>
+    </properties>
+
+    <scm>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/db/torque/tags/torque-5-1/trunk</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/db/torque/tags/torque-5-1/trunk
+        </developerConnection>
+        <url>http://svn.apache.org/viewvc/db/torque/tags/torque-5-1/trunk</url>
+    </scm>
+
+    <dependencies>
+
+        <dependency>
+            <artifactId>torque-runtime</artifactId>
+            <groupId>org.apache.torque</groupId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- jndi -->
+        <dependency>
+            <artifactId>naming-common</artifactId>
+            <groupId>tomcat</groupId>
+            <version>5.0.28</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <artifactId>naming-java</artifactId>
+            <groupId>tomcat</groupId>
+            <version>5.0.28</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>  
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+         </dependency>
+
+        <!-- avalon -->
+        <dependency>
+            <groupId>org.apache.avalon.framework</groupId>
+            <artifactId>avalon-framework-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.fulcrum</groupId>
+            <artifactId>fulcrum-yaafi</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.fulcrum</groupId>
+            <artifactId>fulcrum-testcontainer</artifactId>
+            <version>1.0.9</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <!-- testcontainer minimal shared resources -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${torque.test.testcontainer.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${torque.test.testcontainer.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>clean-generated-sources</id>
+                        <phase>clean</phase>
+                        <configuration>
+                            <target>
+                                <!--  remove old generated sources -->
+                                <echo message="Deleting directory src/main/generated-java" />
+                                <delete dir="src/main/generated-java" />
+                                <echo message="Deleting directory target/torque" />
+                                <delete dir="target/torque" />
+                                <echo message="Deleting log file torque-test.log" />
+                                <delete file="target/torque-test.log" />
+                                <echo message="Deleting directory torque-test" /><!-- from derby -->
+                                <delete dir="torque-test" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>filter-schema</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <delete dir="target/torque/test/schema" />
+                                <!-- schema files need to be copied to insert idMethod -->
+                                <copy todir="target/torque/test/schema">
+                                    <fileset dir="src/main/schema" />
+                                    <filterset>
+
+                                        <filter token="DATABASE_DEFAULT" value="bookstore" />
+                                        <filter token="DATABASE_ID_METHOD" value="${torque.test.idmethod}" />
+                                        <filter token="DATABASE_SCHEMA" value="${torque.test.databaseSchema}" />
+                                        <filter token="ON_UPDATE_CASCADE" value="${torque.test.onUpdateCascade}" />
+                                        <filter token="ON_UPDATE_SETNULL" value="${torque.test.onUpdateSetNull}" />
+                                        <filter token="ON_UPDATE_RESTRICT" value="${torque.test.onUpdateRestrict}" />
+                                        <filter token="ON_DELETE_RESTRICT" value="${torque.test.onDeleteRestrict}" />
+                                        <filter token="BIT_DATA_TYPE" value="${torque.test.bitDataType}" />
+                                        <filter token="CURRENT_TIMESTAMP_DEFAULT" value="${torque.test.currentTimestampDefault}" />
+                                        <filter token="CURRENT_TIME_DEFAULT" value="${torque.test.currentTimeDefault}" />
+                                        <filter token="CURRENT_DATE_DEFAULT" value="${torque.test.currentDateDefault}" />
+                                    </filterset>
+                                </copy>
+                                <delete dir="target/torque/test/sql" />
+                                <copy todir="target/torque/test/sql">
+                                    <fileset dir="src/test/sql" />
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-database-filled</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <target>
+                                <sql driver="${torque.driver}" url="${torque.database.url}" userid="${torque.database.user}" password="${torque.database.password}" errorproperty="cannot.access.book.table" failOnConnectionError="false" onerror="continue">
+                                    select count(*) from book;
+                                </sql>
+                                <!-- if it aborts  book does not exist, no need to drop, set executeDrop, which is exported, to false -->
+                                <condition property="executeDrop" value="false">
+                                    <istrue value="${cannot.access.book.table}" />
+                                </condition>
+                                <condition property="executeDrop" value="true">
+                                    <isfalse value="${cannot.access.book.table}" />
+                                </condition>
+                                <echo message="error: ${cannot.access.book.table}: set executeDrop: ${executeDrop}" />
+                            </target>
+                            <exportAntProperties>true</exportAntProperties>
+                            <failOnError>false</failOnError>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>shutdown-db-after-test-database</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <!-- this executes the shutdown URL, which may throw an exception e.g. like: Database 'target/bookstore' shutdown.  and this is expected beahaviour -->
+                                <sql driver="${torque.driver}" url="${torque.database.shutdown.url}" userid="${torque.database.user}" password="${torque.database.password}">
+                                    -- do nothing
+                                </sql>
+                            </target>
+                            <exportAntProperties>true</exportAntProperties>
+                            <failOnError>false</failOnError>
+                            <skip>${torque.database.shutdown.skip}</skip>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.torque</groupId>
+                <artifactId>torque-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>classpath</packaging>
+                            <configPackage>org.apache.torque.templates.om</configPackage>
+                            <sourceDir>target/torque/test/schema</sourceDir>
+                            <overrideConfigDir>src/main/torque-gen</overrideConfigDir>
+                            <sourceExcludes>
+                                <sourceExclude>ext*-schema.xml</sourceExclude>
+                                <sourceExclude>included*-schema.xml</sourceExclude>
+                                <sourceExclude>id-table-schema.xml</sourceExclude>
+                            </sourceExcludes>
+                            <loglevel>error</loglevel>
+                            <optionsFile>torque-gen.properties</optionsFile>
+                            <options>
+                                <torque.om.useManagers>${torque.useManagers}</torque.om.useManagers>
+                                <torque.om.generateBeans>${torque.generateBeans}</torque.om.generateBeans>
+                            </options>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-sql</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>classpath</packaging>
+                            <configPackage>org.apache.torque.templates.sql</configPackage>
+                            <sourceDir>target/torque/test/schema</sourceDir>
+                            <defaultOutputDir>target/generated-sql</defaultOutputDir>
+                            <defaultOutputDirUsage>none</defaultOutputDirUsage>
+                            <loglevel>error</loglevel>
+                            <sourceExcludes>
+                                <sourceExclude>included*-schema.xml</sourceExclude>
+                            </sourceExcludes>
+                            <options>
+                                <torque.database>${torque.targetDatabase}</torque.database>
+                                <torque.sql.generate.drops>${executeDrop}</torque.sql.generate.drops>
+                            </options>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-createdb-sql</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>classpath</packaging>
+                            <configPackage>org.apache.torque.templates.sql.createdb</configPackage>
+                            <sourceDir>target/torque/test/schema</sourceDir>
+                            <defaultOutputDir>target/generated-createdb-sql</defaultOutputDir>
+                            <defaultOutputDirUsage>none</defaultOutputDirUsage>
+                            <loglevel>error</loglevel>
+                            <sourceExcludes>
+                                <sourceExclude>ext*-schema.xml</sourceExclude>
+                                <sourceExclude>included*-schema.xml</sourceExclude>
+                                <sourceExclude>id-table-schema.xml</sourceExclude>
+                            </sourceExcludes>
+                            <options>
+                                <torque.database>${torque.targetDatabase}</torque.database>
+                            </options>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-idtable-sql</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>classpath</packaging>
+                            <configPackage>org.apache.torque.templates.idtable</configPackage>
+                            <sourceDir>target/torque/test/schema</sourceDir>
+                            <defaultOutputDir>target/generated-sql-init</defaultOutputDir>
+                            <defaultOutputDirUsage>none</defaultOutputDirUsage>
+                            <loglevel>error</loglevel>
+                            <options>
+                                <torque.database>${torque.targetDatabase}</torque.database>
+                            </options>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-html-doc</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>classpath</packaging>
+                            <configPackage>org.apache.torque.templates.doc.html</configPackage>
+                            <sourceDir>target/torque/test/schema</sourceDir>
+                            <sourceExcludes>
+                                <sourceExclude>ext*-schema.xml</sourceExclude>
+                                <sourceExclude>included*-schema.xml</sourceExclude>
+                                <sourceExclude>id-table-schema.xml</sourceExclude>
+                            </sourceExcludes>
+                            <defaultOutputDir>target/generated-docs</defaultOutputDir>
+                            <defaultOutputDirUsage>none</defaultOutputDirUsage>
+                            <loglevel>error</loglevel>
+                            <options>
+                                <torque.database>${torque.targetDatabase}</torque.database>
+                                <torque.om.package>org.apache.torque.test</torque.om.package>
+                            </options>
+                        </configuration>
+                    </execution>
+                    <!-- execution>
+                      <id>generate-schema-from-jdbc</id>
+                      <phase>generate-test-sources</phase>
+                      <goals>
+                        <goal>generate</goal>
+                      </goals>
+                      <configuration>
+                        <packaging>classpath</packaging>
+                        <configPackage>org.apache.torque.templates.jdbc2schema</configPackage>
+                        <defaultOutputDir>target/generated-schema</defaultOutputDir>
+                        <defaultOutputDirUsage>none</defaultOutputDirUsage>
+                        <loglevel>info</loglevel>
+                        <options>
+                          <torque.jdbc2schema.driver>${torque.driver}</torque.jdbc2schema.driver>
+                          <torque.jdbc2schema.url>${torque.database.url}</torque.jdbc2schema.url>
+                          <torque.jdbc2schema.user>${torque.database.user}</torque.jdbc2schema.user>
+                          <torque.jdbc2schema.password>${torque.database.password}</torque.jdbc2schema.password>
+                        </options>
+                      </configuration>
+                    </execution-->
+                    <execution>
+                        <id>generate-xdoc</id>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <packaging>classpath</packaging>
+                            <configPackage>org.apache.torque.templates.doc.xdoc</configPackage>
+                            <sourceDir>target/torque/test/schema</sourceDir>
+                            <sourceExcludes>
+                                <sourceExclude>ext*-schema.xml</sourceExclude>
+                                <sourceExclude>included*-schema.xml</sourceExclude>
+                                <sourceExclude>id-table-schema.xml</sourceExclude>
+                            </sourceExcludes>
+                            <defaultOutputDir>target/generated-xdocs</defaultOutputDir>
+                            <defaultOutputDirUsage>none</defaultOutputDirUsage>
+                            <options>
+                                <torque.database>${torque.targetDatabase}</torque.database>
+                                <torque.om.package>org.apache.torque.test</torque.om.package>
+                            </options>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.torque</groupId>
+                        <artifactId>torque-templates</artifactId>
+                        <version>${project.version}</version>
+                    </dependency>
+                    <!-- for generate-schema-from-jdbc only -->
+                    <!-- dependency>
+                      <groupId>${torque.test.driver.groupId}</groupId>
+                      <artifactId>${torque.test.driver.artifactId}</artifactId>
+                      <version>${torque.test.driver.version}</version>
+                    </dependency-->
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>execute-ext-ddl</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <driver>${torque.driver}</driver>
+                            <url>${torque.database.url}</url>
+                            <username>${torque.database.user}</username>
+                            <password>${torque.database.password}</password>
+                            <onError>${onSqlError}</onError>
+                            <autocommit>true</autocommit>
+                            <printResultSet>true</printResultSet>
+                            <orderFile>descending</orderFile>
+                            <!-- if drop is executed it is assumed that external tables already exist
+                              so we do not need to drop and recreate them
+                              (which avoids dependency problems) -->
+                            <skip>${executeDrop}</skip>
+                            <fileset>
+                                <basedir>${basedir}/target/generated-sql</basedir>
+                                <includes>
+                                    <include>ext*.sql</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>*idtable-init.sql</exclude>
+                                </excludes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>execute-ddl</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <driver>${torque.driver}</driver>
+                            <url>${torque.database.url}</url>
+                            <username>${torque.database.user}</username>
+                            <password>${torque.database.password}</password>
+                            <!--onError>${onSqlError}</onError-->
+                            <onError>continue</onError>
+                            <autocommit>true</autocommit>
+                            <orderFile>ascending</orderFile>
+                            <fileset>
+                                <basedir>${basedir}/target/generated-sql</basedir>
+                                <includes>
+                                    <include>*.sql</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>*idtable-init.sql</exclude>
+                                    <exclude>ext*.sql</exclude>
+                                </excludes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!--
+                          separate execution to make sure the idtable is filled
+                          after it is created
+                        -->
+                        <id>execute-idtable-sql</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <driver>${torque.driver}</driver>
+                            <url>${torque.database.url}</url>
+                            <username>${torque.database.user}</username>
+                            <password>${torque.database.password}</password>
+                            <onError>${onSqlError}</onError>
+                            <autocommit>true</autocommit>
+                            <orderFile>ascending</orderFile>
+                            <fileset>
+                                <basedir>${basedir}/target/generated-sql-init</basedir>
+                                <includes>
+                                    <include>*idtable-init.sql</include>
+                                </includes>
+                                <excludes>
+                                    <exclude>included-*-idtable-init.sql</exclude>
+                                </excludes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>shutdown-db-after-ddl</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <driver>${torque.driver}</driver>
+                            <url>${torque.database.shutdown.url}</url>
+                            <username>${torque.database.user}</username>
+                            <password>${torque.database.password}</password>
+                            <onError>continue</onError>
+                            <autocommit>true</autocommit>
+                            <skip>${torque.database.shutdown.skip}</skip>
+                            <skipOnConnectionError>true</skipOnConnectionError>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/${torque.test.include.beans}</include>
+                        <include>**/${torque.test.include.managers}</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/Base*.java</exclude>
+                        <exclude>**/*Container*.java</exclude>
+                        <exclude>**/junit5/extension/**</exclude>
+                    </excludes>
+                    <!--excludedGroups>docker</excludedGroups-->
+                    <forkCount>1</forkCount>
+                    <reuseForks>false</reuseForks>
+                    <!-- change forkCount = 1, if remote debugging with mvnDebug port 8000, set forkCount=0 -->
+                    <systemPropertyVariables combine.children="override">
+                        <torque.configuration.file>src/test/profile/${torque.test.profileDirectory}/Torque.properties
+                        </torque.configuration.file>
+                        <torque.callback>host</torque.callback>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <testIncludes>
+                        <include>**/*Test.java</include>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*Tools.java</include>
+                        <include>**/*SchemaData.java</include>
+                        <include>**/InheritanceClassnameTestChild*.java</include>
+                        <include>**/${torque.test.include.beans}</include>
+                        <include>**/${torque.test.include.managers}</include>
+                    </testIncludes>
+                    <!-- TODO: remove testExcludes once SQLToAppDataRuntimeTest works -->
+                    <testExcludes>
+                        <exclude>**/SQLToAppDataRuntimeTest.java</exclude>
+                    </testExcludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <configuration>
+                     <!-- test project site is not needed and site->javadoc fails during the release build, so skip -->
+                    <skip>true</skip>
+                    <!--xdocDirectory>target/generated-xdocs</xdocDirectory-->
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>velocity.log</exclude>
+                        <exclude>README.md</exclude>
+                        <exclude>.checkstyle</exclude>
+                        <exclude>checkstyle-cache.ccf</exclude>
+                        <exclude>derby.log</exclude>
+                        <exclude>src/main/generated-java/**/*</exclude>
+                        <exclude>docker-java.properties</exclude><!-- ignored, not template -->
+                        <exclude>**/torque.usersettings.properties</exclude>
+                        <exclude>torque-test/target/**</exclude><!-- generated derby -->
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>${basedir}/../src/main/checkstyle/checkstyle.xml</configLocation>
+                    <headerLocation>${basedir}/../src/main/checkstyle/license-header.txt</headerLocation>
+                    <suppressionsLocation>${basedir}/../src/main/checkstyle/checkstyle-suppressions.xml
+                    </suppressionsLocation>
+                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- test project javadoc is not needed in the main site and javadoc fails during the release build, so skip -->
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <profiles>
+        <profile>
+            <!--
+              derby profile with default settings.
+              To be run from the root directory of the test project using
+              "mvn -PderbyEmbedded test".
+              -->
+            <id>derbyEmbedded</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.test.profileDirectory>derbyEmbedded</torque.test.profileDirectory>
+                <torque.test.idmethod>native</torque.test.idmethod>
+                <torque.test.databaseSchema>bookstore</torque.test.databaseSchema>
+                <torque.test.onUpdateCascade />
+                <torque.test.onUpdateSetNull />
+                <torque.test.onUpdateRestrict>onUpdate="restrict"</torque.test.onUpdateRestrict>
+                <torque.test.onDeleteRestrict>onDelete="restrict"</torque.test.onDeleteRestrict>
+                <torque.test.bitDataType>BOOLEANINT
+                </torque.test.bitDataType><!-- BIT if database supports BIT type, something else if not -->
+                <torque.test.currentDateDefault>default="CURRENT_DATE"
+                </torque.test.currentDateDefault><!-- default="CURRENT_DATE" if database supports it -->
+                <torque.test.currentTimeDefault>default="CURRENT_TIME"
+                </torque.test.currentTimeDefault><!-- default="CURRENT_TIME" if database supports it -->
+                <torque.test.currentTimestampDefault>default="CURRENT_TIMESTAMP"
+                </torque.test.currentTimestampDefault><!-- default="CURRENT_TIMESTAMP" if database supports it -->
+                <torque.driver>org.apache.derby.jdbc.EmbeddedDriver</torque.driver>
+                <torque.targetDatabase>derby</torque.targetDatabase>
+                <torque.database.url>jdbc:derby:target/bookstore;create=true</torque.database.url>
+                <torque.database.user />
+                <torque.database.password />
+                <torque.database.shutdown.url>jdbc:derby:target/bookstore;shutdown=true</torque.database.shutdown.url>
+                <torque.database.shutdown.skip>false</torque.database.shutdown.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <artifactId>derby</artifactId>
+                    <groupId>org.apache.derby</groupId>
+                    <version>${derby.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <!--dependency>
+                    <groupId>org.apache.derby</groupId>
+                    <artifactId>derbyshared</artifactId>
+                    <version>${derby.version}</version>
+                    <scope>test</scope>
+                </dependency-->
+                <dependency>
+                    <groupId>org.apache.derby</groupId>
+                    <artifactId>derbytools</artifactId>
+                     <version>${derby.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>derby</artifactId>
+                                <groupId>org.apache.derby</groupId>
+                                <version>${derby.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.derby</groupId>
+                                <artifactId>derbyshared</artifactId>
+                                <version>${derby.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.derby</groupId>
+                                <artifactId>derbytools</artifactId>
+                                 <version>${derby.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>derby</artifactId>
+                                <groupId>org.apache.derby</groupId>
+                                <version>${derby.version}</version>
+                            </dependency>
+                           <!--dependency>
+                                <groupId>org.apache.derby</groupId>
+                                <artifactId>derbyshared</artifactId>
+                                <version>${derby.version}</version>
+                            </dependency-->
+                            <dependency>
+                                <groupId>org.apache.derby</groupId>
+                                <artifactId>derbytools</artifactId>
+                                 <version>${derby.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!--
+              derby profile with default settings. Can only be run from
+              parent project with "mvn -Ptest,derbyEmbedded-jenkins install" because database url
+              is adjusted to this start location
+              -->
+            <id>derbyEmbedded-jenkins</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.test.profileDirectory>derbyEmbedded</torque.test.profileDirectory>
+                <torque.test.idmethod>native</torque.test.idmethod>
+                <torque.test.databaseSchema>bookstore</torque.test.databaseSchema>
+                <torque.test.onUpdateCascade />
+                <torque.test.onUpdateSetNull />
+                <torque.test.onUpdateRestrict>onUpdate="restrict"</torque.test.onUpdateRestrict>
+                <torque.test.onDeleteRestrict>onDelete="restrict"</torque.test.onDeleteRestrict>
+                <torque.test.bitDataType>BOOLEANINT
+                </torque.test.bitDataType><!-- BIT if database supports BIT type, something else if not -->
+                <torque.test.currentDateDefault>default="CURRENT_DATE"
+                </torque.test.currentDateDefault><!-- default="CURRENT_DATE" if database supports it -->
+                <torque.test.currentTimeDefault>default="CURRENT_TIME"
+                </torque.test.currentTimeDefault><!-- default="CURRENT_TIME" if database supports it -->
+                <torque.test.currentTimestampDefault>default="CURRENT_TIMESTAMP"
+                </torque.test.currentTimestampDefault><!-- default="CURRENT_TIMESTAMP" if database supports it -->
+                <torque.driver>org.apache.derby.jdbc.EmbeddedDriver</torque.driver>
+                <torque.targetDatabase>derby</torque.targetDatabase>
+                <torque.database.url>jdbc:derby:torque-test/target/bookstore;create=true</torque.database.url>
+                <torque.database.user />
+                <torque.database.password />
+                <torque.database.shutdown.url>jdbc:derby:torque-test/target/bookstore;shutdown=true
+                </torque.database.shutdown.url>
+                <torque.database.shutdown.skip>false</torque.database.shutdown.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <artifactId>derby</artifactId>
+                    <groupId>org.apache.derby</groupId>
+                    <version>${derby.version}</version>
+                    <scope>test</scope>
+                </dependency>
+               <!--dependency>
+                    <groupId>org.apache.derby</groupId>
+                    <artifactId>derbyshared</artifactId>
+                    <version>${derby.version}</version>
+                    <scope>test</scope>
+                </dependency-->
+                <dependency>
+                    <groupId>org.apache.derby</groupId>
+                    <artifactId>derbytools</artifactId>
+                     <version>${derby.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>derby</artifactId>
+                                <groupId>org.apache.derby</groupId>
+                                <version>${derby.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.derby</groupId>
+                                <artifactId>derbytools</artifactId>
+                                 <version>${derby.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>derby</artifactId>
+                                <groupId>org.apache.derby</groupId>
+                                <version>${derby.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.apache.derby</groupId>
+                                <artifactId>derbytools</artifactId>
+                                 <version>${derby.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!--
+              hsqldb profile with beans and managers.
+              To be run from within the test project using "mvn -Phsqldb test".
+              -->
+            <id>hsqldb</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.test.profileDirectory>hsqldb</torque.test.profileDirectory>
+                <torque.test.idmethod>idbroker</torque.test.idmethod>
+                <torque.test.databaseSchema>torque_schema</torque.test.databaseSchema>
+                <torque.test.onUpdateCascade>onUpdate="cascade"</torque.test.onUpdateCascade>
+                <torque.test.onUpdateSetNull>onUpdate="setnull"</torque.test.onUpdateSetNull>
+                <torque.test.onUpdateRestrict>onUpdate="restrict"</torque.test.onUpdateRestrict>
+                <torque.test.onDeleteRestrict>onDelete="restrict"</torque.test.onDeleteRestrict>
+                <torque.test.bitDataType>BIT
+                </torque.test.bitDataType><!-- BIT if database supports bIT type, something else if not -->
+                <torque.test.currentDateDefault>default="CURRENT_DATE"
+                </torque.test.currentDateDefault><!-- default="CURRENT_DATE" if database supports it -->
+                <torque.test.currentTimeDefault>default="CURRENT_TIME"
+                </torque.test.currentTimeDefault><!-- default="CURRENT_TIME" if database supports it -->
+                <torque.test.currentTimestampDefault>default="CURRENT_TIMESTAMP"
+                </torque.test.currentTimestampDefault><!-- default="CURRENT_TIMESTAMP" if database supports it -->
+                <torque.driver>org.hsqldb.jdbcDriver</torque.driver>
+                <torque.targetDatabase>hsqldb</torque.targetDatabase>
+                <torque.database.url>jdbc:hsqldb:target/sqltest;shutdown=true;hsqldb.lock_file=false
+                </torque.database.url>
+                <torque.database.user>sa</torque.database.user>
+                <torque.database.password />
+                <torque.database.shutdown.url>none</torque.database.shutdown.url>
+                <torque.database.shutdown.skip>true</torque.database.shutdown.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <artifactId>hsqldb</artifactId>
+                    <groupId>org.hsqldb</groupId>
+                    <version>${torque.test.hsqldb.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>hsqldb</artifactId>
+                                <groupId>org.hsqldb</groupId>
+                                <version>${torque.test.hsqldb.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>hsqldb</artifactId>
+                                <groupId>org.hsqldb</groupId>
+                                <version>${torque.test.hsqldb.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <!--
+              hsqldb profile with beans and managers. Can only be run from
+              parent project with "mvn -Ptest,hsqldb-jenkins install" because database url
+              is adjusted to this start location
+              -->
+            <id>hsqldb-jenkins</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.test.profileDirectory>hsqldb</torque.test.profileDirectory>
+                <torque.test.idmethod>idbroker</torque.test.idmethod>
+                <torque.test.databaseSchema>torque_schema</torque.test.databaseSchema>
+                <torque.test.onUpdateCascade>onUpdate="cascade"</torque.test.onUpdateCascade>
+                <torque.test.onUpdateSetNull>onUpdate="setnull"</torque.test.onUpdateSetNull>
+                <torque.test.onUpdateRestrict>onUpdate="restrict"</torque.test.onUpdateRestrict>
+                <torque.test.onDeleteRestrict>onDelete="restrict"</torque.test.onDeleteRestrict>
+                <torque.test.bitDataType>BIT
+                </torque.test.bitDataType><!-- BIT if database supports bIT type, something else if not -->
+                <torque.test.currentDateDefault>default="CURRENT_DATE"
+                </torque.test.currentDateDefault><!-- default="CURRENT_DATE" if database supports it -->
+                <torque.test.currentTimeDefault>default="CURRENT_TIME"
+                </torque.test.currentTimeDefault><!-- default="CURRENT_TIME" if database supports it -->
+                <torque.test.currentTimestampDefault>default="CURRENT_TIMESTAMP"
+                </torque.test.currentTimestampDefault><!-- default="CURRENT_TIMESTAMP" if database supports it -->
+                <torque.driver>org.hsqldb.jdbcDriver</torque.driver>
+                <torque.targetDatabase>hsqldb</torque.targetDatabase>
+                <torque.database.url>jdbc:hsqldb:torque-test/target/sqltest;shutdown=true</torque.database.url>
+                <torque.database.user>sa</torque.database.user>
+                <torque.database.password />
+                <torque.database.shutdown.url>none</torque.database.shutdown.url>
+                <torque.database.shutdown.skip>true</torque.database.shutdown.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <artifactId>hsqldb</artifactId>
+                    <groupId>org.hsqldb</groupId>
+                    <version>${torque.test.hsqldb.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>hsqldb</artifactId>
+                                <groupId>org.hsqldb</groupId>
+                                <version>${torque.test.hsqldb.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>hsqldb</artifactId>
+                                <groupId>org.hsqldb</groupId>
+                                <version>${torque.test.hsqldb.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>derby</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.test.profileDirectory>derby</torque.test.profileDirectory>
+                <torque.test.idmethod>native</torque.test.idmethod>
+                <torque.test.databaseSchema>bookstore</torque.test.databaseSchema>
+                <torque.test.onUpdateCascade />
+                <torque.test.onUpdateSetNull />
+                <torque.test.onUpdateRestrict>onUpdate="restrict"</torque.test.onUpdateRestrict>
+                <torque.test.onDeleteRestrict>onDelete="restrict"</torque.test.onDeleteRestrict>
+                <torque.test.bitDataType>BOOLEANINT
+                </torque.test.bitDataType><!-- BIT if database supports bIT type, something else if not -->
+                <torque.test.currentDateDefault>default="CURRENT_DATE"
+                </torque.test.currentDateDefault><!-- default="CURRENT_DATE" if database supports it -->
+                <torque.test.currentTimeDefault>default="CURRENT_TIME"
+                </torque.test.currentTimeDefault><!-- default="CURRENT_TIME" if database supports it -->
+                <torque.test.currentTimestampDefault>default="CURRENT_TIMESTAMP"
+                </torque.test.currentTimestampDefault><!-- default="CURRENT_TIMESTAMP" if database supports it -->
+                <torque.driver>org.apache.derby.jdbc.ClientDriver</torque.driver>
+                <torque.targetDatabase>derby</torque.targetDatabase>
+                <torque.database.url>jdbc:derby://localhost:1527/bookstore;create=true</torque.database.url>
+                <torque.database.user>SA</torque.database.user>
+                <torque.database.password>SA</torque.database.password>
+                <torque.database.shutdown.url>none</torque.database.shutdown.url>
+                <torque.database.shutdown.skip>true</torque.database.shutdown.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <artifactId>derbyclient</artifactId>
+                    <groupId>org.apache.derby</groupId>
+                    <version>${derby.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>derbyclient</artifactId>
+                                <groupId>org.apache.derby</groupId>
+                                <version>${derby.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>derbyclient</artifactId>
+                                <groupId>org.apache.derby</groupId>
+                                <version>${derby.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>mysql</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.test.profileDirectory>mysql</torque.test.profileDirectory>
+                <torque.test.idmethod>native</torque.test.idmethod>
+                <torque.test.databaseSchema>bookstore</torque.test.databaseSchema>
+                <torque.test.onUpdateCascade>onUpdate="cascade"</torque.test.onUpdateCascade>
+                <torque.test.onUpdateSetNull>onUpdate="setnull"</torque.test.onUpdateSetNull>
+                <torque.test.onUpdateRestrict>onUpdate="restrict"</torque.test.onUpdateRestrict>
+                <torque.test.onDeleteRestrict>onDelete="restrict"</torque.test.onDeleteRestrict>
+                <torque.test.bitDataType>BIT
+                </torque.test.bitDataType><!-- BIT if database supports bIT type, something else if not -->
+                <torque.test.currentDateDefault /><!-- default="CURRENT_DATE" if database supports it -->
+                <torque.test.currentTimeDefault /><!-- default="CURRENT_TIME" if database supports it -->
+                <torque.test.currentTimestampDefault /><!-- default="CURRENT_TIMESTAMP" if database supports it -->
+                <torque.driver>com.mysql.cj.jdbc.Driver
+                </torque.driver><!-- 5.x com.mysql.jdbc.Driver, 8.x: com.mysql.cj.jdbc.Driver -->
+                <torque.targetDatabase>mysql</torque.targetDatabase>
+                <torque.database.url>jdbc:mysql://localhost:3306/bookstore?useSSL=false&amp;allowPublicKeyRetrieval=true</torque.database.url>
+                <torque.database.user>torque</torque.database.user>
+                <torque.database.password>torque</torque.database.password>
+                <torque.database.shutdown.url>none</torque.database.shutdown.url>
+                <torque.database.shutdown.skip>true</torque.database.shutdown.skip>
+                <!-- docker properties are used in docker profile only -->
+                <docker.database.port>3306</docker.database.port>
+                <docker.image.name>mysql</docker.image.name>
+                <docker.image.version>${torque.test.mysql.version}</docker.image.version>
+                <docker.env.MYSQL_ROOT_PASSWORD>${torque.database.password}</docker.env.MYSQL_ROOT_PASSWORD>
+                <docker.env.MYSQL_DATABASE>bookstore</docker.env.MYSQL_DATABASE>
+                <docker.env.MYSQL_USER>${torque.database.user}</docker.env.MYSQL_USER>
+                <docker.env.MYSQL_PASSWORD>${torque.database.password}</docker.env.MYSQL_PASSWORD>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                    <version>${torque.test.mysql.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                    <version>${log4j2.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.testcontainers</groupId>
+                    <artifactId>mysql</artifactId>
+                    <version>${torque.test.testcontainer.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>mysql</groupId>
+                                <artifactId>mysql-connector-java</artifactId>
+                                <version>${torque.test.mysql.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>mysql</groupId>
+                                <artifactId>mysql-connector-java</artifactId>
+                                <version>${torque.test.mysql.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>mssql</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.test.profileDirectory>mssql</torque.test.profileDirectory>
+                <torque.test.idmethod>native</torque.test.idmethod>
+                <torque.test.databaseSchema>torque_schema</torque.test.databaseSchema>
+                <torque.test.onUpdateCascade>onUpdate="cascade"</torque.test.onUpdateCascade>
+                <torque.test.onUpdateSetNull>onUpdate="setnull"</torque.test.onUpdateSetNull>
+                <torque.test.onUpdateRestrict>onUpdate="restrict"</torque.test.onUpdateRestrict>
+                <torque.test.onDeleteRestrict>onDelete="restrict"</torque.test.onDeleteRestrict>
+                <torque.test.bitDataType>BIT
+                </torque.test.bitDataType><!-- BIT if database supports bIT type, something else if not -->
+                <torque.test.currentDateDefault>default="CURRENT_TIMESTAMP"
+                </torque.test.currentDateDefault><!-- default="CURRENT_DATE" if database supports it -->
+                <torque.test.currentTimeDefault>default="CURRENT_TIMESTAMP"
+                </torque.test.currentTimeDefault><!-- default="CURRENT_TIME" if database supports it -->
+                <torque.test.currentTimestampDefault>default="CURRENT_TIMESTAMP"
+                </torque.test.currentTimestampDefault><!-- default="CURRENT_TIMESTAMP" if database supports it -->
+                <torque.driver>net.sourceforge.jtds.jdbc.Driver</torque.driver>
+                <torque.targetDatabase>mssql</torque.targetDatabase>
+                <torque.database.url>jdbc:jtds:sqlserver://localhost:1433/torque</torque.database.url>
+                <torque.database.user>torque</torque.database.user>
+                <torque.database.password />
+                <torque.database.shutdown.url>none</torque.database.shutdown.url>
+                <torque.database.shutdown.skip>true</torque.database.shutdown.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <artifactId>jtds</artifactId>
+                    <groupId>net.sourceforge.jtds</groupId>
+                    <version>${torque.test.mssql.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>jtds</artifactId>
+                                <groupId>net.sourceforge.jtds</groupId>
+                                <version>${torque.test.mssql.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>jtds</artifactId>
+                                <groupId>net.sourceforge.jtds</groupId>
+                                <version>${torque.test.mssql.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>oracle</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.test.profileDirectory>oracle</torque.test.profileDirectory>
+                <torque.test.idmethod>native</torque.test.idmethod>
+                <torque.test.databaseSchema>torque</torque.test.databaseSchema>
+                <torque.test.onUpdateCascade />
+                <torque.test.onUpdateSetNull />
+                <torque.test.onUpdateRestrict />
+                <torque.test.onDeleteRestrict />
+                <torque.test.bitDataType>BOOLEANINT
+                </torque.test.bitDataType><!-- BIT if database supports bIT type, something else if not -->
+                <torque.test.currentDateDefault>default="CURRENT_DATE"
+                </torque.test.currentDateDefault><!-- default="CURRENT_DATE" if database supports it -->
+                <torque.test.currentTimeDefault>default="CURRENT_DATE"
+                </torque.test.currentTimeDefault><!-- default="CURRENT_TIME" if database supports it -->
+                <torque.test.currentTimestampDefault>default="CURRENT_TIMESTAMP"
+                </torque.test.currentTimestampDefault><!-- default="CURRENT_TIMESTAMP" if database supports it -->
+                <torque.driver>oracle.jdbc.driver.OracleDriver</torque.driver>
+                <torque.targetDatabase>oracle</torque.targetDatabase>
+                <torque.database.url>jdbc:oracle:thin:@localhost:1521:XE</torque.database.url>
+                <torque.database.user>torque</torque.database.user>
+                <torque.database.password />
+                <torque.database.shutdown.url>none</torque.database.shutdown.url>
+                <torque.database.shutdown.skip>true</torque.database.shutdown.skip>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <artifactId>ojdbc14</artifactId>
+                    <groupId>com.oracle</groupId>
+                    <version>${torque.test.oracle.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>ojdbc14</artifactId>
+                                <groupId>com.oracle</groupId>
+                                <version>${torque.test.oracle.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <artifactId>ojdbc14</artifactId>
+                                <groupId>com.oracle</groupId>
+                                <version>${torque.test.oracle.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>postgresql</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.test.profileDirectory>postgresql</torque.test.profileDirectory>
+                <torque.test.idmethod>idbroker</torque.test.idmethod>
+                <torque.test.databaseSchema>bookstore</torque.test.databaseSchema>
+                <torque.test.onUpdateCascade>onUpdate="cascade"</torque.test.onUpdateCascade>
+                <torque.test.onUpdateSetNull>onUpdate="setnull"</torque.test.onUpdateSetNull>
+                <torque.test.onUpdateRestrict>onUpdate="restrict"</torque.test.onUpdateRestrict>
+                <torque.test.onDeleteRestrict>onDelete="restrict"</torque.test.onDeleteRestrict>
+                <torque.test.bitDataType>BIT
+                </torque.test.bitDataType><!-- BIT if database supports bIT type, something else if not -->
+                <torque.test.currentDateDefault>default="CURRENT_DATE"
+                </torque.test.currentDateDefault><!-- default="CURRENT_DATE" if database supports it -->
+                <torque.test.currentTimeDefault>default="CURRENT_TIME"
+                </torque.test.currentTimeDefault><!-- default="CURRENT_TIME" if database supports it -->
+                <torque.test.currentTimestampDefault>default="CURRENT_TIMESTAMP"
+                </torque.test.currentTimestampDefault><!-- default="CURRENT_TIMESTAMP" if database supports it -->
+                <torque.driver>org.postgresql.Driver</torque.driver>
+                <torque.targetDatabase>postgresql</torque.targetDatabase>
+                <torque.database.url>jdbc:postgresql://localhost:5432/bookstore</torque.database.url>
+                <torque.database.user>torque</torque.database.user>
+                <torque.database.password>torque</torque.database.password>
+                <torque.database.shutdown.url>none</torque.database.shutdown.url>
+                <torque.database.shutdown.skip>true</torque.database.shutdown.skip>
+                <!-- docker properties are used in docker profile only -->
+                <docker.database.port>5432</docker.database.port>
+                <docker.image.name>postgres</docker.image.name>
+                <docker.image.version>${torque.test.postgres.version}</docker.image.version>
+                <docker.env.POSTGRES_DB>bookstore</docker.env.POSTGRES_DB>
+                <docker.env.POSTGRES_USER>${torque.database.user}</docker.env.POSTGRES_USER>
+                <docker.env.POSTGRES_PASSWORD>${torque.database.password}</docker.env.POSTGRES_PASSWORD>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.postgresql</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>${torque.test.postgres.jdbc.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-slf4j-impl</artifactId>
+                    <version>${log4j2.version}</version>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.testcontainers</groupId>
+                    <artifactId>postgresql</artifactId>
+                    <version>${torque.test.testcontainer.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${torque.test.postgres.jdbc.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.postgresql</groupId>
+                                <artifactId>postgresql</artifactId>
+                                <version>${torque.test.postgres.jdbc.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!--
+
+        todo: add docker profiles for more databases,...
+
+        mvn -Pmysql,docker-testcontainer,managers,beans clean test
+
+        be careful to run test with @DockerCallback:
+
+        mvnDebug -Pmysql,docker-testcontainer,managers,beans clean test -Dtest=DataContainerTest#testLikeClauseEscaping
+
+        The following test call will fail, although database will be generated  (prepare-..-database), but docker is not initialized in the unit test as second step:
+        mvnDebug -Pmysql,docker-testcontainer,managers,beans clean test -Dtest=DataTest#testLikeClauseEscaping
+
+        -->
+        <profile>
+            <id>docker-testcontainer</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <!--
+                    Build image:
+                    requires a started docker host - starts database for sql-maven-plugin.
+                    caution: Cancelling the maven process before life cycle process-classes is reached, requires the docker to be stopped manually with docker stop <id>.
+                    -->
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.33.0</version>
+                        <configuration>
+                            <filter>${docker.image.name}:${docker.image.version}</filter>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>prepare-${docker.image.name}-database</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>start</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- may set here environment variables: dockerhost, but .. -->
+                                    <images>
+                                        <image>
+                                            <name>${docker.image.name}:${docker.image.version}</name>
+                                            <alias>${docker.image.name}-generate-helper-database</alias>
+                                            <run>
+                                                <!-- setting env in database profiles  env.docker -->
+                                                <!-- this is too late for reading GLOBAL env DOCKER_HOST -> issue of the plugin?  -->
+                                                <!--envPropertyFile>${project.basedir}/src/test/profile/mysql/docker-resources/docker-java.properties</envPropertyFile-->
+                                                <ports>
+                                                    <port>${docker.database.port}:${docker.database.port}</port>
+                                                </ports>
+                                                <!--wait>
+                                                    <log>database system is ready to accept connections.</log>
+                                                    <time>20000</time>
+                                                </wait-->
+                                            </run><!-- target/classes/ -->
+                                        </image>
+                                    </images>
+                                </configuration>
+                            </execution>
+                            <!-- close this init generate sources database outside tests, before starting tests -->
+                            <execution>
+                                <id>remove-docker-database</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- skip and use testcontainers docker -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>sql-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>execute-ext-ddl</id>
+                                <configuration>
+                                    <skip>true</skip>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>execute-ddl</id>
+                                <configuration>
+                                    <skip>true</skip>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>execute-idtable-sql</id>
+                                <configuration>
+                                    <skip>true</skip>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>shutdown-db-after-ddl</id>
+                                <configuration>
+                                    <skip>true</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- skip database test or do it in a later phase.. -->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>test-database-filled</id>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <skip>true</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>2.6</version>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${basedir}/target</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>
+                                                src/test/profile/${torque.test.profileDirectory}/docker-resources/db
+                                            </directory>
+                                            <filtering>false</filtering>
+                                            <includes>
+                                                <include>Dockerfile</include>
+                                                <include>.dockerignore</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>copy-resources-2</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${basedir}/target/test-classes</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>
+                                                src/test/profile/${torque.test.profileDirectory}/docker-resources
+                                            </directory>
+                                            <filtering>false</filtering>
+                                            <includes>
+                                                <include>docker-java.properties</include>
+                                                <include>testcontainers.properties</include>
+                                            </includes>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <torque.wrapper.configuration.file>
+                                    src/test/profile/${torque.test.profileDirectory}/Torque4Test.xml
+                                </torque.wrapper.configuration.file>
+                                <torque.callback>docker</torque.callback>
+                            </systemPropertyVariables>
+                            <excludes>
+                                <exclude>**/Base*.java</exclude>
+                                <exclude>**/junit5/extension/**</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/testcontainer/${torque.test.profileDirectory}/**</include>
+                            </includes>
+                            <!--groups>DockerCallback</groups-->
+                            <!-- forkCount zero is required, as otherwise no tests will be launcehd by testcontainers -->
+                            <forkCount>0</forkCount>
+                            <reuseForks>false</reuseForks>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>default-test</id>
+                                <configuration>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <!-- docker testcontainer:  mvn test -Pmysql,docker-testcontainer  -->
+                <dependency>
+                    <groupId>org.testcontainers</groupId>
+                    <artifactId>testcontainers</artifactId>
+                    <version>${torque.test.testcontainer.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.testcontainers</groupId>
+                    <artifactId>junit-jupiter</artifactId>
+                    <version>${torque.test.testcontainer.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+         <!-- needs profile derbyEmbedded-jenkins activated -->
+         <!-- profile>
+            <id>apache-release</id>
+        </profile-->
+
+        <profile>
+            <id>beans</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.generateBeans>true</torque.generateBeans>
+                <torque.test.include.beans>BeanTestConditional.java</torque.test.include.beans>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>managers</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <torque.useManagers>true</torque.useManagers>
+                <torque.test.include.managers>ManagerTestConditional.java</torque.test.include.managers>
+            </properties>
+        </profile>
+
+    </profiles>
+</project>

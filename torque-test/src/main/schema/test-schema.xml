@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<!-- this schema is used to test various stuff which does not fit into the 
+     other tested categories -->
+
+<database name="@DATABASE_DEFAULT@" 
+    defaultIdMethod="@DATABASE_ID_METHOD@"
+    xmlns="http://db.apache.org/torque/5.0/templates/database">
+
+  <include-schema filename="included-schema.xml" />
+  <external-schema filename="ext-schema.xml" />
+
+  <!-- reference to included schema -->
+  <table name="reference_to_included">
+    <column name="id" primaryKey="true" type="INTEGER" />
+    <column name="included_id" type="INTEGER" />
+    <column name="included_from_included_id" type="INTEGER" />
+    <foreign-key foreignTable="included">
+      <reference local="included_id" foreign="id"/>
+    </foreign-key>
+    <foreign-key foreignTable="included_from_included">
+      <reference local="included_from_included_id" foreign="id"/>
+    </foreign-key>
+  </table>
+
+  <!-- reference to external schema -->
+  <table name="reference_to_ext_schema">
+    <column name="ext_schema_id" required="true" primaryKey="true" type="INTEGER"/>
+    <column name="ext_id" type="INTEGER"/>
+    <column name="test" required="true" type="INTEGER"/>
+
+    <index name="index_ref_ext_id">
+      <index-column name="ext_id"/>
+    </index>
+    <foreign-key foreignTable="ext">
+      <reference local="ext_id" foreign="ext_id"/>
+    </foreign-key>
+  </table>
+
+  <table name="reference_to_extext_schema">
+    <column name="extext_schema_id" required="true" primaryKey="true" type="INTEGER"/>
+    <column name="extext_id" type="INTEGER"/>
+    <column name="test" required="true" type="INTEGER"/>
+
+    <foreign-key name="ref_to_extext_fk_2" foreignTable="extext">
+      <reference local="extext_id" foreign="extext_id"/>
+    </foreign-key>
+  </table>
+
+  <!-- TRQS143 Generated OM will not compile if table name is Base -->
+  <table name="BASE" javaName="BaseTable" idMethod="none">
+    <column name="BASE_ID_CODE" primaryKey="true" required="true"
+            size="22" type="DECIMAL" javaName="Id"/>
+    <column name="BASE_NAME" size="100" type="VARCHAR" javaName="Title"/>
+  </table>
+
+  <!-- test for autoincrement -->
+  <table name="AUTOINCREMENT_NATIVE" idMethod="native">
+    <column name="AUTOINCREMENT_NATIVE_ID" required="true" primaryKey="true" type="INTEGER" autoIncrement="true"/>
+    <column name="NAME" type="VARCHAR" size="250"/>
+  </table>
+  <table name="AUTOINCREMENT_NONE" idMethod="none">
+    <column name="AUTOINCREMENT_NONE_ID" required="true" primaryKey="true" type="INTEGER" autoIncrement="true"/>
+    <column name="NAME" type="VARCHAR" size="250"/>
+  </table>
+  <table name="AUTOINCREMENT_IDBROKER" idMethod="idbroker">
+    <column name="AUTOINCREMENT_IDBROKER_ID" required="true" primaryKey="true" type="INTEGER" autoIncrement="true"/>
+    <column name="NAME" type="VARCHAR" size="250"/>
+  </table>
+
+  <table name="INHERITANCE_TEST" description="Table to test inheritance with mapped keys">
+    <column name="INHERITANCE_TEST" primaryKey="true" type="INTEGER" />
+    <column name="CLASS_NAME" inheritance="single" type="CHAR" size="1">
+      <inheritance key="B" class="InheritanceChildB" />
+      <inheritance key="C" class="InheritanceChildC" extends="org.apache.torque.test.dbobject.InheritanceTest" />
+      <inheritance key="D" class="InheritanceChildD" extends="org.apache.torque.test.dbobject.InheritanceChildC" />
+    </column>
+    <column name="PAYLOAD" required="true" type="VARCHAR" size="100" />
+  </table>
+
+  <table name="INHERITANCE_CLASSNAME_TEST" description="Table to test inheritance with classnames stored in the inheritance column">
+    <column name="INHERITANCE_TEST" primaryKey="true" type="INTEGER" />
+    <column name="CLASS_NAME" inheritance="single" type="VARCHAR" size="100" />
+    <column name="PAYLOAD" required="true" type="VARCHAR" size="100" />
+  </table>
+
+  <table name="SUMMARIZE1" description="Test table for summaryHelper test" >
+    <column name="ID" primaryKey="true" type="INTEGER" description="id column"/>
+    <column name="GROUP_BY1" type="VARCHAR" size="100" />
+    <column name="GROUP_BY2" type="VARCHAR" size="100" />
+    <column name="INT_1" type="INTEGER" javaType="primitive" />
+    <column name="FLOAT1" type="FLOAT" javaType="primitive" />
+    <column name="TYPE" type="INTEGER" javaType="primitive" />
+  </table>
+  
+  <table name="SKIP_SQL" skipSql="true" description="table without SQL">
+    <column name="ID" primaryKey="true" type="INTEGER" description="id for table without SQL"/>
+    <column name="NAME" type="VARCHAR" size="30" />
+  </table>
+
+  <table name="ABSTRACT" abstract="true" description="table with abstract OM class">
+    <column name="ID" primaryKey="true" type="INTEGER"  description="id for table with abstract OM class"/>
+  </table>
+
+  <table name="ifc_table" idMethod="none"
+    interface="org.apache.torque.TestInterface"
+    peerInterface="org.apache.torque.TestPeerInterface"
+    description="this table implements an interface">
+    <column name="id" javaName="ID" primaryKey="true" type="INTEGER" />
+    <column name="name" javaName="Name" type="VARCHAR" size="50" />
+  </table>
+
+  <table name="local_ifc_table" idMethod="none"
+      interface="LocalTestInterface"
+      peerInterface="LocalTestPeerInterface"
+      description="this table implements a local interface">
+    <column name="id" javaName="ID" primaryKey="true" type="INTEGER" />
+    <column name="name" javaName="Name" type="VARCHAR" size="50" />
+  </table>
+
+  <table name="optimistic_locking" 
+      interface="org.apache.torque.OptimisticLockingInterface"
+      peerInterface="org.apache.torque.OptimisticLockingPeerInterface&lt;org.apache.torque.test.dbobject.OptimisticLocking&gt;"
+      managerClassName="OptimisticLockingManager"
+      baseManagerClassName="BaseOptimisticLockingManager"
+      description="this table implements optimistic Locking with the selectForUpdate mode">
+    <column name="id" primaryKey="true" type="INTEGER" />
+    <column name="name" type="VARCHAR" size="50" />
+    <column name="version" type="INTEGER" version="true" javaType="object"/>
+  </table>
+
+  <table name="optimistic_locking_simple" optimisticLockingMode="simpleSelect"
+      interface="org.apache.torque.OptimisticLockingInterface"
+      peerInterface="org.apache.torque.OptimisticLockingPeerInterface&lt;org.apache.torque.test.dbobject.OptimisticLockingSimple&gt;"
+      managerClassName="OptimisticLockingSimpleManager"
+      baseManagerClassName="BaseOptimisticLockingSimpleManager"
+      description="this table implements optimistic Locking with the simple select mode">
+    <column name="id" primaryKey="true" type="INTEGER" />
+    <column name="name" type="VARCHAR" size="50" />
+    <column name="version" type="INTEGER" version="true" javaType="object"/>
+  </table>
+
+  <table name="ENUM_TABLE"
+      description="this table is used for testing enum values in columns">
+    <column name="id" primaryKey="true" type="INTEGER" />
+    <column name="varchar_column" type="VARCHAR" size="50">
+      <enum-value value="x"/>
+      <enum-value value="y"/>
+      <enum-value value="z" javaName="ZZZ"/>
+    </column>
+    <column name="int_column" type="INTEGER" default="1" enumType="MyIntColumnEnum" javaType="object">
+      <enum-value value="1"/>
+      <enum-value value="2" javaName="TWO"/>
+      <enum-value value="3"/>
+    </column>
+    <column name="predefined_enum_column" type="VARCHAR"  size="50" enumType="org.apache.torque.TestEnum" />
+    <column name="int_primitive_column" type="INTEGER" default="1" javaType="primitive">
+      <enum-value value="1"/>
+      <enum-value value="2"/>
+      <enum-value value="3"/>
+    </column>
+  </table>
+</database>

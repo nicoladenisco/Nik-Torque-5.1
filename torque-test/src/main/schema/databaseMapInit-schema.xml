@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<!-- this schema is used to test problems users reported -->
+
+<database name="databaseMap" 
+    defaultIdMethod="@DATABASE_ID_METHOD@">
+
+  <option key="databaseOptionKey1" value="databaseOptionValue1"/>
+  <option key="databaseOptionKey2" value="databaseOptionValue2"/>
+
+  <!-- Table for use by Database Map tests -->  
+  <table name="NOT_USED_BEFORE_MAP_INIT"
+       description="Table used for database map initialisation checks">
+    <column name="id" required="true" primaryKey="true" type="INTEGER" 
+       description="id column" autoIncrement="true" />
+    <column name="one" required="true" type="VARCHAR" size="50" default="unknown"/>
+    <column name="two" required="true" type="VARCHAR" size="50" />
+    <column name="three" required="true" type="INTEGER"/>
+    <column name="CLASS_NAME" inheritance="single" type="CHAR" size="1">
+      <inheritance key="B" class="MapInheritanceChildB"/>
+      <inheritance key="C" class="MapInheritanceChildC" extends="org.apache.torque.test.dbobject.NotUsedBeforeMapInit"/>
+      <inheritance key="D" class="MapInheritanceChildD" extends="org.apache.torque.test.dbobject.MapInheritanceChildC"/>
+    </column>
+    <foreign-key foreignTable="SECOND_MAP_INIT_TABLE">
+      <reference 
+        local="three" 
+        foreign="id"/>
+    </foreign-key>
+  </table>
+  <table name="SECOND_MAP_INIT_TABLE" javaName="SecondMapInit">
+    <column name="id" required="true" primaryKey="true" type="INTEGER" 
+        description="id column" autoIncrement="true"/>
+  </table>
+
+  <table name="OPTION_TABLE" description="table with options">
+    <option key="tableOptionKey1" value="tableOptionValue1"/>
+    <option key="tableOptionKey2" value="tableOptionValue2"/>
+    <column name="ID" primaryKey="true" type="INTEGER" description="id for table with options">
+      <option key="columnOptionKey1" value="columnOptionValue1"/>
+      <option key="columnOptionKey2" value="columnOptionValue2"/>
+    </column>
+  </table>
+
+  <table name="PROTECTED_COLUMNS" 
+      description="Table with protected getter methods for columns."
+      dbObjectPackage="org.apache.torque.test" 
+      baseDbObjectPackage="org.apache.torque.test.base" 
+      peerPackage="org.apache.torque.test"
+      basePeerPackage="org.apache.torque.test.base"
+      recordMapperPackage="org.apache.torque.test"
+      baseRecordMapperPackage="org.apache.torque.test.base">
+    <column name="id" primaryKey="true" type="INTEGER" protected="true" />
+    <column name="name" type="VARCHAR" size="50" protected="true"
+    />
+  </table>
+</database>

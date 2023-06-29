@@ -1,0 +1,43 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# This file should contain the environment variables as
+# further info here: https://www.testcontainers.org/supported_docker_environment/
+
+# UNIX by default uses unix sockets
+#DOCKER_HOST=unix:///var/run/docker.sock
+
+# to override default
+#DOCKER_TLS_VERIFY=0
+# WINDOWS uses external network, use only secure connection
+# docker.io might use username and password encrypted in ~/.docker/config.json
+# use result of 'docker-machine env <nameOfVirtualMachine>'
+#DOCKER_TLS_VERIFY=1
+
+## tcp://127.0.0.1:2376
+#DOCKER_HOST=tcp://<host_ip>:<port>
+
+#DOCKER_CERT_PATH=<path-to-cert>
+
+#api.version=1.40
+
+#COMPOSE_CONVERT_WINDOWS_PATHS=true
+
+#DOCKER_MACHINE_NAME=nameofvirtualmachine (e.g. type virtualbox in Windows 7 or hyperv in Windows 10)
+
+
+

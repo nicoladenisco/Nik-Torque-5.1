@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<!-- Schema which contains tables with different primary keys-->
+
+<database name="@DATABASE_DEFAULT@" 
+    defaultIdMethod="@DATABASE_ID_METHOD@"
+    xmlns="http://db.apache.org/torque/4.0/templates/database"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/5.0/templates/database 
+        http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0.xsd">
+
+  <table name="nopk" idMethod="none" description="this table has no pk">
+    <column name="INTCOL" type="INTEGER" />
+    <column name="NAME" type="VARCHAR" size="50" />
+  </table>
+
+  <!-- most types pk are defined in the type schema -->
+
+  <table name="DATE_PK" idMethod="none">
+    <column name="ID" primaryKey="true" type="DATE" />
+    <column name="NAME" type="CHAR" size="50"/>
+  </table>
+
+  <table name="TIME_PK" idMethod="none">
+    <column name="ID" primaryKey="true" type="TIME" />
+    <column name="NAME" type="CHAR" size="50"/>
+  </table>
+
+  <table name="TIMESTAMP_PK" idMethod="none">
+    <column name="ID" primaryKey="true" type="TIMESTAMP" />
+    <column name="NAME" type="CHAR" size="50"/>
+  </table>
+
+  <table name="BIT_COMPOSITE_PK" idMethod="none">
+    <column name="PK1" primaryKey="true" type="VARCHAR" size="50"/>
+    <column name="PK2" primaryKey="true" type="@BIT_DATA_TYPE@" javaType="object"/>
+    <column name="PAYLOAD" type="VARCHAR"  size="50"/>
+  </table>
+
+  <table name="MULTI_PK" idMethod="none">
+    <column name="pk1" required="true" primaryKey="true" type="VARCHAR" size="30" />
+    <column name="pk2" required="true" primaryKey="true" type="INTEGER" />
+    <column name="pk3" required="true" primaryKey="true" type="CHAR" size="5" />
+    <column name="pk4" required="true" primaryKey="true" type="INTEGER" javaType="object" /> 
+    <column name="pk5" required="true" primaryKey="true" type="TINYINT" javaType="object" />
+    <column name="pk6" required="true" primaryKey="true" type="SMALLINT" javaType="object" />
+    <column name="pk7" required="true" primaryKey="true" type="BIGINT" javaType="object" />
+    <column name="pk8" required="true" primaryKey="true" type="FLOAT" javaType="object" />
+    <column name="pk9" required="true" primaryKey="true" type="DOUBLE" javaType="object" />
+    <column name="pk10" required="true" primaryKey="true" type="TIMESTAMP" />
+    <column name="col_a" type="BOOLEANINT" />
+    <column name="col_b" type="BOOLEANINT" javaType="object" />
+  </table>
+
+</database>

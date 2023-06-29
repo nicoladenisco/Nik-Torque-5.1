@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<!-- This schema contains tables for testing foreign key relationships -->
+<!-- $Id: $ -->
+
+<database name="@DATABASE_DEFAULT@" 
+    defaultIdMethod="@DATABASE_ID_METHOD@"
+    xmlns="http://db.apache.org/torque/5.0/templates/database"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/5.0/templates/database 
+        http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0.xsd">
+
+  <table name="P_INTEGER_PK" 
+      description="table with a primitive int pk">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="primitive"/>
+    <column name="INTEGER_COLUMN" type="INTEGER" javaType="primitive"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <unique name="P_INTEGER_PK_UNQ">
+      <unique-column name="INTEGER_COLUMN"/>
+    </unique>
+  </table>
+
+  <table name="NULLABLE_P_INTEGER_FK"
+      description="table with a nullable integer primitive foreign key
+          which references a primary key column in the foreign table">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="primitive"/>
+    <column name="FK" type="INTEGER" javaType="primitive"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="P_INTEGER_PK">
+      <reference local="FK" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="REQUIRED_P_INTEGER_FK"
+      description="table with a non-nullable integer object foreign key
+          which references a primary key column in the foreign table">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="primitive"/>
+    <column name="FK" required="true" type="INTEGER" javaType="primitive"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="P_INTEGER_PK" 
+        @ON_UPDATE_CASCADE@
+        onDelete="cascade">
+      <reference local="FK" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="P_INTEGER_FK_WITH_DEFAULT"
+      description="table with a primitive integer foreign key
+          which references a primary key column in the foreign table
+          and has a default value">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="primitive"/>
+    <column name="FK" required="true" type="INTEGER" javaType="primitive" default="2"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="P_INTEGER_PK">
+      <reference local="FK" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="NON_PK_P_INTEGER_FK"
+      description="table with a non-nullable integer primitive foreign key
+          which references a non-primary-key column in the foreign table">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="primitive"/>
+    <column name="FK" required="true" type="INTEGER" javaType="primitive"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="P_INTEGER_PK"
+        @ON_UPDATE_RESTRICT@
+        @ON_DELETE_RESTRICT@>
+      <reference local="FK" foreign="INTEGER_COLUMN"/>
+    </foreign-key>
+  </table>
+
+  <table name="O_INTEGER_FK_TO_P_PK"
+      description="table with a nullable integer object foreign key
+          which references a primitive primary key column in the foreign table">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="FK" type="INTEGER" javaType="object"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="P_INTEGER_PK">
+      <reference local="FK" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="O_INTEGER_PK"
+      description="table with a object integer pk">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="INTEGER_COLUMN" type="INTEGER" javaType="object"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <unique name="O_INTEGER_PK_UNQ">
+      <unique-column name="INTEGER_COLUMN"/>
+    </unique>
+  </table>
+
+  <table name="NULLABLE_O_INTEGER_FK"
+      description="table with a nullable integer object foreign key
+          which references a primary key column in the foreign table">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="FK" type="INTEGER" javaType="object"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="O_INTEGER_PK"
+        @ON_UPDATE_SETNULL@
+        onDelete="setnull">
+      <reference local="FK" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="REQUIRED_O_INTEGER_FK"
+      description="table with a non-nullable integer object foreign key
+          which references a primary key column in the foreign table">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="FK" required="true" type="INTEGER" javaType="object"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="O_INTEGER_PK">
+      <reference local="FK" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="O_INTEGER_FK_WITH_DEFAULT"
+      description="table with a non-nullable integer object foreign key
+          which references a primary key column in the foreign table
+          and has a default value">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="FK" required="true" type="INTEGER" javaType="object" default="2"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="O_INTEGER_PK">
+      <reference local="FK" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="NON_PK_O_INTEGER_FK"
+      description="table with a nullable integer object foreign key
+          which references a non-primary-key column in the foreign table">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="FK" type="INTEGER" javaType="object"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="O_INTEGER_PK">
+      <reference local="FK" foreign="INTEGER_COLUMN"/>
+    </foreign-key>
+  </table>
+  
+  <table name="P_INTEGER_FK_TO_O_PK"
+      description="table with a nullable primitive int foreign key
+          which references a primitive primary key column in the foreign table">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="primitive"/>
+    <column name="FK" type="INTEGER" javaType="primitive"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="O_INTEGER_PK">
+      <reference local="FK" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="MULTI_REF_SAME_TABLE" 
+      description="Table to test multiple references to a same table">
+    <column name="ID" primaryKey="true" type="INTEGER"/>
+    <column name="REFERENCE_1" type="INTEGER" javaType="object"/>
+    <column name="REFERENCE_2" type="INTEGER" javaType="object"/>
+    <column name="REFERENCE_3" type="INTEGER" javaType="object"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="O_INTEGER_PK">
+      <reference local="REFERENCE_1" foreign="ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="O_INTEGER_PK">
+      <reference local="REFERENCE_2" foreign="ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="O_INTEGER_PK">
+      <reference local="REFERENCE_3" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="MULTI_REF" 
+      description="Table to test multiple references to different tables">
+    <column name="ID" primaryKey="true" type="INTEGER"/>
+    <column name="O_INTEGER_PK_ID" type="INTEGER" javaType="object"/>
+    <column name="P_INTEGER_PK_ID" type="INTEGER" javaType="object"/>
+    <column name="NULLABLE_O_INTEGER_FK_ID" type="INTEGER" javaType="object"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="O_INTEGER_PK">
+      <reference local="O_INTEGER_PK_ID" foreign="ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="P_INTEGER_PK">
+      <reference local="P_INTEGER_PK_ID" foreign="ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="NULLABLE_O_INTEGER_FK">
+      <reference local="NULLABLE_O_INTEGER_FK_ID" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="COMP_PK_OTHER_FK" idMethod="none"
+      description="table with a composite primary key which does not contain 
+          the foreign key column which references the non-composite 
+          primary key of another table">
+    <column name="ID1" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="ID2" primaryKey="true" type="VARCHAR" size="50"/>
+    <column name="FK" type="INTEGER" javaType="object"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="O_INTEGER_PK">
+      <reference local="FK" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="COMP_PK_CONTAINS_FK" idMethod="none"
+      description="table with a composite primary key a part of which
+          is a foreign key column which references the non-composite 
+          primary key of another table">
+    <column name="ID1" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="ID2" primaryKey="true" type="VARCHAR" size="50"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="O_INTEGER_PK">
+      <reference local="ID1" foreign="ID"/>
+    </foreign-key>
+  </table>
+
+  <table name="COMP_INTEGER_VARCHAR_PK" idMethod="none"
+      description="table with a composite primary key consisting of an integer
+          and a varchar column">
+    <column name="ID1" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="ID2" primaryKey="true" type="VARCHAR" size="50"/>
+    <column name="INTEGER_COLUMN" type="INTEGER" javaType="object"/>
+    <column name="VARCHAR_COLUMN" type="VARCHAR" size="50"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <unique name="COMP_INTEGER_VARCHAR_PK_UNQ">
+      <unique-column name="INTEGER_COLUMN"/>
+      <unique-column name="VARCHAR_COLUMN"/>
+    </unique>
+  </table>
+
+  <table name="COMP_INTEGER_VARCHAR_FK"
+      description="table with a composite foreign key consisting of an integer
+          and a varchar column">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="FK1" type="INTEGER" javaType="object"/>
+    <column name="FK2" type="VARCHAR" size="50"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="COMP_INTEGER_VARCHAR_PK">
+      <reference local="FK1" foreign="ID1"/>
+      <reference local="FK2" foreign="ID2"/>
+    </foreign-key>
+  </table>
+
+  <table name="COMP_NONPK_FK"
+      description="table with a composite foreign key consisting of an integer
+          and a varchar column, not pointing to the primary key 
+          of the referenced table">
+    <column name="ID" primaryKey="true" type="INTEGER" javaType="object"/>
+    <column name="FK1" type="INTEGER" javaType="object"/>
+    <column name="FK2" type="VARCHAR" size="50"/>
+    <column name="NAME" type="VARCHAR" size="100"/>
+    <foreign-key foreignTable="COMP_INTEGER_VARCHAR_PK">
+      <reference local="FK1" foreign="INTEGER_COLUMN"/>
+      <reference local="FK2" foreign="VARCHAR_COLUMN"/>
+    </foreign-key>
+  </table>
+
+  <table name="CIRCULAR_REFERENCE_A" description="Table to test circular references">
+    <column name="ID" primaryKey="true" type="INTEGER" />
+    <column name="CIRCULAR_REFERENCE_B_ID" type="INTEGER" />
+    <foreign-key foreignTable="CIRCULAR_REFERENCE_B">
+      <reference local="CIRCULAR_REFERENCE_B_ID" foreign="ID"/>
+    </foreign-key>
+  </table>
+  
+  <table name="CIRCULAR_REFERENCE_B" description="Table to test circular references">
+    <column name="ID" primaryKey="true" type="INTEGER" />
+    <column name="CIRCULAR_REFERENCE_A_ID" type="INTEGER" required="false" />
+    <foreign-key foreignTable="CIRCULAR_REFERENCE_A">
+      <reference  local="CIRCULAR_REFERENCE_A_ID" foreign="ID"/>
+    </foreign-key>
+  </table>
+</database>
