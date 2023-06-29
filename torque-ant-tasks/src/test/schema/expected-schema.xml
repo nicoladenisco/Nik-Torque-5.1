@@ -1,0 +1,32 @@
+<!--
+ Copyright 2001-2020 The Apache Software Foundation.
+
+ Licensed under the Apache License, Version 2.0 (the "License")
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<database name="default">
+  <table name="AUTHOR">
+    <column default="GENERATED_BY_DEFAULT" primaryKey="true" name="AUTHOR_ID" type="INTEGER"/>
+    <column name="NAME" required="true" type="VARCHAR" size="50"/>
+    <column name="CREATED_AT" type="TIMESTAMP" default="CURRENT_TIMESTAMP" required="true"/>
+    <column name="UPDATED_AT" type="TIMESTAMP" required="true"/>
+  </table>
+  <table name="BOOK">
+    <column default="GENERATED_BY_DEFAULT" primaryKey="true" name="BOOK_ID" type="INTEGER"/>
+    <column name="ISBN" type="VARCHAR" size="15"/>
+    <column name="AUTHOR_ID" required="true" type="INTEGER"/>
+    <column default="no title" name="TITLE" required="true" type="VARCHAR" size="255"/>
+    <foreign-key foreignTable="AUTHOR">
+      <reference local="AUTHOR_ID" foreign="AUTHOR_ID"/>
+    </foreign-key>
+  </table>
+</database>
