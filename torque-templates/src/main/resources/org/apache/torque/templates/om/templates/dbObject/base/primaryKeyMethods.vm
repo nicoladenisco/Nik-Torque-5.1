@@ -1,0 +1,292 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: primaryKeyMethods.vm 1850502 2019-01-05 16:47:35Z painter $
+##
+## This template creates primary key methods.  
+## The template expects as input a "table" element from the torque schema, 
+## which was processed by the OMTransformer.  
+##
+#set ( $throwsClause = "" )
+#set ( $argList = "" )
+#set ( $argList2 = "" )
+#set ( $comma = "" )
+#foreach ($col in $table.PrimaryKey)
+  #if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+    #if ( $col.isForeignKey() || ($col.Referrers.size() > 0) )
+      #set ( $throwsClause = "throws TorqueException" )
+    #end
+  #end
+  #set ( $clo=$col.UncapitalisedJavaName )
+  #set ( $cjtype = $col.JavaNative )
+  #set ($argList = "${argList}$comma $cjtype $clo")
+  #set ($argList2 = "${argList2}$comma String $clo")
+  #set ( $comma = "," )
+#end
+
+#set ( $primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column"))
+#if ($primaryKeyColumnElements.size() == 1)
+  #set ( $columnElement = $primaryKeyColumnElements.get(0) )
+  #set ( $columnField = $columnElement.getAttribute("field") )
+  #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+  #set ( $setter = $columnElement.getAttribute("setter") )
+  #set ( $number = $columnElement.getAttribute("number") )
+  #set ( $primitive = $columnElement.getAttribute("primitive") )
+    /**
+     * Set the PrimaryKey using ObjectKey.
+     *
+     * @param key $columnField ObjectKey
+     */
+    public void setPrimaryKey(ObjectKey<?> key)
+        $throwsClause
+    {
+  #if($columnFieldType == "java.math.BigDecimal")
+        ${setter}(((NumberKey) key).getValue());
+  #elseif ($columnFieldType == "Short")
+        ${setter}(Short.valueOf(((NumberKey) key).shortValue()));
+  #elseif ($columnFieldType == "Integer")
+        ${setter}(Integer.valueOf(((NumberKey) key).intValue()));
+  #elseif ($columnFieldType == "Long")
+        ${setter}(Long.valueOf(((NumberKey) key).longValue()));
+  #elseif ($columnFieldType == "Byte")
+        ${setter}(Byte.valueOf(((NumberKey) key).byteValue()));
+  #elseif ($number == "true")
+    #if ($primitive == "true")
+        ${setter}(((NumberKey) key).${columnFieldType}Value());
+    #else
+      #set ( $valueMethod = "${columnFieldType.substring(0,1).toLowerCase()}${columnFieldType.substring(1)}Value" )
+        ${setter}(new ${columnFieldType}(((NumberKey) key).${valueMethod}()));
+    #end
+  #elseif($columnFieldType == "String")
+        ${setter}(key.toString());
+  #elseif($columnFieldType == "java.util.Date")
+        ${setter}(((DateKey) key).getValue());
+  #elseif($columnFieldType == "Boolean" || $columnFieldType == "boolean" )
+        ${setter}(((BooleanKey) key).getValue());
+  #else
+        ${setter}(($columnFieldType) key);
+  #end
+    }
+
+    /**
+     * Set the PrimaryKey using a String.
+     *
+     * @param key the primary key to set.
+     */
+    public void setPrimaryKey(String key) $throwsClause
+    {
+  #if($columnFieldType == "java.math.BigDecimal")
+        ${setter}(new $columnFieldType(key));
+  #elseif ($columnFieldType == "short")
+        ${setter}(Short.parseShort(key));
+  #elseif($columnFieldType == "int")
+        ${setter}(Integer.parseInt(key));
+  #elseif($columnFieldType == "long")
+        ${setter}(Long.parseLong(key));
+  #elseif($columnFieldType == "java.math.BigDecimal")
+        ${setter}(new $columnFieldType(key));
+  #elseif($columnFieldType == "byte")
+        ${setter}(Byte.parseByte(key));
+  #elseif($columnFieldType == "float")
+        ${setter}(Float.parseFloat(key));
+  #elseif($columnFieldType == "double")
+        ${setter}(Double.parseDouble(key));
+  #elseif ($number == "true" && ($primitive != "true"))
+        ${setter}(new ${columnFieldType}(key));
+  #elseif($columnFieldType == "String")
+        ${setter}(key);
+  #elseif($columnFieldType == "java.util.Date")
+        ${setter}(new ${columnFieldType}(key));
+  #else
+        ${setter}(($columnFieldType) key);
+  #end
+    }
+
+#elseif ($primaryKeyColumnElements.size() > 1)
+
+    private final SimpleKey<?>[] pks = new SimpleKey[$primaryKeyColumnElements.size()];
+    private final ComboKey comboPK = new ComboKey(pks);
+
+    /**
+     * Set the PrimaryKey with an ObjectKey
+     *
+     * @param key the primary key to set, not null.
+     */
+    public void setPrimaryKey(ObjectKey<?> key) throws TorqueException
+    {
+        SimpleKey<?>[] keys = (SimpleKey[]) key.getValue();
+  #set ($i = 0)
+  #foreach ($columnElement in $primaryKeyColumnElements)
+    #set ( $columnField = $columnElement.getAttribute("field") )
+    #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+    #set ( $setter = $columnElement.getAttribute("setter") )
+    #set ( $number = $columnElement.getAttribute("number") )
+    #set ( $primitive = $columnElement.getAttribute("primitive") )
+    #if($columnFieldType == "java.math.BigDecimal")
+        ${setter}(((NumberKey) keys[$i]).getValue());
+    #elseif ($number == "true")
+      #if ($primitive == "true")
+        ${setter}(((NumberKey) keys[$i]).${columnFieldType}Value());
+      #else
+        #if ($columnFieldType == "Integer")
+          #set ( $valueMethod = "intValue")
+        #else
+          #set ( $valueMethod = "${columnFieldType.substring(0,1).toLowerCase()}${columnFieldType.substring(1)}Value" )
+        #end
+        ${setter}(((NumberKey) keys[$i]).${valueMethod}());
+      #end
+    #elseif($columnFieldType == "String")
+        ${setter}(keys[$i].toString());
+    #elseif($columnFieldType == "java.util.Date")
+        ${setter}(((DateKey) keys[$i]).getValue());
+    #elseif($columnFieldType == "Boolean" || $columnFieldType == "boolean")
+        ${setter}(((BooleanKey) keys[$i]).getValue());
+    #else
+        ${setter}(($columnFieldType) keys[$i]);
+    #end
+    #set ( $i = $i + 1 )
+  #end
+    }
+
+    /**
+     * Set the PrimaryKey using SimpleKeys.
+     *
+  #set ( $argList = "" )
+  #foreach ($columnElement in $primaryKeyColumnElements)
+    #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+    #set ( $columnField = $columnElement.getAttribute("field") )
+    #set ( $clo=$col.UncapitalisedJavaName )
+    #set ( $cjtype= $col.JavaNative )
+    #if ($argList != "")
+      #set ( $argList = "${argList}, " )
+    #end
+    #set ( $argList = "${argList}$columnFieldType $columnField")
+     * @param $columnField a part of the primary key.
+  #end
+     */
+    public void setPrimaryKey($argList)
+        $throwsClause
+    {
+  #foreach ($columnElement in $primaryKeyColumnElements)
+    #set ( $setter = $columnElement.getAttribute("setter") )
+    #set ( $columnField = $columnElement.getAttribute("field") )
+        ${setter}($columnField);
+  #end
+    }
+
+    /**
+     * Set the PrimaryKey using a String.
+     * @param key the primary key to set.
+     */
+    public void setPrimaryKey(String key) throws TorqueException
+    {
+        setPrimaryKey(new ComboKey(key));
+    }
+#else
+    
+    /**
+     * Set the PrimaryKey with an ObjectKey
+     *
+     * @param key the primary key to set.
+     *
+     * @throws NoSuchOperationException always.
+     */
+    public void setPrimaryKey(ObjectKey<?> key) throws TorqueException
+    {
+        throw new UnsupportedOperationException(
+                "This table has no primary key");
+    }
+
+    /**
+     * Set the PrimaryKey using a String.
+     *
+     * @param key the primary key to set.
+     * @throws NoSuchOperationException always.
+     */
+    public void setPrimaryKey(String key) throws TorqueException
+    {
+        throw new UnsupportedOperationException(
+                "This table has no primary key");
+    }
+#end
+
+    /**
+     * returns an id that differentiates this object from others
+     * of its class.
+     */
+    public ObjectKey<?> getPrimaryKey()
+    {
+#if ($primaryKeyColumnElements.size() == 1)
+  #set ( $columnElement = $primaryKeyColumnElements.get(0) )
+  #set ( $getter = $columnElement.getAttribute("getter") )
+        return SimpleKey.keyFor(${getter}());
+#elseif ($primaryKeyColumnElements.size() > 1)
+        SimpleKey<?>[] pks = new SimpleKey[$primaryKeyColumnElements.size()];
+  #set ($i = 0)
+  #foreach ($columnElement in $primaryKeyColumnElements)
+    #set ( $getter = $columnElement.getAttribute("getter") )
+        pks[$i] = SimpleKey.keyFor(${getter}());
+    #set ($i = $i + 1)
+  #end
+        return new ComboKey(pks);
+#else
+        return null;
+#end
+    }
+
+#if ($torqueGen.booleanOption("torque.om.addIntakeRetrievable"))
+    /**
+     * get an id that differentiates this object from others
+     * of its class.
+     */
+    public String getQueryKey()
+    {
+        if (getPrimaryKey() == null)
+        {
+            return "";
+        }
+        else
+        {
+            return getPrimaryKey().toString();
+        }
+    }
+
+    /**
+     * set an id that differentiates this object from others
+     * of its class.
+     */
+    public void setQueryKey(String key)
+        throws TorqueException
+    {
+  ## Work around the fact that BaseObject.setPrimaryKey() declares
+  ## that it throws Exception instead of TorqueException.
+  #if ($primaryKeyColumnElements.isEmpty())
+        try
+        {
+  #end
+        setPrimaryKey(key);
+  #if ($primaryKeyColumnElements.isEmpty())
+        }
+        catch (Exception e)
+        {
+            throw new TorqueException("Unable to set query key", e);
+        }
+  #end
+    }
+#end

@@ -1,0 +1,264 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: objectBeanMethods.vm 1895112 2021-11-17 15:48:40Z gk $
+##
+## This template creates methods to convert objects into beans and vice versa.
+## The template expects as input a "table" element from the torque schema
+## which was processed by the OMTransformer.  
+##
+    /**
+     * Creates a $beanClassName with the contents of this object.
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+     * This also creates beans for cached related objects, if they exist
+#end
+     *
+     * @return a $beanClassName with the contents of this object
+     */
+    public $beanClassName getBean()
+    {
+        return getBean(new IdentityMap());
+    }
+
+    /**
+     * Creates a $beanClassName with the contents of this object.
+     * Intended for internal use only.
+     *
+     * @param createdBeans a IdentityMap which maps objects
+     *        to already created beans
+     * @return a $beanClassName with the contents of this object
+     */
+    public $beanClassName getBean(IdentityMap createdBeans)
+    {
+        ${beanClassName} result = ($beanClassName) createdBeans.get(this);
+        if (result != null ) {
+            // we have already created a bean for this object, return it
+            return result;
+        }
+        // no bean exists for this object; create a new one
+        result = new ${beanClassName}();
+        createdBeans.put(this, result);
+
+#set ( $columnElements = $torqueGen.getChildren("column") )
+#set ( $referencingForeignKeyElements = $torqueGen.getChild("referencing-foreign-keys").getChildren("foreign-key") )
+#set ( $foreignKeyElements = $torqueGen.getChildren("foreign-key") )
+#foreach ($columnElement in $columnElements)
+  #set ( $setter = $columnElement.getAttribute("setter") )
+  #set ( $getter = $columnElement.getAttribute("getter") )
+        result.${setter}(${getter}());
+#end
+
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+  ## foreign references to this Object
+  #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+    #foreach ($foreignKeyElement in $referencingForeignKeyElements)
+      #set ( $foreignTableElement = $foreignKeyElement.getParent() )
+      #set ( $foreignTableName = $foreignTableElement.getAttribute("name") )
+      #if ($foreignTableName != $name)
+        #set ( $foreignFieldElement = $foreignKeyElement.getChild("foreign-field") )
+        ## if the referencing table is in an external schema, 
+        ## fieldElement is null. In this case,skip the following code.
+        #if ($foreignFieldElement)
+          #set ( $foreignClassName = $foreignTableElement.getAttribute("javaName") )
+          #set ( $foreignBeanClassName = $foreignTableElement.getAttribute("beanClassName") )
+          #set ( $foreignField = $foreignFieldElement.getAttribute("field") )
+          #set ( $foreignFieldContainedType = $foreignFieldElement.getAttribute("fieldContainedType") )
+          #set ( $beanFieldElement = $foreignKeyElement.getChild("foreign-field-in-bean") )
+          #set ( $beanFieldType = $beanFieldElement.getAttribute("fieldType") )
+          #set ( $beanFieldContainedType = $beanFieldElement.getAttribute("fieldContainedType") )
+          #set ( $beanFieldInitializerType = $beanFieldElement.getAttribute("initializerType") )
+          #set ( $beanFieldSetter = $beanFieldElement.getAttribute("setter") )
+        if ($foreignField != null)
+        {
+            result.${beanFieldSetter}(${foreignField}.stream()
+                    .map(related -> related.getBean(createdBeans))
+                    .collect(Collectors.toList()));
+        }
+        #end
+      #end
+    #end
+  #end
+
+  ## foreign keys in this object
+  #foreach ($foreignKeyElement in $foreignKeyElements)
+    #set ( $foreignTableElement = $foreignKeyElement.getChild("table") )
+    #set ( $foreignBeanClassName = $foreignTableElement.getAttribute("beanClassName") )
+    #set ( $localFieldElement = $foreignKeyElement.getChild("local-field") )
+    #set ( $localField = $localFieldElement.getAttribute("field") )
+    #set ( $beanFieldElement = $foreignKeyElement.getChild("local-field-in-bean") )
+    #set ( $beanFieldSetter = $beanFieldElement.getAttribute("setter") )
+    
+    #if ($localField)
+        if ($localField != null)
+        {
+            ${foreignBeanClassName} relatedBean = ${localField}.getBean(createdBeans);
+            result.${beanFieldSetter}(relatedBean);
+        }
+    #end
+  #end
+#end
+        result.setModified(isModified());
+        result.setNew(isNew());
+        return result;
+    }
+
+    /**
+     * Creates an instance of $javaName with the contents
+     * of a $beanClassName.
+     * This behaviour could have also been achieved using a constructor,
+     * however as this class is abstract no constructors are allowed
+     * @param bean the $beanClassName which contents are used to create
+     *        the resulting class
+     * @return an instance of $javaName with the contents of bean
+     * @throws TorqueException if unable to create the bean
+     */
+    public static $javaName create${javaName}(${beanClassName} bean)
+        throws TorqueException
+    {
+        return create${javaName}(bean, new IdentityMap());
+    }
+
+    /**
+     * Creates an instance of ${javaName} with the contents
+     * of a $beanClassName.
+     * This behaviour could have also been achieved using a constructor,
+     * however as this class is abstract no constructors are allowed.
+     *
+     * This method is intended for internal use only.
+     * @param bean the $beanClassName which contents are used to create
+     *        the resulting class
+     * @param createdObjects a IdentityMap which maps beans
+     *        to already created objects
+     * @return an instance of ${javaName} with the contents of bean
+     * @throws TorqueException if unable to create the bean
+     */
+    public static ${javaName} create${javaName}(${beanClassName} bean, IdentityMap createdObjects)
+        throws TorqueException
+    {
+        ${javaName} result = (${javaName}) createdObjects.get(bean);
+        if (result != null)
+        {
+            // we already have an object for the bean, return it
+            return result;
+        }
+#if ($abstract == "true")
+        result = ${peerClassName}.getDbObjectInstance();
+#else
+        result = new ${javaName}();
+#end
+        createdObjects.put(bean, result);
+
+#foreach ($columnElement in $columnElements)
+  #set ( $setter = $columnElement.getAttribute("setter") )
+  #set ( $getter = $columnElement.getAttribute("getter") )
+        result.${setter}(bean.${getter}());
+#end
+
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+  ## foreign references to this Object
+  #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+    #foreach ($foreignKeyElement in $referencingForeignKeyElements)
+      #set ( $foreignTableElement = $foreignKeyElement.getParent() )
+      #set ( $foreignTableName = $foreignTableElement.getAttribute("name") )
+      #if ($foreignTableName != $name)
+        #set ( $foreignFieldElement = $foreignKeyElement.getChild("foreign-field") )
+        ## if the referencing table is in an external schema, 
+        ## fieldElement is null. In this case,skip the following code.
+        #if ($foreignFieldElement)
+          #set ( $foreignClassName = $foreignTableElement.getAttribute("javaName") )
+          #set ( $foreignBeanClassName = $foreignTableElement.getAttribute("beanClassName") )
+          #set ( $beanFieldElement = $foreignKeyElement.getChild("foreign-field-in-bean") )
+          #set ( $beanGetter = $beanFieldElement.getAttribute("getter") )
+          #set ( $adder = $foreignFieldElement.getAttribute("adder") )
+        {
+            List<$foreignBeanClassName> relatedBeans = bean.${beanGetter}();
+            if (relatedBeans != null)
+            {
+                for ($foreignBeanClassName relatedBean : relatedBeans)
+                {
+                    ${foreignClassName} related = ${foreignClassName}.create${foreignClassName}(relatedBean, createdObjects);
+                    result.${adder}FromBean(related);
+                }
+            }
+        }
+        #end
+      #end
+    #end
+  #end
+
+  ## foreign keys in this object
+  #foreach ($foreignKeyElement in $foreignKeyElements)
+    #set ( $foreignTableElement = $foreignKeyElement.getChild("table") )
+    #set ( $foreignBeanClassName = $foreignTableElement.getAttribute("beanClassName") )
+    #set ( $localFieldElement = $foreignKeyElement.getChild("local-field") )
+    #set ( $localFieldType = $localFieldElement.getAttribute("fieldType") )
+    #set ( $setter = $localFieldElement.getAttribute("setter") )
+    #set ( $beanFieldElement = $foreignKeyElement.getChild("local-field-in-bean") )
+    #set ( $beanGetter = $beanFieldElement.getAttribute("getter") )
+    #if ($beanGetter)
+        {
+            ${foreignBeanClassName} relatedBean = bean.${beanGetter}();
+            if (relatedBean != null)
+            {
+                ${localFieldType} relatedObject = ${localFieldType}.create${localFieldType}(relatedBean, createdObjects);
+                result.${setter}(relatedObject);
+            }
+        }
+    #end
+  #end
+#end
+        result.setModified(bean.isModified());
+        result.setNew(bean.isNew());
+        return result;
+    }
+
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+  ## foreign references to this Object
+  #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+    #foreach ($foreignKeyElement in $referencingForeignKeyElements)
+      #set ( $foreignFieldElement = $foreignKeyElement.getChild("foreign-field") )
+      ## if the referencing table is in an external schema, 
+      ## fieldElement is null. In this case,skip the following code.
+      #if ($foreignFieldElement)
+        #set ( $foreignTableElement = $foreignKeyElement.getParent() )
+        #set ( $foreignTableName = $foreignTableElement.getAttribute("name") )
+        #if ($foreignTableName != $name)
+          #set ( $foreignClassName = $foreignTableElement.getAttribute("javaName") )
+          #set ( $foreignField = $foreignFieldElement.getAttribute("field") )
+          #set ( $initializerType = $foreignFieldElement.getAttribute("initializerType") )
+          #set ( $adder = $foreignFieldElement.getAttribute("adder") )
+          #set ( $initializer = $foreignFieldElement.getAttribute("initializer") )
+ 
+    /**
+     * Method called to associate a $foreignClassName object to this object.
+     * In contrast to ${adder}($foreignClassName), this method does not change 
+     * <code>toAdd</code>. 
+     *
+     * @param toAdd $className
+     */
+    protected void ${adder}FromBean($foreignClassName toAdd)
+    {
+        ${initializer}();
+        ${foreignField}.add(toAdd);
+    }
+        #end
+      #end
+    #end
+  #end
+#end

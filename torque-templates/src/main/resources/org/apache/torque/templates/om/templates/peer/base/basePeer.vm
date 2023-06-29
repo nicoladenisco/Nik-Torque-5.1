@@ -1,0 +1,88 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: basePeer.vm 1855051 2019-03-08 15:16:28Z tv $
+##
+## Creates the base peer class.
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+package ${basePeerPackage};
+
+$torqueGen.mergepoint("imports")
+$torqueGen.mergepoint("classJavadoc")
+
+#set ($basePeerBaseClass = "" )
+#if ($basePeer && $basePeer != "")
+  #set ($basePeerBaseClass = "extends $basePeer" )
+#end
+
+@SuppressWarnings("unused")
+public abstract class $basePeerClassName
+    ${basePeerBaseClass}
+{
+$torqueGen.mergepoint("tableDatabaseNameConstants")
+$torqueGen.mergepoint("tableConstant")
+$torqueGen.mergepoint("columnConstants")
+$torqueGen.mergepoint("numColumnConstant")
+$torqueGen.mergepoint("inheritanceClasskeyConstants")
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching") && $torqueGen.booleanOption("torque.om.complexObjectModel.generateFillers"))
+$torqueGen.mergepoint("fillerChunkSizeConstant")
+#end
+$torqueGen.mergepoint("peerImplField")
+$torqueGen.mergepoint("staticInit")
+$torqueGen.mergepoint("peerImplCreator")
+$torqueGen.mergepoint("peerImplGetter")
+$torqueGen.mergepoint("peerImplSetter")
+$torqueGen.mergepoint("addSelectColumns")
+$torqueGen.mergepoint("correctBooleans")
+$torqueGen.mergepoint("doSelect")
+$torqueGen.mergepoint("getDbObjectInstance")
+$torqueGen.mergepoint("doInsert")
+$torqueGen.mergepoint("doUpdate")
+$torqueGen.mergepoint("executeStatement")
+#if ($torqueGen.booleanOption("torque.om.addSaveMethods") && $saveMethodsInDbObjects != "true")
+$torqueGen.mergepoint("saveMethods")
+#end
+$torqueGen.mergepoint("doDelete")
+$torqueGen.mergepoint("buildCriteria")
+$torqueGen.mergepoint("buildSelectCriteria")
+$torqueGen.mergepoint("buildColumnValues")
+$torqueGen.mergepoint("retrieveByPK")
+$torqueGen.mergepoint("retrieveByPKs")
+$torqueGen.mergepoint("peerUnices")
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+  #if ($torqueGen.booleanOption("torque.om.objectIsCaching") && $torqueGen.booleanOption("torque.om.complexObjectModel.generateDoSelectJoin"))
+$torqueGen.mergepoint("doSelectJoin")
+$torqueGen.mergepoint("doSelectJoinAllExcept")
+  #end
+  #if ($torqueGen.booleanOption("torque.om.objectIsCaching") && $torqueGen.booleanOption("torque.om.complexObjectModel.generateFillers"))
+$torqueGen.mergepoint("fillReferencedObjects")
+$torqueGen.mergepoint("fillReferencingObjects")
+  #end
+$torqueGen.mergepoint("setAndSaveReferencing")
+#end
+$torqueGen.mergepoint("getTableMap")
+$torqueGen.mergepoint("initDatabaseMap")
+$torqueGen.mergepoint("extensions")
+}

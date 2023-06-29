@@ -1,0 +1,73 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: saveMethods.vm 1622563 2014-09-04 21:02:24Z tfischer $
+##
+## This template creates save methods for a BasePeerImpl.
+## The template expects as input a "table" element from the torque schema, 
+## which was processed by the OMTransformer.  
+##
+#set ( $saveException = $torqueGen.option("torque.om.save.saveException") )
+    /**
+     * Stores an object in the database.  If the object is new,
+     * it is inserted; otherwise an update is performed.
+     *
+     * @param toSave the object to be saved, not null.
+     *
+     * @throws $saveException if an error occurs during saving.
+     */
+    public static void save(${dbObjectClassName} toSave) throws $saveException
+    {
+        ${peerImplGetter}().save(toSave);
+    }
+
+    /**
+     * Stores an object in the database.  If the object is new,
+     * it is inserted; otherwise an update is performed.
+     *
+     * @param toSave the object to be saved, not null.
+     * @param dbName the name of the database to which the object
+     *        should be saved.
+     *
+     * @throws $saveException if an error occurs during saving.
+     */
+    public static void save(${dbObjectClassName} toSave, String dbName) 
+            throws $saveException
+    {
+        ${peerImplGetter}().save(toSave, dbName);
+    }
+
+    /**
+     * Stores an object in the database.  If the object is new,
+     * it is inserted; otherwise an update is performed.  This method
+     * is meant to be used as part of a transaction, otherwise use
+     * the save() method and the connection details will be handled
+     * internally.
+     *
+     * @param toSave the object to be saved, not null.
+     * @param con the connection to use for saving the object, not null.
+     *
+     * @throws $saveException if an error occurs during saving.
+     */
+    public static void save(${dbObjectClassName} toSave, Connection con) 
+            throws $saveException
+    {
+        ${peerImplGetter}().save(toSave, con);
+    }
+

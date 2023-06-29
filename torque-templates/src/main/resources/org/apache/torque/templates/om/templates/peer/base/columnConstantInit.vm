@@ -1,0 +1,81 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: columnConstantInit.vm 1374508 2012-08-18 03:57:20Z tfischer $
+##
+## Initializes the constants for the columns and registers the columns in the
+## table map in the map builder class. 
+## 
+## This template expects the current source element to be a "column" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+#set ( $tableElement = $torqueGen.getParent() )
+#set ( $position = 1 )
+    // ------------- Column: $name --------------------
+        ${peerColumnName} = new ColumnMap("$name", TABLE);
+        ${peerColumnName}.setType($sampleObject);
+        ${peerColumnName}.setTorqueType("$type");
+        ${peerColumnName}.setUsePrimitive($primitive);
+        ${peerColumnName}.setPrimaryKey($primaryKey);
+        ${peerColumnName}.setNotNull($required);
+        ${peerColumnName}.setJavaName("$javaName");
+        ${peerColumnName}.setAutoIncrement($autoIncrement);
+        ${peerColumnName}.setProtected($protected);
+#if ($fieldType)
+        ${peerColumnName}.setJavaType( "${fieldType}" );
+#end
+#if ($description)
+        ${peerColumnName}.setDescription("${description}");
+#end
+#if ($default)
+        ${peerColumnName}.setDefault("$default");
+#end
+#if ($inheritance != "false")
+        ${peerColumnName}.setInheritance("$inheritance");
+#end
+#if ($size)
+        ${peerColumnName}.setSize($size);
+  #if ($scale)
+        ${peerColumnName}.setScale($scale);
+  #end
+#end
+#set ( $columnOptionElements = $torqueGen.getChildren("option") )
+#foreach ( $optionElement in $columnOptionElements )
+  #set ( $key = $optionElement.getAttribute("key") )
+  #set ( $value = $optionElement.getAttribute("value") )
+        ${peerColumnName}.setOption("$key", "$value");
+#end
+#if ($inheritance != "false")
+        ${peerColumnName}.setUseInheritance(true);
+        InheritanceMap iMap = null;
+  #set ( $inheritanceElements = $torqueGen.getChildren("inheritance"))
+  #foreach ($inheritanceElement in $inheritanceElements)
+    #set ( $key = $inheritanceElement.getAttribute("key") )
+    #set ( $class = $inheritanceElement.getAttribute("class") )
+    #set ( $extends = $inheritanceElement.getAttribute("extends") )
+        iMap = new InheritanceMap(${peerColumnName},"$key","$class","$extends");
+        ${peerColumnName}.addInheritanceMap(iMap);
+  #end
+#end
+#set ($position = ${torqueGen.getSourceElement().getPreceding("column").size()} + 1)
+        ${peerColumnName}.setPosition($position);
+        TABLE.addColumn(${peerColumnName});

@@ -1,0 +1,36 @@
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+
+- check values of the sqlDataType (custom platform docs !)
+- in the file org/apache/torque/templates/transformer/om/OMTableTransformer.properties
+  rename the option torque.om.package.package to torque.om.package
+  and also in docs
+  
+- remove the throws TorqueException in places where no database access 
+  and no potential configuration problem occurs ?
+    
+- rename numColumns constant ?
+- what to do with unused field cascade in criteria ?
+- Joins are not serializable. Why? also check readObject and writeObject methods in Criteria
+
+in om classes:
+- getPeer() method. Should this now return peerImpl or be removed completely ?
+
+in peer classes:
+- find warnings in generation process (undefined mergepoints ?)
+
+- use "XXX char" as Varchar size for Oracle scripts

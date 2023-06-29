@@ -1,0 +1,71 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: equalsHashCode.vm 1849386 2018-12-20 13:28:59Z tv $
+##
+## Creates the equals and hashCode methods.
+## This template expects as input a "table" element from the torque schema.
+##
+    /**
+     * Compares the primary key of this instance with the key of another.
+     *
+     * @param toCompare The object to compare to.
+     * @return Whether the primary keys are equal and the object have the
+     *         same class.
+     */
+    public boolean equals(Object toCompare)
+    {
+        if (toCompare == null)
+        {
+            return false;
+        }
+        if (this == toCompare)
+        {
+            return true;
+        }
+        if (!getClass().equals(toCompare.getClass()))
+        {
+            return false;
+        }
+        ${dbObjectClassName} other = (${dbObjectClassName}) toCompare;
+        if (getPrimaryKey() == null || other.getPrimaryKey() == null)
+        {
+            return false;
+        }
+        return getPrimaryKey().equals(other.getPrimaryKey());
+    }
+
+    /**
+     * If the primary key is not <code>null</code>, return the hashcode of the
+     * primary key.  Otherwise calls <code>Object.hashCode()</code>.
+     *
+     * @return an <code>int</code> value
+     */
+    public int hashCode()
+    {
+        ObjectKey<?> ok = getPrimaryKey();
+        if (ok == null)
+        {
+            return super.hashCode();
+        }
+
+        return ok.hashCode();
+    }
+
+

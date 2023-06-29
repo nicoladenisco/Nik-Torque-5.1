@@ -1,0 +1,205 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: buildColumnValues.vm 1631308 2014-10-13 07:55:38Z tfischer $
+##
+## Creates the getColumnValue method in the base peer class. 
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+    /** 
+     * Returns the contents of the object as ColumnValues object.
+     * Primary key columns which are generated on insertion are not
+     * added to the returned object if they still have their initial
+     * value. Also, columns which have the useDatabaseDefaultValue
+     * flag set to true are also not added to the returned object
+     * if they still have their initial value.
+     *
+     * @throws TorqueException if the table map cannot be retrieved
+     *         (should not happen).
+     */
+    public ColumnValues buildColumnValues($dbObjectClassName $field)
+            throws TorqueException
+    {
+        ColumnValues columnValues = new ColumnValues();
+#foreach ($columnElement in $torqueGen.getChildren("column"))
+  #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName") )
+  #set ( $getter = $columnElement.getAttribute("getter") )
+  #set ( $primaryKey = ($columnElement.getAttribute("primaryKey") == "true") )
+  #set ( $columnType = $columnElement.getAttribute("type") )
+  #set ( $columnSchemaType = $columnElement.getAttribute("schemaType") )
+  #set ( $columnFieldName = $columnElement.getAttribute("field") )
+  #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+  #set ( $columnIsEnum = $columnElement.getAttribute("isEnum") )
+  #set ( $primitive = $columnElement.getAttribute("primitive") )
+  #set ( $defaultValue = $columnElement.getAttribute("defaultValue") )
+  #set ( $useDatabaseDefaultValue = $columnElement.getAttribute("useDatabaseDefaultValue") == "true")
+  #if (($primaryKey && !$idMethod.equals("none")) || $useDatabaseDefaultValue)
+    #if ("boolean" == $columnFieldType)
+        if (!${field}.isNew())
+    #elseif ("true" == $primitive || $defaultValue == "null")
+        if (!${field}.isNew() 
+            || ${field}.$getter() != $defaultValue)
+    #else
+        if (!${field}.isNew() 
+            || !${defaultValue}.equals(${field}.$getter()))
+    #end
+        {
+    #if ($columnType == "DATE" && $columnFieldType == "java.util.Date")
+            java.util.Date $columnFieldName = ${field}.${getter}();
+            if ($columnFieldName != null)
+            {
+                $columnFieldName = new java.sql.Date(${columnFieldName}.getTime());
+            }
+            columnValues.put(
+                    ${peerClassName}.$peerColumnName,
+                    new JdbcTypedValue($columnFieldName, Types.DATE));
+    #elseif ($columnType == "TIME" && $columnFieldType == "java.util.Date")
+            java.util.Date $columnFieldName = ${field}.${getter}();
+            if ($columnFieldName != null)
+            {
+                $columnFieldName = new java.sql.Time(${columnFieldName}.getTime());
+            }
+            columnValues.put(
+                    ${peerClassName}.$peerColumnName,
+                    new JdbcTypedValue($columnFieldName, Types.TIME));
+    #elseif ($columnType == "TIMESTAMP" && $columnFieldType == "java.util.Date")
+            java.util.Date $columnFieldName = ${field}.${getter}();
+            if ($columnFieldName != null)
+            {
+                $columnFieldName = new java.sql.Timestamp(${columnFieldName}.getTime());
+            }
+            columnValues.put(
+                    ${peerClassName}.$peerColumnName,
+                    new JdbcTypedValue($columnFieldName, Types.TIMESTAMP));
+    #elseif ($columnType == "BOOLEANCHAR" && $columnFieldType.equalsIgnoreCase("boolean"))
+            String $columnFieldName = Boolean.TRUE.equals(${field}.${getter}())
+                                        ? "Y"
+                                        : "N";
+            columnValues.put(
+                    ${peerClassName}.$peerColumnName,
+                    new JdbcTypedValue($columnFieldName, Types.CHAR));
+    #elseif ($columnType == "BOOLEANINT" && $columnFieldType.equalsIgnoreCase("boolean"))
+            Integer $columnFieldName = Boolean.TRUE.equals(${field}.${getter}())
+                                        ? new Integer(1)
+                                        : new Integer(0);
+            columnValues.put(
+                    ${peerClassName}.$peerColumnName,
+                    new JdbcTypedValue($columnFieldName, Types.INTEGER));
+    #elseif ($columnIsEnum == "true")
+            columnValues.put(
+                    ${peerClassName}.$peerColumnName,
+                    new JdbcTypedValue(
+                        ${field}.${getter}().getValue(),
+                        ${columnSchemaType.getJdbcType()}));
+    #else
+            columnValues.put(
+                    ${peerClassName}.$peerColumnName,
+                    new JdbcTypedValue(
+                        ${field}.${getter}(),
+                        ${columnSchemaType.getJdbcType()}));
+    #end
+        }
+  #else
+    #if ($columnType == "DATE" && $columnFieldType == "java.util.Date")
+        java.util.Date $columnFieldName = ${field}.${getter}();
+        if ($columnFieldName != null)
+        {
+            $columnFieldName = new java.sql.Date(${columnFieldName}.getTime());
+        }
+        columnValues.put(
+                ${peerClassName}.$peerColumnName,
+                new JdbcTypedValue($columnFieldName, Types.DATE));
+    #elseif ($columnType == "TIME" && $columnFieldType == "java.util.Date")
+        java.util.Date $columnFieldName = ${field}.${getter}();
+        if ($columnFieldName != null)
+        {
+            $columnFieldName = new java.sql.Time(${columnFieldName}.getTime());
+        }
+        columnValues.put(
+                ${peerClassName}.$peerColumnName,
+                new JdbcTypedValue($columnFieldName, Types.TIME));
+    #elseif ($columnType == "TIMESTAMP" && $columnFieldType == "java.util.Date")
+        java.util.Date $columnFieldName = ${field}.${getter}();
+        if ($columnFieldName != null)
+        {
+            $columnFieldName = new java.sql.Timestamp(${columnFieldName}.getTime());
+        }
+        columnValues.put(
+                ${peerClassName}.$peerColumnName,
+                new JdbcTypedValue($columnFieldName, Types.TIMESTAMP));
+    #elseif ($columnType == "BOOLEANCHAR" && $columnFieldType.equalsIgnoreCase("boolean"))
+      #if ($primitive == "true")
+        String $columnFieldName = Boolean.TRUE.equals(${field}.${getter}())
+                                    ? "Y"
+                                    : "N";
+      #else
+        String $columnFieldName = null;
+        if (Boolean.TRUE.equals(${field}.${getter}()))
+        {
+            $columnFieldName =  "Y";
+        }
+        else if (Boolean.FALSE.equals(${field}.${getter}()))
+        {
+            $columnFieldName =  "N";
+        }
+      #end
+        columnValues.put(
+                ${peerClassName}.$peerColumnName,
+                new JdbcTypedValue($columnFieldName, Types.CHAR));
+    #elseif ($columnType == "BOOLEANINT" && $columnFieldType.equalsIgnoreCase("boolean"))
+      #if ($primitive == "true")
+        Integer $columnFieldName = Boolean.TRUE.equals(${field}.${getter}())
+                                    ? Integer.valueOf(1)
+                                    : Integer.valueOf(0);
+      #else
+        Integer $columnFieldName = null;
+        if (Boolean.TRUE.equals(${field}.${getter}()))
+        {
+            $columnFieldName =  Integer.valueOf(1);
+        }
+        else if (Boolean.FALSE.equals(${field}.${getter}()))
+        {
+            $columnFieldName =  Integer.valueOf(0);
+        }
+      #end
+        columnValues.put(
+                ${peerClassName}.$peerColumnName,
+                new JdbcTypedValue($columnFieldName, Types.INTEGER));
+    #elseif ($columnIsEnum == "true")
+            columnValues.put(
+                    ${peerClassName}.$peerColumnName,
+                    new JdbcTypedValue(
+                        ${field}.${getter}().getValue(),
+                        ${columnSchemaType.getJdbcType()}));
+     #else
+        columnValues.put(
+                ${peerClassName}.$peerColumnName,
+                new JdbcTypedValue(
+                    ${field}.${getter}(),
+                    ${columnSchemaType.getJdbcType()}));
+    #end
+  #end
+#end
+        return columnValues;
+    }

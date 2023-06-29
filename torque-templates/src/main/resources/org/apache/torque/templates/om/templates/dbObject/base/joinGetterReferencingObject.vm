@@ -1,0 +1,131 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: joinGetterReferencingObject.vm 1850502 2019-01-05 16:47:35Z painter $
+##
+## This template creates the getter method using a join in the object 
+## for the "foreign" part of a foreign key. The objects in the field 
+## represent the "local" part of the foreign key.  
+## The template expects as input a "foreign-field" element inside a 
+## "foreign-key" element from the torque schema, which was generated 
+## by the OMTransformer.  
+##
+#set ( $silentDbFetch = $torqueGen.booleanOption("torque.om.silentDbFetch") )
+#set ( $foreignKeyElement = $torqueGen.getChild("local").getChild("foreign-key") )
+#set ( $foreignField = $foreignKeyElement.getChild("foreign-field") )
+#set ( $field = $foreignField.getAttribute("field") )
+#set ( $fieldType = $foreignField.getAttribute("fieldType") )
+#set ( $criteriaCacheField = $foreignField.getAttribute("criteriaCacheField") )
+#set ( $initializer = $foreignField.getAttribute("initializer") )
+#set ( $otherTable = $foreignKeyElement.getParent() )
+#set ( $otherTablePeerClass = $otherTable.getAttribute("peerClassName") )
+#set ( $otherTablePeerPackage = $otherTable.getAttribute("peerPackage") )
+#set ( $otherTablePeerName = "${otherTablePeerPackage}.${otherTablePeerClass}" )
+#set ( $thisTableElement = $foreignKeyElement.getChild("table") )
+#set ( $thisObjectClassName = $thisTableElement.getAttribute("baseDbObjectClassName") )
+#set ( $referenceElements = $foreignKeyElement.getChildren("reference") )
+#set ( $otherForeignField = $torqueGen.getChild("foreign").getChild("foreign-key").getChild("foreign-field") )
+#set ( $otherPeerJoinSelectMethod = $otherForeignField.getAttribute("peerJoinSelectMethod") )
+#if ($silentDbFetch)
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this $thisObjectClassName is new, it will return
+     * an empty collection; or if this thisObjectClassName has previously
+     * been saved, it will retrieve the related objects from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can change the access modifier to public
+     * by overriding this method in the child class.
+     *
+     * @return $fieldType the collection
+     * @param criteria the criteria to use when filling the collection.
+     * @throws TorqueException if associated objects are not found
+     */
+    ${getterAccessModifier} $fieldType ${getter}(Criteria criteria) throws TorqueException
+    {
+        try (TorqueConnection connection = Transaction.begin(criteria.getDbName()))
+        {
+            $fieldType result = ${getter}(criteria, connection);
+
+            Transaction.commit(connection);
+            return result;
+        }
+    }
+
+#end
+    /**
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this $thisObjectClassName is new, it will return
+     * an empty collection; or if this $thisObjectClassName has previously
+     * been saved, it will retrieve the related objects from storage.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can change the access modifier to public
+     * by overriding this method in the child class.
+     */
+    ${getterAccessModifier} $fieldType ${getter}(Criteria criteria, Connection connection)
+        throws TorqueException
+    {
+        if ($field == null)
+        {
+            if (isNew())
+            {
+                ${initializer}();
+            }
+            else
+            {
+#foreach ($referenceElement in $referenceElements)
+  #set ( $otherTableColumnElement = $referenceElement.getChild("local-column").getChild("column") )
+  #set ( $thisTableColumnElement = $referenceElement.getChild("foreign-column").getChild("column") )
+  #set ( $otherTablePeerColumnName = $otherTableColumnElement.getAttribute("peerColumnName") )
+  #set ( $thisTableColumnGetter = $thisTableColumnElement.getAttribute("getter") )
+                criteria.and(${otherTablePeerName}.${otherTablePeerColumnName}, ${thisTableColumnGetter}());
+#end
+                $field = ${otherTablePeerName}.${otherPeerJoinSelectMethod}(criteria, connection);
+$torqueGen.setVariable("indent", "                ")##
+$torqueGen.mergepoint("backreference")##
+            }
+        }
+        else
+        {
+            // the following code is to determine if a new query is
+            // called for.  If the criteria is the same as the last
+            // one, just return the collection.
+#foreach ($referenceElement in $referenceElements)
+  #set ( $otherTableColumnElement = $referenceElement.getChild("local-column").getChild("column") )
+  #set ( $thisTableColumnElement = $referenceElement.getChild("foreign-column").getChild("column") )
+  #set ( $otherTablePeerColumnName = $otherTableColumnElement.getAttribute("peerColumnName") )
+  #set ( $thisTableColumnGetter = $thisTableColumnElement.getAttribute("getter") )
+            criteria.and(${otherTablePeerName}.${otherTablePeerColumnName}, ${thisTableColumnGetter}());
+#end
+            if (${criteriaCacheField} == null
+                        || !${criteriaCacheField}.equals(criteria))
+            {
+                $field = ${otherTablePeerName}.${otherPeerJoinSelectMethod}(criteria, connection);
+$torqueGen.setVariable("indent", "                ")##
+$torqueGen.mergepoint("backreference")##
+            }
+        }
+        $criteriaCacheField = criteria;
+
+        return $field;
+    }
+

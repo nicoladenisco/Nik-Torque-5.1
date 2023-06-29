@@ -1,0 +1,178 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: peerUnices.vm 1855051 2019-03-08 15:16:28Z tv $
+##
+## Creates the base peer class.
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+##
+## creazione retrieve per chiavi alternate (indici univoci)
+##
+
+#set ( $count = 0 )
+#set ( $uniqueKeyElements = $torqueGen.getChildren("unique"))
+#foreach ($unique in $uniqueKeyElements)
+
+#set ($count = $count + 1)
+#set ($pks = $unique.getChildren("unique-column"))
+#set ($uniqueName = $unique.getAttribute("name"))
+#set ($uniqueFuncParams = $unique.getAttribute("func-params"))
+#set ($uniqueFuncPasstr = $unique.getAttribute("func-passtr"))
+
+// Creazione metodi per $dbObjectClassName / $uniqueName
+
+#if ($pks.size() > 0)
+
+    #set ($retrieveMethod = "retrieveByAlternateKey${count}")
+
+    /**
+     * Retrieve a multiple objects by alternate keys
+     * Using unique index $uniqueName
+     *
+     * @param pks List of primary keys
+     * @param dbcon the connection to use
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public List<${dbObjectClassName}> ${retrieveMethod}s( Collection<ObjectKey<?>> pks, Connection dbcon )
+        throws TorqueException
+    {
+        List<${dbObjectClassName}> objs = null;
+        if (pks == null || pks.size() == 0)
+        {
+            objs = new LinkedList<${dbObjectClassName}>();
+        }
+        else
+        {
+            Criteria criteria = new Criteria();
+  #if ($pks.size() == 1)
+            #set ($col = $pks.get(0))
+            #set ( $peerColumnName = $col.getAttribute("peerColumnName"))
+            criteria.andIn( 
+                        ${peerClassName}.${peerColumnName},                    
+                        pks );
+  #else
+  /*
+      TODO: rivediamo in seguito
+  
+            for(ObjectKey<?> pk : pks)
+            {
+             SimpleKey[] keys = (SimpleKey[])pk.getValue();
+              #set ( $i = 0 )
+              #foreach ($col in $pks)
+                #set ( $peerColumnName = $col.getAttribute("peerColumnName"))
+                #set ( $vname = $col.getAttribute("name"))
+                    criteria.andIn(
+                        ${peerClassName}.${peerColumnName},                    
+                        keys[$i]);    
+                #set ( $i = $i + 1 )
+              #end
+            }
+  */
+  #end
+        if(dbcon == null)
+            objs = doSelect(criteria);
+        else
+            objs = doSelect(criteria, dbcon);
+        }
+        return objs;
+    }
+
+
+    /**
+     * Retrieve an object by alternate keys
+     * Using unique index $uniqueName
+     *
+     * @param con Connection
+     */
+    public ${dbObjectClassName} ${retrieveMethod}($uniqueFuncParams,Connection con)
+        throws TorqueException
+    {
+        Criteria criteria = new Criteria();
+  #foreach ($col in $pks)
+    #set ( $peerColumnName = $col.getAttribute("peerColumnName"))
+    #set ( $vname = $col.getAttribute("name"))
+        criteria.and(
+              ${peerClassName}.${peerColumnName},                    
+              val_${vname});
+  #end
+        List<${dbObjectClassName}> v =
+            con == null ? 
+              doSelect(criteria) : 
+              doSelect(criteria, con);
+            
+        if (v.size() == 1)
+        {
+            return v.get(0);
+        }
+        else
+        {
+            throw new TorqueException("Failed to select one and only one row.");
+        }
+    }
+
+    /**
+     * Retrieve an object by alternate keys
+     * don't throw exceptions: if not found return null.
+     * Using unique index $uniqueName
+     *
+     * @deprecated use version with explicit connection
+     */
+    public ${dbObjectClassName} ${retrieveMethod}Quiet($uniqueFuncParams)
+    {
+        try (TorqueConnection connection = Transaction.begin(getDatabaseName()))
+        {
+            ${dbObjectClassName} result = ${retrieveMethod}Quiet($uniqueFuncPasstr, connection);
+            Transaction.commit(connection);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+
+    /**
+     * Retrieve an object by alternate keys
+     * don't throw exceptions: if not found return null.
+     * Using unique index $uniqueName
+     *
+     * @param con the SQL connection
+     */
+    public ${dbObjectClassName} ${retrieveMethod}Quiet($uniqueFuncParams, Connection con)
+    {
+        try
+        {
+          return ${retrieveMethod}($uniqueFuncPasstr, con);
+        }
+        catch(Exception e)
+        {
+            return null;
+        }
+    }
+
+#end ## -- if ($pks.size() > 0) --
+#end  ## -- #foreach ($unique in $table.Unices) --

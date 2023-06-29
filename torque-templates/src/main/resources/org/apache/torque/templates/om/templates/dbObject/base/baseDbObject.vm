@@ -1,0 +1,124 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: baseDbObject.vm 1855051 2019-03-08 15:16:28Z tv $
+##
+## This template creates source code for a base Database object.
+## The generated code contains the table-specific functionality of a database 
+## object. 
+## The template expects as input a "table" element from the torque schema
+## which was processed by the OMTransformer.  
+##
+package $baseDbObjectPackage;
+
+$torqueGen.mergepoint("imports")##
+$torqueGen.mergepoint("classJavadoc")##
+$torqueGen.mergepoint("classAnnotations")##
+#if ($baseClass == "")
+  #set ($extendsBaseClass = "" )
+#else
+  #set ($extendsBaseClass = "extends $baseClass" )
+#end
+@SuppressWarnings("unused")
+public abstract class $baseDbObjectClassName $extendsBaseClass
+    implements ##
+#if ($torqueGen.booleanOption("torque.om.addSaveMethods") && $saveMethodsInDbObjects == "true")
+Persistent, ##
+#else
+ObjectModel, ##
+#end
+Serializable##
+#if ($torqueGen.booleanOption("torque.om.addIntakeRetrievable")), $torqueGen.option("torque.om.retrievableInterface")#end##
+#if ($torqueGen.booleanOption("torque.om.addGetByNameMethods")), ColumnAccessByName#end##
+
+{
+$torqueGen.mergepoint("serialVersionUid")
+
+## field definitions for columns
+$torqueGen.mergepoint("fieldDefinitions")##
+$torqueGen.mergepoint("newModifiedFields")##
+#if ($torqueGen.booleanOption("torque.om.trackSaving"))
+$torqueGen.mergepoint("savingField")##
+#end
+#if ($torqueGen.booleanOption("torque.om.trackLoading"))
+$torqueGen.mergepoint("loadingField")##
+#end
+#if ($torqueGen.booleanOption("torque.om.trackDeleted"))
+$torqueGen.mergepoint("deletedField")##
+#end
+##
+## field definitions for referenced objects
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+$torqueGen.mergepoint("fieldDefinitionsReferencedObjects")
+#end
+
+## field definitions for referencing objects
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+$torqueGen.mergepoint("fieldDefinitionsReferencingObjects")
+#end
+
+## getters and setters for member variables for columns 
+$torqueGen.mergepoint("gettersSetters")
+$torqueGen.mergepoint("newModifiedMethods")
+#if ($torqueGen.booleanOption("torque.om.trackSaving"))
+$torqueGen.mergepoint("savingMethods")
+#end
+#if ($torqueGen.booleanOption("torque.om.trackLoading"))
+$torqueGen.mergepoint("loadingMethods")
+#end
+#if ($torqueGen.booleanOption("torque.om.trackDeleted"))
+$torqueGen.mergepoint("deletedMethods")
+#end
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+$torqueGen.mergepoint("gettersSettersReferencedObjects")
+#end
+
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+$torqueGen.mergepoint("referencingObjectMethods")
+#end
+
+#if ($torqueGen.booleanOption("torque.om.addGetByNameMethods"))
+$torqueGen.mergepoint("getByNameMethods")
+#end
+
+#if ($torqueGen.booleanOption("torque.om.addSaveMethods") && $saveMethodsInDbObjects == "true")
+$torqueGen.mergepoint("saveMethods")
+#end
+
+$torqueGen.mergepoint("primaryKeyMethods")
+$torqueGen.mergepoint("foreignKeyGetters")
+$torqueGen.mergepoint("copyMethods")
+$torqueGen.mergepoint("peerGetter")
+$torqueGen.mergepoint("tableMapGetter")
+
+#if ($torqueGen.booleanOption("torque.om.generateBeans"))
+$torqueGen.mergepoint("objectBeanMethods")
+#end
+#if (${useManagers} == "true")
+$torqueGen.mergepoint("isCacheOnSave")
+#end
+$torqueGen.mergepoint("getCurrentDate")##
+$torqueGen.mergepoint("getCurrentTime")##
+$torqueGen.mergepoint("getCurrentTimestamp")##
+
+$torqueGen.mergepoint("toString")
+$torqueGen.mergepoint("equalsHashCode")
+$torqueGen.mergepoint("valueEquals")
+$torqueGen.mergepoint("extensions")
+}

@@ -1,0 +1,129 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: doDelete.vm 1850323 2019-01-04 08:22:18Z tv $
+##
+## Creates the doDelete methods for the base peer.
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+    /**
+     * Deletes a data object, i.e. a row in a table, in the database.
+     *
+     * @param obj the data object to delete in the database, not null.
+     *
+     * @return the number of deleted rows.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public int doDelete($dbObjectClassName obj) throws TorqueException
+    {
+#set ( $primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column"))
+#if ($primaryKeyColumnElements.size() > 0)
+        int result = doDelete(buildCriteria(obj.getPrimaryKey()));
+#else
+        int result = doDelete(buildSelectCriteria(obj));
+#end
+#if ($torqueGen.booleanOption("torque.om.trackDeleted"))
+        obj.setDeleted(true);
+#end
+        return result;
+    }
+
+    /**
+     * Deletes a data object, i.e. a row in a table, in the database.
+     * This method is to be used during a transaction, otherwise use the
+     * doDelete($dbObjectClassName) method.
+     *
+     * @param obj the data object to delete in the database, not null.
+     * @param con the connection to use, not null.
+     *
+     * @return the number of deleted rows.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public int doDelete($dbObjectClassName obj, Connection con)
+        throws TorqueException
+    {
+#if ($primaryKeyColumnElements.size() > 0)
+        int result = doDelete(buildCriteria(obj.getPrimaryKey()), con);
+#else
+        int result = doDelete(buildSelectCriteria(obj), con);
+#end
+#if ($torqueGen.booleanOption("torque.om.trackDeleted"))
+        obj.setDeleted(true);
+#end
+        return result;
+    }
+
+#if (!$primaryKeyColumnElements.isEmpty())
+    /**
+     * Deletes data objects, i.e. rows in a table, in the database.
+     *
+     * @param objects the data object to delete in the database, not null,
+     *        may not contain null.
+     *
+     * @return the number of deleted rows.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public int doDelete(Collection<${dbObjectClassName}> objects)
+            throws TorqueException
+    {
+        int result = doDelete(buildPkCriteria(objects));
+#if ($torqueGen.booleanOption("torque.om.trackDeleted"))
+        objects.forEach(object -> object.setDeleted(true));
+#end
+        return result;
+    }
+
+    /**
+     * Deletes data objects, i.e. rows in a table, in the database.
+     * This method uses the passed connection to delete the rows;
+     * if a transaction is open in the connection, the deletion happens inside
+     * this transaction.
+     *
+     * @param objects the data objects to delete in the database, not null,
+     *        may not contain null.
+     * @param con the connection to use for deleting, not null.
+     *
+     * @return the number of deleted rows.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public int doDelete(
+            Collection<${dbObjectClassName}> objects,
+            Connection con)
+        throws TorqueException
+    {
+        int result = doDelete(buildPkCriteria(objects), con);
+#if ($torqueGen.booleanOption("torque.om.trackDeleted"))
+        objects.forEach(object -> object.setDeleted(true));
+#end
+        return result;
+    }
+#end

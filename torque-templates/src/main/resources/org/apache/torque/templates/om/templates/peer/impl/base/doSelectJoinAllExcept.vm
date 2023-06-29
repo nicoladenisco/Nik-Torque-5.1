@@ -1,0 +1,176 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: doSelectJoinAllExcept.vm 1839284 2018-08-27 08:57:56Z tv $
+##
+## Creates the doSelectJoinAllExceptXXX methods for the base peer class.
+##
+## This template expects the current source element to be a "foreign-field" 
+## element from the torque schema which was processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+#set ( $foreignKeyElement = $torqueGen.getParent() )
+#set ( $tableElement = $foreignKeyElement.getParent() )
+#set ( $foreignKeyElements = $tableElement.getChildren("foreign-key"))
+#if ($foreignKeyElements.size() > 2)
+  #set ( $tableName = $tableElement.getAttribute("name") )
+  #set ( $excludeTableElement = $foreignKeyElement.getChild("table") )
+  #set ( $peerClassName = $tableElement.getAttribute("peerClassName") )
+  #set ( $peerImplClassName = $tableElement.getAttribute("peerImplClassName") )
+  #set ( $tableField = $tableElement.getAttribute("field") )
+  #set ( $peerPackage = $tableElement.getAttribute("peerPackage") )
+  #set ( $recordMapperClassName = $tableElement.getAttribute("recordMapperClassName") )
+  #set ( $dbObjectClassName = $tableElement.getAttribute("dbObjectClassName") )
+  #set ( $dbObjectPackage = $tableElement.getAttribute("dbObjectPackage") )
+  #set ( $dbObject = "${dbObjectPackage}.$dbObjectClassName" )
+    /**
+     * selects a collection of $dbObjectClassName objects pre-filled with
+     * all related objects.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in ${peerImplClassName}.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    protected List<${dbObjectClassName}> ${peerJoinAllExceptSelectMethod}(Criteria criteria)
+        throws TorqueException
+    {
+        try (TorqueConnection connection = Transaction.begin(getDatabaseName()))
+        {
+            List<${dbObjectClassName}> result
+                    = $peerClassName.${peerJoinAllExceptSelectMethod}(criteria, connection);
+            Transaction.commit(connection);
+            return result;
+        }
+    }
+
+    /**
+     * selects a collection of $dbObjectClassName objects pre-filled with
+     * related objects.
+     *
+     * This method is protected by default in order to keep the public
+     * api reasonable.  You can provide public methods for those you
+     * actually need in ${peerImplClassName}.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    protected List<${dbObjectClassName}> ${peerJoinAllExceptSelectMethod}(Criteria criteria, Connection conn)
+        throws TorqueException
+    {
+        setDbName(criteria);
+
+        CompositeMapper compositeMapper = new CompositeMapper();
+        compositeMapper.addMapper(new ${recordMapperClassName}(), 0);
+        ${peerClassName}.addSelectColumns(criteria);
+        int offset = ${peerClassName}.numColumns;
+  #foreach ($joinedForeignKeyElement in $foreignKeyElements)
+    #if ($joinedForeignKeyElement != $foreignKeyElement)
+      #set ( $joinedTableElement = $joinedForeignKeyElement.getChild("table"))
+      #set ( $joinedTableName = $joinedTableElement.getAttribute("name"))
+      ## want to cover this case, but the code is not there yet.
+      #if ( $joinedTableName != $tableName )
+        #set ( $joinedPeerClassName = $joinedTableElement.getAttribute("peerClassName") )
+        #set ( $joinedPeerImplClassName = $joinedTableElement.getAttribute("peerImplClassName") )
+        #set ( $joinedPeerPackage = $joinedTableElement.getAttribute("peerPackage") )
+        #set ( $joinedPeer = "${joinedPeerPackage}.${joinedPeerClassName}" )
+        #set ( $joinedPeerImpl = "${joinedPeerPackage}.${joinedPeerImplClassName}" )
+        #set ( $joinedRecordMapperClassName = $joinedTableElement.getAttribute("recordMapperClassName") )
+        #set ( $referenceElements = $joinedForeignKeyElement.getChildren("reference") )
+ 
+        ${joinedPeer}.addSelectColumns(criteria);
+        #foreach ($referenceElement in $referenceElements)
+          #set ( $columnElement = $referenceElement.getChild("local-column").getChild("column"))
+          #set ( $joinedColumnElement = $referenceElement.getChild("foreign-column").getChild("column"))
+          #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName") )
+          #set ( $joinedPeerColumnName = $joinedColumnElement.getAttribute("peerColumnName") )
+        criteria.addJoin(${peerClassName}.$peerColumnName, ${joinedPeer}.$joinedPeerColumnName);
+        #end
+        compositeMapper.addMapper(new ${joinedRecordMapperClassName}(), offset);
+        offset = offset + ${joinedPeer}.numColumns;
+      #end
+    #end
+  #end
+
+        correctBooleans(criteria);
+
+        List<$dbObjectClassName> result = new ArrayList<$dbObjectClassName>();
+        List<List<Object>> rawResult = doSelect(
+                criteria, compositeMapper, conn);
+        for (List<Object> rawResultRow : rawResult)
+        {
+            $dbObjectClassName $tableField = ($dbObjectClassName) rawResultRow.get(0);
+  #set ( $index = 0 )
+  #foreach ($joinedForeignKeyElement in $foreignKeyElements)
+    #if ($joinedForeignKeyElement != $foreignKeyElement)
+      #set ( $joinedTableElement = $joinedForeignKeyElement.getChild("table"))
+      #set ( $joinedTableName = $joinedTableElement.getAttribute("name"))
+      ## want to cover this case, but the code is not there yet.
+      #if ( $joinedTableName != $tableName )
+        #set ( $joinedPeerClassName = $joinedTableElement.getAttribute("peerClassName") )
+        #set ( $joinedPeerPackage = $joinedTableElement.getAttribute("peerPackage") )
+        #set ( $joinedPeer = "${joinedPeerPackage}.${joinedPeerClassName}" )
+        #set ( $joinedDbObjectClassName = $joinedTableElement.getAttribute("dbObjectClassName") )
+        #set ( $joinedDbObjectPackage = $joinedTableElement.getAttribute("dbObjectPackage") )
+        #set ( $joinedDbObject = "${joinedDbObjectPackage}.${joinedDbObjectClassName}" )
+        #set ( $foreignField = $joinedForeignKeyElement.getChild("foreign-field") )
+        #set ( $adderInJoinedDbObject = $foreignField.getAttribute("adder") )
+        #set ( $initializerInJoinedDbObject = $foreignField.getAttribute("initializer") )
+        #set ( $localField = $joinedForeignKeyElement.getChild("local-field") )
+        #set ( $getter = $localField.getAttribute("getter") )
+        #set ( $index = $index + 1 )
+
+            $joinedDbObject obj$index = (${joinedDbObject}) rawResultRow.get($index);
+         #if ($index == 1)
+           #set ( $boolean = "boolean " )
+         #else
+           #set ( $boolean = "")
+         #end
+            ${boolean}newObject = true;
+            for (int j = 0; j < result.size(); j++)
+            {
+                $dbObject temp_${tableField} = result.get(j);
+                $joinedDbObject temp_obj$index = temp_${tableField}.${getter}();
+                if (temp_obj${index}.getPrimaryKey().equals(obj${index}.getPrimaryKey()))
+                {
+                    newObject = false;
+                #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+                    temp_obj${index}.${adderInJoinedDbObject}($tableField);
+                #end
+                    break;
+                }
+            }
+        #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+            if (newObject)
+            {
+                obj${index}.${initializerInJoinedDbObject}();
+                obj${index}.${adderInJoinedDbObject}($tableField);
+            }
+        #end
+      #end
+    #end
+  #end
+            result.add($tableField);
+        }
+        return result;
+    }
+#end

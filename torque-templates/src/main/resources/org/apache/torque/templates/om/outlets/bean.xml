@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<outlets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+  <outlet name="torque.om.bean.baseBean" 
+      xsi:type="velocityOutlet"
+      path="bean/base/baseBean.vm">
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.bean.base.classJavadoc"/>
+    </mergepoint>
+    <mergepoint name="serialVersionUid">
+      <action xsi:type="applyAction" outlet="torque.om.serialVersionUid"/>
+    </mergepoint>
+    <mergepoint name="fieldDefinitions">
+      <action xsi:type="traverseAllAction"
+          element="column"
+          outlet="torque.om.fieldDefinition"/>
+    </mergepoint>
+    <mergepoint name="fieldDefinitionsReferencedObjects">
+      <action xsi:type="traverseAllAction"
+          element="foreign-key/local-field-in-bean"
+          outlet="torque.om.fieldDefinition"/>
+    </mergepoint>
+    <mergepoint name="fieldDefinitionsReferencingObjects">
+      <action xsi:type="traverseAllAction"
+          element="referencing-foreign-keys/foreign-key/foreign-field-in-bean"
+          outlet="torque.om.fieldDefinition"/>
+    </mergepoint>
+    <mergepoint name="gettersSetters">
+      <action xsi:type="traverseAllAction"
+          element="column"
+          outlet="torque.om.bean.base.getterSetter"/>
+    </mergepoint>
+    <mergepoint name="gettersSettersReferencedObjects">
+      <action xsi:type="traverseAllAction"
+          element="foreign-key/local-field-in-bean"
+          outlet="torque.om.bean.base.getterSetterReferencedObject"/>
+    </mergepoint>
+    <mergepoint name="gettersSettersReferencingObjects">
+      <action xsi:type="traverseAllAction"
+          element="referencing-foreign-keys/foreign-key/foreign-field-in-bean"
+          outlet="torque.om.bean.base.getterSetterReferencingObject"/>
+    </mergepoint>
+    <mergepoint name="getCurrentDate">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.getCurrentDate"/>
+    </mergepoint>
+    <mergepoint name="getCurrentTime">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.getCurrentTime"/>
+    </mergepoint>
+    <mergepoint name="getCurrentTimestamp">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.getCurrentTimestamp"/>
+    </mergepoint>
+    <mergepoint name="extensions"/>
+  </outlet>
+
+  <outlet name="torque.om.bean.base.classJavadoc"
+      xsi:type="velocityOutlet"
+      path="bean/base/classJavadoc.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.getterSetter"
+      xsi:type="velocityOutlet"
+      path="general/getterSetter.vm">
+    <mergepoint name="getter">
+      <action xsi:type="applyAction" outlet="torque.om.bean.base.getter"/>
+    </mergepoint>
+    <mergepoint name="setter">
+      <action xsi:type="applyAction" outlet="torque.om.bean.base.setter"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.bean.base.getter"
+      xsi:type="velocityOutlet"
+      path="bean/base/getter.vm">
+    <mergepoint name="methodStart" />
+  </outlet>
+
+  <outlet name="torque.om.bean.base.setter"
+      xsi:type="velocityOutlet"
+      path="bean/base/setter.vm">
+    <mergepoint name="methodStart">
+      <action xsi:type="applyAction" outlet="torque.om.setterMethodStart"/>
+    </mergepoint>
+    <mergepoint name="methodEnd">
+      <action xsi:type="applyAction" outlet="torque.om.bean.base.setterMethodEnd"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.bean.base.setterMethodEnd"
+      xsi:type="velocityOutlet"
+      path="bean/base/setterMethodEnd.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.getterSetterReferencedObject"
+      xsi:type="velocityOutlet"
+      path="general/getterSetter.vm">
+    <mergepoint name="getter">
+      <action xsi:type="applyAction" outlet="torque.om.bean.base.getterReferencedObject"/>
+    </mergepoint>
+    <mergepoint name="setter">
+      <action xsi:type="applyAction" outlet="torque.om.setterReferencedObject"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.bean.base.getterReferencedObject"
+      xsi:type="velocityOutlet"
+      path="bean/base/getterReferencedObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.getterSetterReferencingObject"
+      xsi:type="velocityOutlet"
+      path="general/getterSetter.vm">
+    <mergepoint name="getter">
+      <action xsi:type="applyAction"
+          outlet="torque.om.bean.base.getterReferencingObject"/>
+    </mergepoint>
+    <mergepoint name="setter">
+      <action xsi:type="applyAction"
+          outlet="torque.om.bean.base.setterReferencingObject"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.bean.base.getterReferencingObject"
+      xsi:type="velocityOutlet"
+      path="bean/base/getterReferencingObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.setterReferencingObject"
+      xsi:type="velocityOutlet"
+      path="bean/base/setterReferencingObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.bean"
+      xsi:type="velocityOutlet"
+      path="bean/bean.vm">
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.bean.classJavadoc"/>
+    </mergepoint>
+    <mergepoint name="serialVersionUid">
+      <action xsi:type="applyAction" outlet="torque.om.serialVersionUid"/>
+    </mergepoint>
+    <mergepoint name="extensions"/>
+  </outlet>
+
+  <outlet name="torque.om.bean.classJavadoc"
+      xsi:type="velocityOutlet"
+      path="bean/classJavadoc.vm">
+  </outlet>
+
+</outlets>

@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<outlets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+  <outlet name="torque.om.dbObject"
+      xsi:type="velocityOutlet"
+      path="dbObject/dbObject.vm">
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.dbObjectClassJavadoc"/>
+    </mergepoint>
+    <mergepoint name="serialVersionUid">
+      <action xsi:type="applyAction" outlet="torque.om.serialVersionUid"/>
+    </mergepoint>
+    <mergepoint name="extensions"/>
+  </outlet>
+
+  <outlet name="torque.om.dbObjectClassJavadoc"
+      xsi:type="velocityOutlet"
+      path="dbObject/classJavadoc.vm">
+  </outlet>
+
+  <outlet name="torque.om.baseDbObject"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/baseDbObject.vm">
+    <mergepoint name="imports">
+      <action xsi:type="applyAction" outlet="torque.om.dbObject.base.imports"/>
+    </mergepoint>
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.dbObject.base.classJavadoc"/>
+    </mergepoint>
+    <mergepoint name="classAnnotations"/>
+    <mergepoint name="serialVersionUid">
+      <action xsi:type="applyAction" outlet="torque.om.serialVersionUid"/>
+    </mergepoint>
+    <mergepoint name="fieldDefinitions">
+      <action xsi:type="traverseAllAction"
+          element="column"
+          outlet="torque.om.fieldDefinition"/>
+    </mergepoint>
+    <mergepoint name="newModifiedFields">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.newModifiedFields"/>
+    </mergepoint>
+    <mergepoint name="deletedField">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.deletedField"/>
+    </mergepoint>
+    <mergepoint name="savingField">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.savingField"/>
+    </mergepoint>
+    <mergepoint name="loadingField">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.loadingField"/>
+    </mergepoint>
+    <mergepoint name="fieldDefinitionsReferencedObjects">
+      <action xsi:type="traverseAllAction"
+          element="foreign-key/local-field"
+          outlet="torque.om.fieldDefinition"/>
+    </mergepoint>
+    <mergepoint name="fieldDefinitionsReferencingObjects">
+      <action xsi:type="traverseAllAction"
+          element="referencing-foreign-keys/foreign-key/foreign-field"
+          outlet="torque.om.fieldDefinition"/>
+    </mergepoint>
+    <mergepoint name="gettersSetters">
+      <action xsi:type="traverseAllAction"
+          element="column"
+          outlet="torque.om.getterSetter"/>
+    </mergepoint>
+    <mergepoint name="newModifiedMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.newModifiedMethods"/>
+    </mergepoint>
+    <mergepoint name="deletedMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.deletedMethods"/>
+    </mergepoint>
+    <mergepoint name="savingMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.savingMethods"/>
+    </mergepoint>
+    <mergepoint name="loadingMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.loadingMethods"/>
+    </mergepoint>
+    <mergepoint name="gettersSettersReferencedObjects">
+      <action xsi:type="traverseAllAction"
+          element="foreign-key/local-field"
+          outlet="torque.om.dbObject.base.getterSetterReferencedObject"/>
+    </mergepoint>
+    <mergepoint name="referencingObjectMethods">
+      <action xsi:type="traverseAllAction"
+          element="referencing-foreign-keys/foreign-key/foreign-field"
+          outlet="torque.om.dbObject.base.referencingObjectMethods"/>
+      <action xsi:type="traverseAllAction"
+          element="join-getter"
+          outlet="torque.om.dbObject.base.joinGettersReferencingObject"/>
+    </mergepoint>
+    <mergepoint name="getByNameMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.getByNameMethods"/>
+    </mergepoint>
+    <mergepoint name="saveMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.saveMethods"/>
+    </mergepoint>
+    <mergepoint name="primaryKeyMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.primaryKeyMethods"/>
+    </mergepoint>
+    <mergepoint name="foreignKeyGetters">
+      <action xsi:type="traverseAllAction"
+          element="foreign-key"
+          outlet="torque.om.dbObject.base.foreignKeyGetter"/>
+    </mergepoint>
+     <mergepoint name="copyMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.copyMethods"/>
+    </mergepoint>
+    <mergepoint name="peerGetter">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.peerGetter"/>
+    </mergepoint>
+    <mergepoint name="tableMapGetter">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.tableMapGetter"/>
+    </mergepoint>
+    <mergepoint name="objectBeanMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.objectBeanMethods"/>
+    </mergepoint>
+    <mergepoint name="isCacheOnSave">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.isCacheOnSave"/>
+    </mergepoint>
+    <mergepoint name="getCurrentDate">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.getCurrentDate"/>
+    </mergepoint>
+    <mergepoint name="getCurrentTime">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.getCurrentTime"/>
+    </mergepoint>
+    <mergepoint name="getCurrentTimestamp">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.getCurrentTimestamp"/>
+    </mergepoint>
+    <mergepoint name="equalsHashCode">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.equalsHashCode"/>
+    </mergepoint>
+    <mergepoint name="valueEquals">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.valueEquals"/>
+    </mergepoint>
+    <mergepoint name="toString">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.toString"/>
+    </mergepoint>
+    <mergepoint name="extensions"/>
+  </outlet>
+
+  <outlet name="torque.om.baseDbObjectForView"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/baseDbObjectForView.vm">
+    <mergepoint name="imports" /><!-- extension -->
+    <mergepoint name="objectBeanImports">
+      <action xsi:type="applyAction" outlet="torque.om.dbObject.base.objectBeanImports"/>
+    </mergepoint>
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.dbObject.base.classJavadoc"/>
+    </mergepoint>
+    <mergepoint name="serialVersionUid">
+      <action xsi:type="applyAction" outlet="torque.om.serialVersionUid"/>
+    </mergepoint>
+    <mergepoint name="fieldDefinitions">
+      <action xsi:type="traverseAllAction"
+          element="column"
+          outlet="torque.om.fieldDefinition"/>
+    </mergepoint>
+    <mergepoint name="newModifiedFields">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.newModifiedFields"/>
+    </mergepoint>
+    <mergepoint name="loadingField">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.loadingField"/>
+    </mergepoint>
+    <mergepoint name="gettersSetters">
+      <action xsi:type="traverseAllAction"
+          element="column"
+          outlet="torque.om.getterSetter"/>
+    </mergepoint>
+    <mergepoint name="newModifiedMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.newModifiedMethods"/>
+    </mergepoint>
+    <mergepoint name="loadingMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.loadingMethods"/>
+    </mergepoint>
+    <mergepoint name="getByNameMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.getByNameMethods"/>
+    </mergepoint>
+    <mergepoint name="primaryKeyMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.primaryKeyMethods"/>
+    </mergepoint>
+     <mergepoint name="copyMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.copyMethods"/>
+    </mergepoint>
+    <mergepoint name="peerGetter">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.peerGetter"/>
+    </mergepoint>
+    <mergepoint name="tableMapGetter">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.tableMapGetter"/>
+    </mergepoint>
+    <mergepoint name="objectBeanMethods">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.objectBeanMethods"/>
+    </mergepoint>
+    <mergepoint name="equalsHashCode">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.equalsHashCode"/>
+    </mergepoint>
+    <mergepoint name="valueEquals">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.valueEquals"/>
+    </mergepoint>
+    <mergepoint name="toString">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.toString"/>
+    </mergepoint>
+    <mergepoint name="extensions"/>
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.imports"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/imports.vm">
+    <mergepoint name="objectBeanImports">
+      <action xsi:type="applyAction" outlet="torque.om.dbObject.base.objectBeanImports"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.objectBeanImports"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/bean/objectBeanImports.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.classJavadoc"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/classJavadoc.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.newModifiedFields"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/newModifiedFields.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.deletedField"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/deletedField.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.savingField"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/savingField.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.loadingField"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/loadingField.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.getterSetterReferencedObject"
+      xsi:type="velocityOutlet"
+      path="general/getterSetter.vm">
+    <mergepoint name="getter">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.getterReferencedObject"/>
+    </mergepoint>
+    <mergepoint name="setter">
+      <action xsi:type="applyAction"
+          outlet="torque.om.setterReferencedObject"/>
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.setterReferencedObjectByObjectKey"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.newModifiedMethods"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/newModifiedMethods.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.deletedMethods"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/deletedMethods.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.savingMethods"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/savingMethods.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.loadingMethods"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/loadingMethods.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.getterReferencedObject"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/getterReferencedObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.setterReferencedObjectByObjectKey"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/setterReferencedObjectByObjectKey.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.referencingObjectMethods"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/referencingObjectMethods.vm">
+    <mergepoint name="getter">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.getterReferencingObject"/>
+    </mergepoint>
+    <mergepoint name="adder">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.adderReferencingObject"/>
+    </mergepoint>
+    <mergepoint name="resetter">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.resetterReferencingObject"/>
+    </mergepoint>
+    <mergepoint name="initializer">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.initializerReferencingObject"/>
+    </mergepoint>
+    <mergepoint name="isInitialized">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.isInitializedReferencingObject"/>
+    </mergepoint>
+    <mergepoint name="setter" />
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.getterReferencingObject"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/getterReferencingObject.vm">
+    <mergepoint name="backreference">
+      <action xsi:type="applyAction"
+          outlet="torque.om.dbObject.base.backreferenceToReferencingObject"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="torque.om.dbObject.base.backreferenceToReferencingObject"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/backreferenceToReferencingObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.adderReferencingObject"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/adderReferencingObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.resetterReferencingObject"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/resetterReferencingObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.initializerReferencingObject"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/initializerReferencingObject.vm">
+  </outlet>
+  
+  <outlet name="torque.om.dbObject.base.isInitializedReferencingObject"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/isInitializedReferencingObject.vm">
+  </outlet>
+  
+  <outlet name="torque.om.dbObject.base.joinGettersReferencingObject"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/joinGetterReferencingObject.vm">
+    <mergepoint name="backreference">
+      <!-- only one element expected for the following traverseAllAction -->
+      <action xsi:type="traverseAllAction" 
+          element ="local/foreign-key/foreign-field"
+          outlet="torque.om.dbObject.base.backreferenceToReferencingObject"/>
+    </mergepoint>
+  </outlet>
+  
+  <outlet name="torque.om.dbObject.base.getByNameMethods"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/getByNameMethods.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.primaryKeyMethods"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/primaryKeyMethods.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.foreignKeyGetter"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/foreignKeyGetter.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.copyMethods"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/copyMethods.vm">
+    <mergepoint name="createObjectInstance">
+      <action xsi:type="applyAction"
+          outlet="torque.om.createDbObjectInstance"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.peerGetter"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/peerGetter.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.tableMapGetter"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/tableMapGetter.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.objectBeanMethods"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/bean/objectBeanMethods.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.isCacheOnSave"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/isCacheOnSave.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.getCurrentDate"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/getCurrentDate.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.getCurrentTime"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/getCurrentTime.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.getCurrentTimestamp"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/getCurrentTimestamp.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.equalsHashCode"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/equalsHashCode.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.valueEquals"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/valueEquals.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.toString"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/toString.vm">
+  </outlet>
+  
+  <outlet name="torque.om.dbObject.enum"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/enum.vm">
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.dbObject.enumClassJavadoc"/>
+    </mergepoint>
+    <mergepoint name="values">
+      <action xsi:type="traverseAllAction" 
+          element="enum-value" 
+          outlet="torque.om.dbObject.enumValue"/>
+    </mergepoint>
+    <mergepoint name="extensions"/>
+  </outlet>
+
+  <outlet name="torque.om.dbObject.enumClassJavadoc"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/enumClassJavadoc.vm">
+  </outlet>
+
+  <outlet name="torque.om.dbObject.enumValue"
+      xsi:type="velocityOutlet"
+      path="dbObject/base/enumValue.vm">
+  </outlet>
+</outlets>

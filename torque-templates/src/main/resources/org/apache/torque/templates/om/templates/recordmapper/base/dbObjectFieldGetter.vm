@@ -1,0 +1,109 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: dbObjectFieldGetter.vm 1870383 2019-11-25 14:29:47Z gk $
+##
+## Creates the setter methods in the base peer's mapper class. 
+## 
+## This template expects the current source element to be a "column" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The attributes of the current source element must be set
+## as velocity variables.  
+##
+#set ($tableElement = $torqueGen.getParent())
+#set ($dbObjectClassName = $tableElement.getAttribute("dbObjectClassName"))
+    /**
+     * Reads the value of the <code>columnIndex</code>'th column
+     * in the <code>resultSet</code> so that it can be used to set
+     * the field $field in $dbObjectClassName.
+     *
+     * @param resultSet the ResultSet to read from, not null.
+     * @param columnIndex the index in the resultSet which should be read.
+     *
+     * @return the content of the column.
+     *
+     * @throws SQLException if a problem occurs when reading
+     *         from the resultSet.
+     */
+    protected $fieldType ${getter}(
+                ResultSet resultSet,
+                int columnIndex)
+            throws TorqueException
+    {
+        try
+        {
+#if ($schemaType.toString() == "BOOLEANCHAR")
+            String stringValue = resultSet.getString(columnIndex);
+            if ("Y".equals(stringValue))
+            {
+                return true;
+            }
+  #if ($primitive != "true")
+            else if (null == stringValue)
+            {
+                return null;
+            }
+  #end
+            else
+            {
+                return false;
+            }
+#elseif ($schemaType.toString() == "BOOLEANINT")
+            int intValue = resultSet.getInt(columnIndex);
+            if (1 == intValue)
+            {
+                return true;
+            }
+  #if ($primitive != "true")
+            else if (0 == intValue && resultSet.wasNull())
+            {
+                return null;
+            }
+  #end
+            else
+            {
+                return false;
+            }
+#else
+  #if ($primitive == "true" || $fieldType == "String")
+    #if ($isEnum == "true")
+            return ${fieldType}.getByValue(resultSet.${resultSetGetter}(columnIndex));
+    #else
+            return resultSet.${resultSetGetter}(columnIndex);
+    #end
+  #else
+    #if ($isEnum == "true")
+            ${fieldType} value = ${fieldType}.getByValue(resultSet.${resultSetGetter}(columnIndex));
+    #else
+            ${fieldType} value = resultSet.${resultSetGetter}(columnIndex);
+    #end
+            if (resultSet.wasNull())
+            {
+                value = null;
+            }
+            return value;
+  #end
+#end
+        }
+        catch (SQLException e)
+        {
+            throw new TorqueException(e);
+        }
+    }

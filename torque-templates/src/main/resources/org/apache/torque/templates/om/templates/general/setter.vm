@@ -1,0 +1,49 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: setter.vm 1774624 2016-12-16 15:42:07Z tv $
+##
+## This template generates a setter method for a field.
+## It expects to be executed on a source element with the 
+## field attributes set (as defined in the JavaFieldAttributeName enum). 
+##
+#if (!$setterThrows)
+  #set ( $setterThrows = "" )
+#else
+  #set ( $setterThrows = " throws $setterThrows" )
+#end
+    /**
+     * Set the value of ${field}.
+#if ($description)
+     * The field is described as follows: 
+     * $description
+#end
+     *
+     * @param v new value of ${field}
+#if ($setterThrows != "")
+     * @${setterThrows.substring(1)} on failure
+#end
+     */
+    $setterAccessModifer void ${setter}($fieldType v)$setterThrows
+    {
+$torqueGen.mergepoint("methodStart")
+        this.$field = v;
+$torqueGen.mergepoint("methodEnd")
+    }
+    

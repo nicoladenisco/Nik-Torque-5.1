@@ -1,0 +1,234 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: doUpdate.vm 1868761 2019-10-22 14:45:20Z tv $
+##
+## Creates the doUpdate methods for the base peer.
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+    /**
+     * Method to do updates.  This method is to be used during a transaction,
+     * otherwise use the doUpdate(Criteria) method.
+     *
+     * @param columnValues the values to update plus the primary key
+     *        identifying the row to update.
+     * @param con the connection to use, not null.
+     *
+     * @return the number of affected rows.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public int doUpdate(ColumnValues columnValues, Connection con)
+        throws TorqueException
+    {
+        Criteria selectCriteria = new Criteria(getDatabaseName());
+        correctBooleans(columnValues);
+
+#foreach ($columnElement in $torqueGen.getChildren("column"))
+  #if($columnElement.getAttribute("primaryKey") == "true")
+    #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName") )
+        {
+            JdbcTypedValue pkValue
+                = columnValues.remove(${peerClassName}.${peerColumnName});
+            if (pkValue == null)
+            {
+                throw new TorqueException(
+                        "The value for the primary key column "
+                        + "${peerClassName}.${peerColumnName}"
+                        + " must be set");
+            }
+            if (pkValue.getSqlExpression() == null)
+            {
+                selectCriteria.where(
+                        ${peerClassName}.${peerColumnName},
+                        pkValue.getValue());
+            }
+            else
+            {
+                selectCriteria.where(
+                        ${peerClassName}.${peerColumnName},
+                        pkValue.getSqlExpression());
+            }
+        }
+  #end
+#end
+
+#foreach ($columnElement in $torqueGen.getChildren("column"))
+  #if($columnElement.getAttribute("version") == "true")
+    #set ( $containsVersion = true )
+    #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName") )
+    #set ( $columnFieldObjectType = $columnElement.getAttribute("fieldObjectType"))
+    #set ( $columnField = $columnElement.getAttribute("field"))
+        $columnFieldObjectType $columnField = ($columnFieldObjectType) columnValues.get(
+                ${peerClassName}.${peerColumnName}).getValue();
+  #end
+#end
+#if ($containsVersion && $optimisticLockingMode == "selectForUpdate")
+        Criteria lockCriteria = new Criteria(selectCriteria);
+        lockCriteria.forUpdate();
+        $dbObjectClassName $field 
+                = doSelectSingleRecord(lockCriteria, con);
+  #foreach ($columnElement in $torqueGen.getChildren("column"))
+    #if($columnElement.getAttribute("version") == "true")
+      #set ( $columnGetter = $columnElement.getAttribute("getter"))
+        if ($field == null) 
+        {
+            throw new NoRowsException(
+               "The row to update does not exist in the database");
+        }
+        if (!Objects.equals(
+                ${field}.${columnGetter}(),
+                $columnField))
+        {
+            throw new OptimisticLockingFailedException(
+               "The row was updated concurrently. Version in database: "
+                   + ${field}.${columnGetter}() + ", version in memory: "
+                   + $columnField);
+        }
+    #end
+  #end
+#end
+#foreach ($columnElement in $torqueGen.getChildren("column"))
+  #if($columnElement.getAttribute("version") == "true")
+    #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName") )
+    #set ( $columnFieldObjectType = $columnElement.getAttribute("fieldObjectType"))
+    #set ( $columnField = $columnElement.getAttribute("field"))
+    #if ( $optimisticLockingMode == "simpleSelect" )
+        selectCriteria.where(
+                ${peerClassName}.${peerColumnName},
+                $columnField);
+    #end
+        columnValues.get(${peerClassName}.${peerColumnName})
+                .setValue($columnField + 1);
+  #end
+#end
+
+        int rowCount = doUpdate(selectCriteria, columnValues, con);
+#if ($containsVersion && $optimisticLockingMode == "simpleSelect")
+        if (rowCount == 0) 
+        {
+            throw new OptimisticLockingFailedException(
+               "The row to update was either updated or deleted concurrently "
+               + "or does not exist at all.");
+        }
+#end
+        return rowCount;
+    }
+#set( $hasVersioning = false )
+#foreach ($columnElement in $torqueGen.getChildren("column"))
+  #if($columnElement.getAttribute("version") == "true")
+    #set( $hasVersioning = true )
+  #end
+#end
+#if ($torqueGen.getChild("primary-keys").getChildren("column").isEmpty())
+
+    /**
+     * Throw exception because this object has no primary key
+     *
+     * @param obj the data object to update in the database.
+     *
+     * @return the number of affected rows.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public int doUpdate($dbObjectClassName obj) throws TorqueException
+    {
+        throw new TorqueException(
+                "doUpdate does not work for objects without primary key");
+    }
+#elseif ($hasVersioning )
+    /**
+     * Updates an $dbObjectClassName in the database.
+     * The primary key is used to identify the object to update.
+     *
+     * @param obj the data object to update in the database.
+     *
+     * @return the number of affected rows.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public int doUpdate($dbObjectClassName obj) throws TorqueException
+    {
+        int result = super.doUpdate(obj);
+#foreach ($columnElement in $torqueGen.getChildren("column"))
+  #if($columnElement.getAttribute("version") == "true")
+    #set ( $columnGetter = $columnElement.getAttribute("getter"))
+    #set ( $columnSetter = $columnElement.getAttribute("setter"))
+        obj.${columnSetter}(obj.${columnGetter}() + 1);
+  #end
+#end
+        return result;
+    }
+#end
+#if ($torqueGen.getChild("primary-keys").getChildren("column").isEmpty())
+
+    /**
+     * Throw exception because this object has no primary key
+     *
+     * @param obj the data object to update in the database.
+     * @param con the connection to use, not null.
+     
+     * @return the number of affected rows.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public int doUpdate($dbObjectClassName obj, Connection con)
+        throws TorqueException
+    {
+        throw new TorqueException(
+                "doUpdate does not work for objects without primary key");
+    }
+#elseif ( $hasVersioning )
+    /**
+     * Updates a $dbObjectClassName in the database.
+     * The primary key is used to identify the object to update.
+     * This method is to be used during a transaction,
+     * otherwise the doUpdate($dbObjectClassName) method can be used.
+     *
+     * @param obj the data object to update in the database.
+     * @param con the connection to use, not null.
+     
+     * @return the number of affected rows.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public int doUpdate($dbObjectClassName obj, Connection con)
+        throws TorqueException
+    {
+        int result = super.doUpdate(obj, con);
+#foreach ($columnElement in $torqueGen.getChildren("column"))
+  #if($columnElement.getAttribute("version") == "true")
+    #set ( $columnGetter = $columnElement.getAttribute("getter"))
+    #set ( $columnSetter = $columnElement.getAttribute("setter"))
+        obj.${columnSetter}(obj.${columnGetter}() + 1);
+  #end
+#end
+        return result;
+    }
+#end

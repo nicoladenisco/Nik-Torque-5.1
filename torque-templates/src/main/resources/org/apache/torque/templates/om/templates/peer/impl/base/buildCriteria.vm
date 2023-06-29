@@ -1,0 +1,135 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: buildCriteria.vm 1850323 2019-01-04 08:22:18Z tv $
+##
+## Creates the buildCriteria methods in the base peer class. 
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+#set ( $primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column") )
+#if (!$primaryKeyColumnElements.isEmpty())
+    /** 
+     * Build a Criteria object which selects all objects which have a given
+     * primary key.
+     *
+     * @param pk the primary key value to build the criteria from, not null.
+     */
+    public Criteria buildCriteria(ObjectKey<?> pk)
+    {
+        Criteria criteria = new Criteria();
+  #if ($primaryKeyColumnElements.size() == 1)
+    #set ( $primaryKeyColumnElement = $primaryKeyColumnElements.get(0) )
+    #set ( $peerColumnName = $primaryKeyColumnElement.getAttribute("peerColumnName") )
+        criteria.and(${peerClassName}.$peerColumnName, pk);
+  #else
+        SimpleKey<?>[] keys = (SimpleKey[])pk.getValue();
+    #set ( $i = 0 )
+    #foreach ($primaryKeyColumnElement in $primaryKeyColumnElements)
+      #set ( $peerColumnName = $primaryKeyColumnElement.getAttribute("peerColumnName") )
+        criteria.and(${peerClassName}.$peerColumnName, keys[$i]);
+      #set ( $i = $i + 1 )
+    #end
+  #end
+        return criteria;
+     }
+
+    /** 
+     * Build a Criteria object which selects all objects which primary keys
+     * are contained in the passed collection.
+     *
+     * @param pks the primary key values to build the criteria from, not null,
+     *        may not contain null.
+     */
+    public Criteria buildCriteria(Collection<ObjectKey<?>> pks)
+    {
+        Criteria criteria = new Criteria();
+  #if ($primaryKeyColumnElements.size() == 1)
+    #set ( $columnElement = $primaryKeyColumnElements.get(0) )
+    #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName"))
+        criteria.andIn(${peerClassName}.$peerColumnName, pks);
+  #else
+        for (ObjectKey<?> pk : pks)
+        {
+            SimpleKey<?>[] keys = (SimpleKey[])pk.getValue();
+    #set ( $i = 0 )
+    #foreach ($primaryKeyColumnElement in $primaryKeyColumnElements)
+      #set ( $peerColumnName = $primaryKeyColumnElement.getAttribute("peerColumnName"))
+                Criterion c$i = new Criterion(
+                    ${peerClassName}.$peerColumnName, keys[$i], Criteria.EQUAL);
+      #set ( $j = $i - 1 )
+      #if ($i > 0)
+                    c${j}.and(c${i});
+      #end
+      #set ( $i = $i + 1 )
+    #end
+            criteria.or(c0);
+        }
+  #end
+        return criteria;
+     }
+
+
+    /** 
+     * Build a Criteria object which selects all passed objects using their
+     * primary key. Objects which do not yet have a primary key are ignored.
+     *
+     * @param objects the objects to build the criteria from, not null,
+     *        may not contain null.
+     */
+    public Criteria buildPkCriteria(
+            Collection<${dbObjectClassName}> objects)
+    {
+        return buildCriteria(objects.stream()
+                .map(object -> object.getPrimaryKey())
+                .collect(Collectors.toList()));
+    }
+
+#end
+    /** 
+     * Build a Criteria object from the data object for this peer.
+#set ( $primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column") )
+#if (!$idMethod.equals("none") && $primaryKeyColumnElements.size() >= 1)
+     * The primary key columns are only added if the object is not new.
+#end
+     *
+     * @param obj the object to build the criteria from, not null.
+     */
+    public Criteria buildCriteria($dbObjectClassName obj)
+    {
+        Criteria criteria = new Criteria(getDatabaseName());
+#foreach ($columnElement in $torqueGen.getChildren("column"))
+  #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName") )
+  #set ( $getter = $columnElement.getAttribute("getter") )
+  #set ( $primaryKey = ($columnElement.getAttribute("primaryKey") == "true") )
+  #if ($primaryKey && !$idMethod.equals("none"))
+        if (!obj.isNew())
+        {
+            criteria.and(${peerClassName}.$peerColumnName, obj.${getter}());
+        }
+  #else
+        criteria.and(${peerClassName}.$peerColumnName, obj.${getter}());
+  #end
+  #end
+        return criteria;
+    }

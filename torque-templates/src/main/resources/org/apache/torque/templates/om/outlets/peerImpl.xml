@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<outlets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+         xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+  <outlet name="torque.om.peer.impl"
+          xsi:type="velocityOutlet"
+          path="peer/impl/peerImpl.vm">
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.classJavadoc"/>
+    </mergepoint>
+    <mergepoint name="serialVersionUid">
+      <action xsi:type="applyAction" outlet="torque.om.serialVersionUid"/>
+    </mergepoint>
+    <mergepoint name="extensions"/>
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.classJavadoc"
+          xsi:type="velocityOutlet"
+          path="peer/impl/classJavadoc.vm">
+  </outlet>
+
+  <outlet name="torque.om.basePeer.impl"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/basePeerImpl.vm">
+    <mergepoint name="imports">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.imports"/>
+    </mergepoint>
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.classJavadoc"/>
+    </mergepoint>
+    <mergepoint name="serialVersionUid">
+      <action xsi:type="applyAction" outlet="torque.om.serialVersionUid"/>
+    </mergepoint>
+    <mergepoint name="constructor">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.constructor"/>
+    </mergepoint>
+    <mergepoint name="getDbObjectInstance">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.getDbObjectInstance"/>
+    </mergepoint>
+    <mergepoint name="doUpdate">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.doUpdate"/>
+    </mergepoint>
+    <mergepoint name="saveMethods">
+      <action xsi:type="applyAction" outlet="torque.om.saveMethods"/>
+    </mergepoint>
+    <mergepoint name="doDelete">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.doDelete"/>
+    </mergepoint>
+    <mergepoint name="buildCriteria">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.buildCriteria"/>
+    </mergepoint>
+    <mergepoint name="buildSelectCriteria">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.buildSelectCriteria"/>
+    </mergepoint>
+    <mergepoint name="buildColumnValues">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.buildColumnValues"/>
+    </mergepoint>
+    <mergepoint name="retrieveByPK">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.retrieveByPK"/>
+    </mergepoint>
+    <mergepoint name="retrieveByPKs">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.retrieveByPKs"/>
+    </mergepoint>
+    <mergepoint name="peerUnices">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.peerUnices"/>
+    </mergepoint>
+    <mergepoint name="doSelectJoin">
+      <action xsi:type="traverseAllAction" element="foreign-key/foreign-field"
+              outlet="torque.om.peer.impl.base.doSelectJoin"/>
+    </mergepoint>
+    <mergepoint name="doSelectJoinAllExcept">
+      <action xsi:type="traverseAllAction" element="foreign-key/foreign-field"
+              outlet="torque.om.peer.impl.base.doSelectJoinAllExcept"/>
+    </mergepoint>
+    <mergepoint name="fillReferencedObjects">
+      <action xsi:type="traverseAllAction"
+              element="foreign-key/local-field"
+              outlet="torque.om.peer.impl.base.fillReferencedObject"/>
+    </mergepoint>
+    <mergepoint name="fillReferencingObjects">
+      <action xsi:type="traverseAllAction"
+              element="referencing-foreign-keys/foreign-key/foreign-field"
+              outlet="torque.om.peer.impl.base.fillReferencingObjects"/>
+    </mergepoint>
+    <mergepoint name="setAndSaveReferencing">
+      <action xsi:type="traverseAllAction"
+              element="referencing-foreign-keys/foreign-key/foreign-field"
+              outlet="torque.om.peer.impl.base.setAndSaveReferencing"/>
+    </mergepoint>
+    <mergepoint name="extensions" />
+  </outlet>
+
+  <outlet name="torque.om.basePeerForView.impl"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/basePeerForViewImpl.vm">
+    <mergepoint name="imports">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.imports"/>
+    </mergepoint>
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.classJavadoc"/>
+    </mergepoint>
+    <mergepoint name="serialVersionUid">
+      <action xsi:type="applyAction" outlet="torque.om.serialVersionUid"/>
+    </mergepoint>
+    <mergepoint name="constructor">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.constructor"/>
+    </mergepoint>
+    <mergepoint name="getDbObjectInstance">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.getDbObjectInstance"/>
+    </mergepoint>
+    <mergepoint name="buildCriteria">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.buildCriteria"/>
+    </mergepoint>
+    <mergepoint name="buildSelectCriteria">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.buildSelectCriteria"/>
+    </mergepoint>
+    <mergepoint name="buildColumnValues">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.buildColumnValues"/>
+    </mergepoint>
+    <mergepoint name="retrieveByPK">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.retrieveByPK"/>
+    </mergepoint>
+    <mergepoint name="retrieveByPKs">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.retrieveByPKs"/>
+    </mergepoint>
+    <mergepoint name="extensions" />
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.imports"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/imports.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.classJavadoc"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/classJavadoc.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.constructor"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/constructor.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.getDbObjectInstance"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/getDbObjectInstance.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.doUpdate"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/doUpdate.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.doDelete"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/doDelete.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.buildCriteria"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/buildCriteria.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.buildSelectCriteria"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/buildSelectCriteria.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.buildColumnValues"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/buildColumnValues.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.retrieveByPK"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/retrieveByPK.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.peerUnices"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/peerUnices.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.retrieveByPKs"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/retrieveByPKs.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.doSelectJoin"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/doSelectJoin.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.doSelectJoinAllExcept"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/doSelectJoinAllExcept.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.fillReferencedObject"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/fillReferencedObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.fillReferencingObjects"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/fillReferencingObjects.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.setAndSaveReferencing"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/setAndSaveReferencing.vm">
+  </outlet>
+</outlets>

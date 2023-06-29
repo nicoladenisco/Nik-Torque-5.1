@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<outlets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+         xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+  <outlet name="torque.om.basePeer"
+          xsi:type="velocityOutlet"
+          path="peer/base/basePeer.vm">
+    <mergepoint name="imports">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.imports"/>
+    </mergepoint>
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.classJavadoc"/>
+    </mergepoint>
+    <mergepoint name="tableDatabaseNameConstants">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.tableDatabaseNameConstants"/>
+    </mergepoint>
+    <mergepoint name="tableConstant">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.tableConstant"/>
+    </mergepoint>
+    <mergepoint name="columnConstants">
+      <action xsi:type="traverseAllAction"
+              element="column"
+              outlet="torque.om.peer.base.columnConstant"/>
+    </mergepoint>
+    <mergepoint name="fillerChunkSizeConstant">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.fillerChunkSizeConstant"/>
+    </mergepoint>
+    <mergepoint name="peerImplField">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.peerImplField"/>
+    </mergepoint>
+    <mergepoint name="staticInit">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.staticInit"/>
+    </mergepoint>
+    <mergepoint name="peerImplCreator">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.peerImplCreator"/>
+    </mergepoint>
+    <mergepoint name="peerImplGetter">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.peerImplGetter"/>
+    </mergepoint>
+    <mergepoint name="peerImplSetter">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.peerImplSetter"/>
+    </mergepoint>
+    <mergepoint name="numColumnConstant">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.numColumnConstant"/>
+    </mergepoint>
+    <mergepoint name="inheritanceClasskeyConstants">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.inheritanceClasskeyConstants"/>
+    </mergepoint>
+    <mergepoint name="doInsert">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.doInsert"/>
+    </mergepoint>
+    <mergepoint name="addSelectColumns">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.addSelectColumns"/>
+    </mergepoint>
+    <mergepoint name="correctBooleans">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.correctBooleans"/>
+    </mergepoint>
+    <mergepoint name="doSelect">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.doSelect"/>
+    </mergepoint>
+    <mergepoint name="getDbObjectInstance">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.getDbObjectInstance"/>
+    </mergepoint>
+    <mergepoint name="doUpdate">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.doUpdate"/>
+    </mergepoint>
+    <mergepoint name="executeStatement">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.executeStatement"/>
+    </mergepoint>
+    <mergepoint name="saveMethods">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.saveMethods"/>
+    </mergepoint>
+    <mergepoint name="doDelete">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.doDelete"/>
+    </mergepoint>
+    <mergepoint name="buildCriteria">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.buildCriteria"/>
+    </mergepoint>
+    <mergepoint name="buildSelectCriteria">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.buildSelectCriteria"/>
+    </mergepoint>
+    <mergepoint name="buildColumnValues">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.buildColumnValues"/>
+    </mergepoint>
+    <mergepoint name="retrieveByPK">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.retrieveByPK"/>
+    </mergepoint>
+    <mergepoint name="retrieveByPKs">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.retrieveByPKs"/>
+    </mergepoint>
+    <mergepoint name="peerUnices">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.peerUnices"/>
+    </mergepoint>
+    <mergepoint name="doSelectJoin">
+      <action xsi:type="traverseAllAction" element="foreign-key/foreign-field"
+              outlet="torque.om.peer.base.doSelectJoin"/>
+    </mergepoint>
+    <mergepoint name="doSelectJoinAllExcept">
+      <action xsi:type="traverseAllAction" element="foreign-key/foreign-field"
+              outlet="torque.om.peer.base.doSelectJoinAllExcept"/>
+    </mergepoint>
+    <mergepoint name="fillReferencedObjects">
+      <action xsi:type="traverseAllAction"
+              element="foreign-key/local-field"
+              outlet="torque.om.peer.base.fillReferencedObject"/>
+    </mergepoint>
+    <mergepoint name="fillReferencingObjects">
+      <action xsi:type="traverseAllAction"
+              element="referencing-foreign-keys/foreign-key/foreign-field"
+              outlet="torque.om.peer.base.fillReferencingObjects"/>
+    </mergepoint>
+    <mergepoint name="setAndSaveReferencing">
+      <action xsi:type="traverseAllAction"
+              element="referencing-foreign-keys/foreign-key/foreign-field"
+              outlet="torque.om.peer.base.setAndSaveReferencing"/>
+    </mergepoint>
+    <mergepoint name="getTableMap">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.getTableMap"/>
+    </mergepoint>
+    <mergepoint name="initDatabaseMap">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.initDatabaseMap"/>
+    </mergepoint>
+    <mergepoint name="extensions" />
+  </outlet>
+
+  <outlet name="torque.om.basePeerForView"
+          xsi:type="velocityOutlet"
+          path="peer/base/basePeerForView.vm">
+    <mergepoint name="imports">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.imports"/>
+    </mergepoint>
+    <mergepoint name="classJavadoc">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.classJavadoc"/>
+    </mergepoint>
+    <mergepoint name="serialVersionUid">
+      <action xsi:type="applyAction" outlet="torque.om.serialVersionUid"/>
+    </mergepoint>
+    <mergepoint name="tableDatabaseNameConstants">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.tableDatabaseNameConstants"/>
+    </mergepoint>
+    <mergepoint name="tableConstant">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.tableConstant"/>
+    </mergepoint>
+    <mergepoint name="columnConstants">
+      <action xsi:type="traverseAllAction"
+              element="column"
+              outlet="torque.om.peer.base.columnConstant"/>
+    </mergepoint>
+    <mergepoint name="fillerChunkSizeConstant">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.fillerChunkSizeConstant"/>
+    </mergepoint>
+    <mergepoint name="peerImplField">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.peerImplField"/>
+    </mergepoint>
+    <mergepoint name="staticInit">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.staticInit"/>
+    </mergepoint>
+    <mergepoint name="peerImplCreator">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.peerImplCreator"/>
+    </mergepoint>
+    <mergepoint name="peerImplGetter">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.peerImplGetter"/>
+    </mergepoint>
+    <mergepoint name="peerImplSetter">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.peerImplSetter"/>
+    </mergepoint>
+    <mergepoint name="numColumnConstant">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.numColumnConstant"/>
+    </mergepoint>
+    <mergepoint name="inheritanceClasskeyConstants">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.inheritanceClasskeyConstants"/>
+    </mergepoint>
+    <mergepoint name="addSelectColumns">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.addSelectColumns"/>
+    </mergepoint>
+    <mergepoint name="correctBooleans">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.correctBooleans"/>
+    </mergepoint>
+    <mergepoint name="doSelect">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.doSelect"/>
+    </mergepoint>
+    <mergepoint name="getDbObjectInstance">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.getDbObjectInstance"/>
+    </mergepoint>
+    <mergepoint name="buildCriteria">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.buildCriteria"/>
+    </mergepoint>
+    <mergepoint name="buildSelectCriteria">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.buildSelectCriteria"/>
+    </mergepoint>
+    <mergepoint name="retrieveByPK">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.retrieveByPK"/>
+    </mergepoint>
+    <mergepoint name="retrieveByPKs">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.retrieveByPKs"/>
+    </mergepoint>
+    <mergepoint name="getTableMap">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.getTableMap"/>
+    </mergepoint>
+    <mergepoint name="initDatabaseMap">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.initDatabaseMap"/>
+    </mergepoint>
+    <mergepoint name="extensions" />
+  </outlet>
+
+  <outlet name="torque.om.peer.base.imports"
+          xsi:type="velocityOutlet"
+          path="peer/base/imports.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.classJavadoc"
+          xsi:type="velocityOutlet"
+          path="peer/base/classJavadoc.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.tableDatabaseNameConstants"
+          xsi:type="velocityOutlet"
+          path="peer/base/tableDatabaseNameConstants.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.tableConstant"
+          xsi:type="velocityOutlet"
+          path="peer/base/tableConstant.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.columnConstant"
+          xsi:type="velocityOutlet"
+          path="peer/base/columnConstant.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.fillerChunkSizeConstant"
+          xsi:type="velocityOutlet"
+          path="peer/base/fillerChunkSizeConstant.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.tableDatabaseNameConstantsInit"
+          xsi:type="velocityOutlet"
+          path="peer/base/tableDatabaseNameConstantsInit.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.peerImplField"
+          xsi:type="velocityOutlet"
+          path="peer/base/peerImplField.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.staticInit"
+          xsi:type="velocityOutlet"
+          path="peer/base/staticInit.vm">
+    <mergepoint name="tableDatabaseNameConstantsInit">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.tableDatabaseNameConstantsInit"/>
+    </mergepoint>
+    <mergepoint name="tableConstantInit">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.tableConstantInit"/>
+    </mergepoint>
+    <mergepoint name="columnConstantsInit">
+      <action xsi:type="traverseAllAction" element="column"
+              outlet="torque.om.peer.base.columnConstantInit"/>
+    </mergepoint>
+    <mergepoint name="foreignKeysInit">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.foreignKeysInit"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.peer.base.tableConstantInit"
+          xsi:type="velocityOutlet"
+          path="peer/base/tableConstantInit.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.columnConstantInit"
+          xsi:type="velocityOutlet"
+          path="peer/base/columnConstantInit.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.foreignKeysInit"
+          xsi:type="velocityOutlet"
+          path="peer/base/foreignKeysInit.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.peerImplCreator"
+          xsi:type="velocityOutlet"
+          path="peer/base/peerImplCreator.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.peerImplGetter"
+          xsi:type="velocityOutlet"
+          path="peer/base/peerImplGetter.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.peerImplSetter"
+          xsi:type="velocityOutlet"
+          path="peer/base/peerImplSetter.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.numColumnConstant"
+          xsi:type="velocityOutlet"
+          path="peer/base/numColumnConstant.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.inheritanceClasskeyConstants"
+          xsi:type="velocityOutlet"
+          path="peer/base/inheritanceClasskeyConstants.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.doInsert"
+          xsi:type="velocityOutlet"
+          path="peer/base/doInsert.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.addSelectColumns"
+          xsi:type="velocityOutlet"
+          path="peer/base/addSelectColumns.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.correctBooleans"
+          xsi:type="velocityOutlet"
+          path="peer/base/correctBooleans.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.doSelect"
+          xsi:type="velocityOutlet"
+          path="peer/base/doSelect.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.getDbObjectInstance"
+          xsi:type="velocityOutlet"
+          path="peer/base/getDbObjectInstance.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.doUpdate"
+          xsi:type="velocityOutlet"
+          path="peer/base/doUpdate.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.executeStatement"
+          xsi:type="velocityOutlet"
+          path="peer/base/executeStatement.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.saveMethods"
+          xsi:type="velocityOutlet"
+          path="peer/base/saveMethods.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.doDelete"
+          xsi:type="velocityOutlet"
+          path="peer/base/doDelete.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.buildCriteria"
+          xsi:type="velocityOutlet"
+          path="peer/base/buildCriteria.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.buildSelectCriteria"
+          xsi:type="velocityOutlet"
+          path="peer/base/buildSelectCriteria.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.buildColumnValues"
+          xsi:type="velocityOutlet"
+          path="peer/base/buildColumnValues.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.retrieveByPK"
+          xsi:type="velocityOutlet"
+          path="peer/base/retrieveByPK.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.retrieveByPKs"
+          xsi:type="velocityOutlet"
+          path="peer/base/retrieveByPKs.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.peerUnices"
+          xsi:type="velocityOutlet"
+          path="peer/base/peerUnices.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.doSelectJoin"
+          xsi:type="velocityOutlet"
+          path="peer/base/doSelectJoin.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.doSelectJoinAllExcept"
+          xsi:type="velocityOutlet"
+          path="peer/base/doSelectJoinAllExcept.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.fillReferencedObject"
+          xsi:type="velocityOutlet"
+          path="peer/base/fillReferencedObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.fillReferencingObjects"
+          xsi:type="velocityOutlet"
+          path="peer/base/fillReferencingObjects.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.setAndSaveReferencing"
+          xsi:type="velocityOutlet"
+          path="peer/base/setAndSaveReferencing.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.getTableMap"
+          xsi:type="velocityOutlet"
+          path="peer/base/getTableMap.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.initDatabaseMap"
+          xsi:type="velocityOutlet"
+          path="peer/base/initDatabaseMap.vm">
+  </outlet>
+
+</outlets>

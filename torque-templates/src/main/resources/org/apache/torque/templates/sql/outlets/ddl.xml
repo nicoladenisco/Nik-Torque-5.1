@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<outlets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+  <outlet name="torque.sql.ddl.database"
+      xsi:type="groovyOutlet"
+      path="ddl/database.groovy">
+    <mergepoint name="databaseStart">
+      <action xsi:type="applyAction" 
+          outlet="torque.sql.ddl.databaseStart"/>
+    </mergepoint>
+    <mergepoint name="globalSettings">
+      <action xsi:type="applyAction" 
+          outlet="torque.sql.ddl.skipGlobalSettingsDecider"/>
+    </mergepoint>
+    <mergepoint name="drop">
+      <action xsi:type="applyAction" 
+          outlet="torque.sql.ddl.dropSkipDecider"/>
+    </mergepoint>
+    <mergepoint name="createSchema">
+      <action xsi:type="traverseAllAction" 
+          element="schemaNameList" 
+          outlet="torque.sql.ddl.createDatabaseSchema"/>
+    </mergepoint>
+    <mergepoint name="tables">
+      <action xsi:type="traverseAllAction" 
+          element="tableList" 
+          outlet="torque.sql.ddl.tableSkipDecider"/>
+    </mergepoint>
+    <mergepoint name="foreignKeys">
+      <action xsi:type="traverseAllAction" 
+          element="tableList" 
+          outlet="torque.sql.ddl.foreignKeySkipDecider"/>
+    </mergepoint>
+    <mergepoint name="enumConstraints">
+      <action xsi:type="traverseAllAction" 
+          element="tableList/columnList" 
+          outlet="torque.sql.ddl.enumConstraint"/>
+    </mergepoint>
+    <mergepoint name="views">
+      <action xsi:type="traverseAllAction" 
+          element="viewList" 
+          outlet="torque.sql.ddl.view"/>
+    </mergepoint>
+    <mergepoint name="comments">
+      <action xsi:type="traverseAllAction" 
+          element="tableList" 
+          outlet="torque.sql.ddl.commentSkipDecider"/>
+    </mergepoint>
+    <mergepoint name="databaseEnd" />
+  </outlet>
+  
+  <outlet name="torque.sql.ddl.skipGlobalSettingsDecider"
+      xsi:type="groovyOutlet"
+      path="ddl/skipGlobalSettingsDecider.groovy">
+    <mergepoint name="globalSettings">
+      <action xsi:type="applyAction"
+          outlet="torque.sql.ddl.globalSettings"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.sql.ddl.dropSkipDecider"
+      xsi:type="groovyOutlet"
+      path="ddl/dropSkipDecider.groovy">
+    <mergepoint name="drop">
+      <action xsi:type="traverseAllAction" 
+          element="viewList" 
+          outlet="torque.sql.ddl.dropView"/>
+      <action xsi:type="traverseAllAction" 
+          element="tableList" 
+          outlet="torque.sql.ddl.dropForeignKeySkipDecider"/>
+      <action xsi:type="traverseAllAction" 
+          element="tableList" 
+          outlet="torque.sql.ddl.dropTableSkipDecider"/>
+      <action xsi:type="traverseAllAction" 
+          element="schemaNameList" 
+          outlet="torque.sql.ddl.dropDatabaseSchema"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.sql.ddl.dropForeignKeySkipDecider"
+      xsi:type="groovyOutlet"
+      path="ddl/tableSkipDecider.groovy">
+    <mergepoint name="table">
+      <action xsi:type="traverseAllAction" 
+          element="foreignKeyList" 
+          outlet="torque.sql.ddl.dropForeignKey"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.sql.ddl.dropTableSkipDecider"
+      xsi:type="groovyOutlet"
+      path="ddl/tableSkipDecider.groovy">
+    <mergepoint name="table">
+      <action xsi:type="applyAction"
+          outlet="torque.sql.ddl.dropTable"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.sql.ddl.tableSkipDecider"
+      xsi:type="groovyOutlet"
+      path="ddl/tableSkipDecider.groovy">
+    <mergepoint name="table">
+      <action xsi:type="applyAction"
+          outlet="torque.sql.ddl.table"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.sql.ddl.foreignKeySkipDecider"
+      xsi:type="groovyOutlet"
+      path="ddl/tableSkipDecider.groovy">
+    <mergepoint name="table">
+      <action xsi:type="traverseAllAction" 
+          element="foreignKeyList" 
+          outlet="torque.sql.ddl.foreignKey"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.sql.ddl.commentSkipDecider"
+      xsi:type="groovyOutlet"
+      path="ddl/tableSkipDecider.groovy">
+    <mergepoint name="table">
+      <action xsi:type="applyAction"
+          outlet="torque.sql.ddl.tableComment"/>
+      <action xsi:type="traverseAllAction" 
+          element="column" 
+          outlet="torque.sql.ddl.columnComment"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.sql.ddl.databaseStart"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/databaseStart.groovy"/>
+
+  <outlet name="torque.sql.ddl.createDatabaseSchema"
+      xsi:type="groovyOutlet"
+      path="ddl/createDatabaseSchema.groovy">
+  </outlet>
+
+  <outlet name="torque.sql.ddl.dropDatabaseSchema"
+      xsi:type="groovyOutlet"
+      path="ddl/dropDatabaseSchema.groovy">
+  </outlet>
+
+  <outlet name="torque.sql.ddl.table"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/table.groovy">
+    <mergepoint name="columns">
+      <action xsi:type="traverseAllAction"
+          element="columnList"
+          outlet="torque.sql.ddl.column"/>
+    </mergepoint>
+    <mergepoint name="primaryKey">
+      <action xsi:type="applyAction" 
+          outlet="torque.sql.ddl.primaryKey"/>
+    </mergepoint>
+    <mergepoint name="unique">
+      <action xsi:type="traverseAllAction" 
+          element="uniqueList"
+          outlet="torque.sql.ddl.unique"/>
+    </mergepoint>
+    <mergepoint name="index">
+      <action xsi:type="traverseAllAction" 
+          element="indexList"
+          outlet="torque.sql.ddl.index"/>
+    </mergepoint>
+    <mergepoint name="sequence">
+      <action xsi:type="applyAction"
+          outlet="torque.sql.ddl.sequence"/>
+    </mergepoint>
+    <mergepoint name="createOptions">
+      <action xsi:type="applyAction"
+          outlet="torque.sql.ddl.tableCreateOptions"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.sql.ddl.dropTable"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/dropTable.groovy" />
+      
+  <outlet name="torque.sql.ddl.globalSettings"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/globalSettings.groovy"/>
+
+  <outlet name="torque.sql.ddl.dropForeignKey"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/dropForeignKey.groovy" />
+
+  <outlet name="torque.sql.ddl.column"
+      xsi:type="groovyOutlet"
+      path="ddl/column.groovy" />
+
+  <outlet name="torque.sql.ddl.primaryKey"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/primaryKey.groovy" />
+
+  <outlet name="torque.sql.ddl.unique"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/unique.groovy" />
+
+  <outlet name="torque.sql.ddl.index"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/index.groovy" />
+      
+  <outlet name="torque.sql.ddl.sequence"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/sequence.groovy" />
+
+  <outlet name="torque.sql.ddl.tableComment"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/tableComment.groovy">
+    <mergepoint name="columnComments">
+      <action xsi:type="traverseAllAction" 
+          element="column"
+          outlet="torque.sql.ddl.columnComment"/>
+     </mergepoint>
+  </outlet>
+  
+  <outlet name="torque.sql.ddl.tableCreateOptions"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/tableCreateOptions.groovy">
+  </outlet>
+      
+  <outlet name="torque.sql.ddl.columnComment"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/columnComment.groovy" />
+      
+  <outlet name="torque.sql.ddl.foreignKey"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/foreignKey.groovy" />
+
+  <outlet name="torque.sql.ddl.enumConstraint"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/enumConstraint.groovy">
+    <mergepoint name="enumValue">
+      <action xsi:type="traverseAllAction" 
+          element="enumValueList" 
+          outlet="torque.sql.ddl.enumValue"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.sql.ddl.enumValue"
+      xsi:type="groovyOutlet"
+      path="ddl/enumValue.groovy">
+  </outlet>
+
+  <outlet name="torque.sql.ddl.view"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/view.groovy">
+    <mergepoint name="columns">
+      <action xsi:type="traverseAllAction" 
+          element="columnList"
+          outlet="torque.sql.ddl.viewColumn"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.sql.ddl.dropView"
+      xsi:type="groovyOutlet"
+      path="ddl/${option:database}/dropView.groovy">
+  </outlet>
+
+  <outlet name="torque.sql.ddl.viewColumn"
+      xsi:type="groovyOutlet"
+      path="ddl/viewColumn.groovy">
+  </outlet>
+</outlets>

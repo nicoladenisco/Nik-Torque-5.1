@@ -1,0 +1,228 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: saveMethods.vm 1839284 2018-08-27 08:57:56Z tv $
+##
+## This template creates save methods for a BasePeerImpl.
+## The template expects as input a "table" element from the torque schema, 
+## which was processed by the OMTransformer.  
+##
+#if (${saveMethodToSaveVariable})
+  #set( $methodInputParam = "${saveMethodInputType} ${saveMethodToSaveVariable}" )
+  #set( $methodInputParamWithComma = "${saveMethodInputType} ${saveMethodToSaveVariable}, " )
+  #set( $toSaveVariableWithComma = "${saveMethodToSaveVariable}, " )
+  #set( $toSaveVariableWithDot = ${saveMethodToSaveVariable} + "." )
+  #set( $toSaveVariable = ${saveMethodToSaveVariable} ) 
+#else
+  #set( $methodInputParam = "" )
+  #set( $methodInputParamWithComma = "" )
+  #set( $toSaveVariableWithComma = "" )
+  #set( $toSaveVariableWithDot = "" )
+  #set( $toSaveVariable = "(${dbObjectClassName}) this" )
+#end
+
+    /**
+     * Stores an object in the database.  If the object is new,
+     * it is inserted; otherwise an update is performed.
+     *
+#if (${saveMethodToSaveVariable})
+     * @param ${saveMethodToSaveVariable} the object to be saved, not null.
+     *
+#end
+     * @throws $saveException if an error occurs during saving.
+     */
+    public void save(${methodInputParam}) throws $saveException
+    {
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+        save(${toSaveVariableWithComma}${peerClassName}.DATABASE_NAME);
+#else
+#if ($torqueGen.booleanOption("torque.om.trackSaving"))
+        try
+        {
+            ${toSaveVariableWithDot}setSaving(true);
+#end
+            if (${toSaveVariableWithDot}isModified())
+            {
+                if (${toSaveVariableWithDot}isNew())
+                {
+                    ${peerClassName}.doInsert(${toSaveVariable});
+                    ${toSaveVariableWithDot}setNew(false);
+                }
+                else
+                {
+                    ${peerClassName}.doUpdate(${toSaveVariable});
+                }
+            }
+#if ($torqueGen.booleanOption("torque.om.trackSaving"))
+        }
+        finally
+        {
+            ${toSaveVariableWithDot}setSaving(false);
+        }
+#end
+#end
+    }
+
+    /**
+     * Stores an object in the database.  If the object is new,
+     * it is inserted; otherwise an update is performed.
+     *
+#if (${saveMethodToSaveVariable})
+     * @param ${saveMethodToSaveVariable} the object to be saved, not null.
+#end
+     * @param dbName the name of the database to which the object
+     *        should be saved.
+     *
+     * @throws $saveException if an error occurs during saving.
+     */
+    public void save(${methodInputParamWithComma}String dbName) 
+            throws $saveException
+    {
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+        try (TorqueConnection con = Transaction.begin(dbName))
+        {
+            save(${toSaveVariableWithComma}con);
+            Transaction.commit(con);
+        }
+#else
+        if (${toSaveVariableWithDot}isModified())
+        {
+            try (TorqueConnection con = Transaction.begin(dbName))
+            {
+#if ($torqueGen.booleanOption("torque.om.trackSaving"))
+                ${toSaveVariableWithDot}setSaving(true);
+#end
+                if (${toSaveVariableWithDot}isNew())
+                {
+                    ${peerClassName}.doInsert($toSaveVariable, con);
+                    ${toSaveVariableWithDot}setNew(false);
+                }
+                else
+                {
+                    ${peerClassName}.doUpdate($toSaveVariable, con);
+                }
+                Transaction.commit(con);
+            }
+#if ($torqueGen.booleanOption("torque.om.trackSaving"))
+            finally
+            {
+                ${toSaveVariableWithDot}setSaving(false);
+            }
+#end
+        }
+#end
+    }
+
+    /**
+     * Stores an object in the database.  If the object is new,
+     * it is inserted; otherwise an update is performed.  This method
+     * is meant to be used as part of a transaction, otherwise use
+     * the save() method and the connection details will be handled
+     * internally.
+     *
+#if (${saveMethodToSaveVariable})
+     * @param ${saveMethodToSaveVariable} the object to be saved, not null.
+#end
+     * @param con the connection to use for saving the object, not null.
+     *
+     * @throws $saveException if an error occurs during saving.
+     */
+    public void save(${methodInputParamWithComma}Connection con) 
+            throws $saveException
+    {
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+        if (${toSaveVariableWithDot}isSaving())
+        {
+            return;
+        }
+#end
+#if ($torqueGen.booleanOption("torque.om.trackSaving")
+     || ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching")))
+        try
+        {
+            ${toSaveVariableWithDot}setSaving(true);
+#end
+            // If this object has been modified, then save it to the database.
+            if (${toSaveVariableWithDot}isModified())
+            {
+                if (${toSaveVariableWithDot}isNew())
+                {
+                    ${peerClassName}.doInsert($toSaveVariable, con);
+                    ${toSaveVariableWithDot}setNew(false);
+                }
+                else
+                {
+                    ${peerClassName}.doUpdate($toSaveVariable, con);
+                }
+#if (${useManagers} == "true")
+  #set ( $primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column") )
+  #if ( $primaryKeyColumnElements.size() != 0)
+                if (isCacheOnSave())
+                {
+                    ${managerPackage}.${managerClassName}.putInstance(
+                            ${toSaveVariable});
+                }
+  #end
+#end
+            }
+
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+  #set ( $referencingForeignKeyElements = $torqueGen.getChild("referencing-foreign-keys").getChildren("foreign-key") )
+  #set ( $thisTableName = $torqueGen.getSourceElement().getAttribute("name"))
+  #foreach ($referencingForeignKeyElement in $referencingForeignKeyElements)
+    #set ( $otherTable = $referencingForeignKeyElement.getParent())
+    #set ( $otherTableName = $otherTable.getAttribute("name"))
+    #if ( !($thisTableName.equals($otherTableName)) )
+      #set ( $otherClassName = $otherTable.getAttribute("dbObjectClassName") )
+      #set ( $otherPeerClassName = $otherTable.getAttribute("peerClassName") )
+      #set ( $relCol = "" )
+      #set ( $foreignField = $referencingForeignKeyElement.getChild("foreign-field").getAttribute("field"))
+      #set ( $foreignFieldGetter = $referencingForeignKeyElement.getChild("foreign-field").getAttribute("getter"))
+      #set ( $foreignFieldIsInitialized = $referencingForeignKeyElement.getChild("foreign-field").getAttribute("isInitialized"))
+      #if ($otherTable.getAttribute("saveMethodToSaveVariable"))
+        #set ( $otherObjectContainsSaveMethod = $otherPeerClassName )
+        #set ( $otherToSaveVariableWithComma = "${foreignField}, " )
+      #else
+        #set ( $otherObjectContainsSaveMethod = ${foreignField} )
+        #set ( $otherToSaveVariableWithComma = "" )
+      #end
+      ## if the referencing table is in an external schema, field is null.
+      ## In this case,skip the following code
+      #if ($foreignField)
+            if (${toSaveVariableWithDot}${foreignFieldIsInitialized}())
+            {
+                for (${otherClassName} ${foreignField} : ${toSaveVariableWithDot}${foreignFieldGetter}())
+                {
+                    ${otherObjectContainsSaveMethod}.save(${otherToSaveVariableWithComma}con);
+                }
+            }
+      #end
+    #end
+  #end
+#end
+#if ($torqueGen.booleanOption("torque.om.trackSaving")
+     || ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching")))
+        }
+        finally
+        {
+            ${toSaveVariableWithDot}setSaving(false);
+        }
+#end
+    }
+

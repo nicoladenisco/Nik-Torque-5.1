@@ -1,0 +1,133 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: doSelectJoin.vm 1839284 2018-08-27 08:57:56Z tv $
+##
+## Creates the doSelectJoinXXX methods for the base peer.
+## 
+## This template expects the current source element to be a "foreign-field" 
+## element from the schema, processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+#set ( $foreignKeyElement = $torqueGen.getParent() )
+#set ( $tableElement = $foreignKeyElement.getParent() )
+#set ( $joinedTableElement = $foreignKeyElement.getChild("table") )
+#set ( $dbObjectClassName = $tableElement.getAttribute("dbObjectClassName") )
+#set ( $joinedDbObjectClassName = $joinedTableElement.getAttribute("dbObjectClassName") )
+#set ( $joinedDbObjectPackage = $joinedTableElement.getAttribute("dbObjectPackage") )
+#set ( $joinedDbObject = "${joinedDbObjectPackage}.$joinedDbObjectClassName" )
+#set ( $peerClassName = $tableElement.getAttribute("peerClassName") )
+#set ( $peerImplClassName = $tableElement.getAttribute("peerImplClassName") )
+#set ( $recordMapperClassName = $tableElement.getAttribute("recordMapperClassName") )
+#set ( $joinedPeerClassName = $joinedTableElement.getAttribute("peerClassName") )
+#set ( $joinedPeerImplClassName = $joinedTableElement.getAttribute("peerImplClassName") )
+#set ( $joinedRecordMapperClassName = $joinedTableElement.getAttribute("recordMapperClassName") )
+#set ( $joinedPeerPackage = $joinedTableElement.getAttribute("peerPackage") )
+#set ( $joinedPeer = "${joinedPeerPackage}.$joinedPeerClassName" )
+#set ( $joinedPeerImpl = "${joinedPeerPackage}.$joinedPeerImplClassName" )
+#set ( $referenceElements = $foreignKeyElement.getChildren("reference") )
+#set ( $localFieldElement = $foreignKeyElement.getChild("local-field"))
+#set ( $getterForJoinedDbObject = $localFieldElement.getAttribute("getter"))
+    /**
+     * Selects a collection of dbObjectClassName objects pre-filled with their
+     * $joinedDbObjectClassName objects.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public List<${dbObjectClassName}> ${peerJoinSelectMethod}(Criteria criteria)
+        throws TorqueException
+    {
+        try (TorqueConnection connection = Transaction.begin(getDatabaseName()))
+        {
+            List<${dbObjectClassName}> result
+                    = $peerClassName.${peerJoinSelectMethod}(criteria, connection);
+            Transaction.commit(connection);
+            return result;
+        }
+    }
+
+    /**
+     * Selects a collection of $dbObjectClassName objects pre-filled with their
+     * $joinedDbObjectClassName objects.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public List<$dbObjectClassName> ${peerJoinSelectMethod}(
+            Criteria criteria, Connection conn)
+        throws TorqueException
+    {
+        setDbName(criteria);
+
+        addSelectColumns(criteria);
+        ${joinedPeer}.addSelectColumns(criteria);
+
+        CompositeMapper compositeMapper = new CompositeMapper();
+        compositeMapper.addMapper(
+                new ${recordMapperClassName}(),
+                0);
+        compositeMapper.addMapper(
+                new ${joinedRecordMapperClassName}(),
+                ${peerClassName}.numColumns);
+  #foreach ($referenceElement in $referenceElements)
+    #set ( $joinedColumnElement = $referenceElement.getChild("foreign-column").getChild("column") )
+    #set ( $joinedPeerColumnName = $joinedColumnElement.getAttribute("peerColumnName") )
+    #set ( $columnElement = $referenceElement.getChild("local-column").getChild("column") )
+    #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName") )
+        criteria.addJoin($peerClassName.$peerColumnName,
+            ${joinedPeer}.$joinedPeerColumnName);
+  #end
+
+        correctBooleans(criteria);
+
+        List<$dbObjectClassName> result = new ArrayList<$dbObjectClassName>();
+        List<List<Object>> rawResult = doSelect(
+                criteria, compositeMapper, conn);
+        for (List<Object> rawResultRow : rawResult)
+        {
+            $dbObjectClassName obj1 = ($dbObjectClassName) rawResultRow.get(0);
+            $joinedDbObjectClassName obj2 = (${joinedDbObjectClassName}) rawResultRow.get(1);
+
+            boolean newObject = true;
+            for (int j = 0; j < result.size(); j++)
+            {
+                $dbObjectClassName temp_obj1 = result.get(j);
+                $joinedDbObject temp_obj2 = temp_obj1.${getterForJoinedDbObject}();
+                if (temp_obj2.getPrimaryKey().equals(obj2.getPrimaryKey()))
+                {
+                    newObject = false;
+  #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+                    temp_obj2.${adder}(obj1);
+  #end
+                    break;
+                }
+            }
+  #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+            if (newObject)
+            {
+                obj2.${initializer}();
+                obj2.${adder}(obj1);
+            }
+  #end
+            result.add(obj1);
+        }
+        return result;
+    }

@@ -1,0 +1,85 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: dbObject.vm 1331196 2012-04-27 02:56:12Z tfischer $
+##
+## This template creates source code for a column enum. 
+## The template expects as input a "column" element from the torque schema
+## which was processed by the OMTransformer.  
+##
+package $enumPackage;
+
+$torqueGen.mergepoint("classJavadoc")##
+public enum $enumClassName
+{
+$torqueGen.mergepoint("values")##
+
+    /** The database value represented by the enum value. */
+    private ${enumValueClassName} value;
+
+    /**
+     * Constructor.
+     *
+     * @param value The database value represented by the enum value.
+     */
+    private ${enumClassName}(${enumValueClassName} value)
+    {
+        this.value = value;
+    }
+
+    /**
+     * Returns the database value represented by the enum value.
+     *
+     * @return the the database value represented by the enum value.
+     */
+    public ${enumValueClassName} getValue()
+    {
+        return value;
+    }
+
+    /**
+     * Returns the ${enumClassName} for the database value.
+     *
+     * @param arg the database value to get the ${enumClassName} for, or null.
+     *
+     * @return the ${enumClassName} represented by the database value; null only if arg was null.
+     */
+    public static ${enumClassName} getByValue(${enumValueClassName} arg)
+    {
+#if ($primitive != "true")
+        if (arg == null)
+        {
+            return null;
+        }
+#end
+        for (${enumClassName} candidate : values())
+        {
+#if ($primitive == "true")
+            if (arg == candidate.getValue())
+#else
+            if (arg.equals(candidate.getValue()))
+#end
+            {
+                return candidate;
+            }
+        }
+        throw new IllegalArgumentException("Value " + arg + " is not defined in enum ${enumClassName}");
+    }
+$torqueGen.mergepoint("extensions")##
+}

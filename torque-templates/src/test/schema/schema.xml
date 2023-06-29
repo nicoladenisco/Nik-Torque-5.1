@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<database
+    xmlns="http://db.apache.org/torque/5.0/templates/database"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/5.0/templates/database
+        http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0.xsd"
+    name="bookstore"
+    defaultIdMethod="native" >
+  <external-schema filename="ext-schema.xml" />
+
+  <!-- =================================================== -->
+  <!-- A  T A B L E                                        -->
+  <!-- =================================================== -->
+
+  <table name="a" description="A table">
+    <column
+      name="a_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="50"
+      default="a_name"
+    />
+     <!--  resetting of attributes size/scale for the same sql type 
+     eg. by scale="") is only required if xdoc or html is generated (bug!) 
+     -->
+    <column
+      name="contactdata"
+      required="true"
+      type="VARCHAR"
+      size="500"
+    />
+    <column
+      name="created_at"
+      required="true"
+      type="TIMESTAMP"
+      default="CURRENT_TIMESTAMP"
+      scale="6"
+    />
+        <column
+      name="updated_at"
+      required="true"
+      type="TIMESTAMP"
+      scale="6"
+    />
+    <column
+      name="enum"
+      type="VARCHAR"
+      size="50"
+      default="x">
+      <enum-value value="x"/>
+      <enum-value value="y"/>
+      <enum-value value="z"/>
+    </column>
+    <index name="NAME_IDX">
+      <index-column name="name"/>
+    </index>
+  </table>
+
+  <!-- =================================================== -->
+  <!-- B  T A B L E                                        -->
+  <!-- =================================================== -->
+
+  <table name="b" description="B table">
+    <column
+      name="b_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="50"
+    />
+    <unique name="NAME_UNQ">
+      <unique-column name="name" size="20"/>
+    </unique>
+  </table>
+  
+  <!-- =================================================== -->
+  <!-- B2  T A B L E                                        -->
+  <!-- =================================================== -->
+
+  <table name="b2" description="B2 table">
+    <column
+      name="b2_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+     <column
+      name="b2_id_2"
+      required="false"
+      type="INTEGER"
+    />
+    <column
+      name="b2_name_1"
+      required="true"
+      type="VARCHAR"
+      size="50"
+    />
+    <column
+      name="b2_name_2"
+      required="true"
+      type="VARCHAR"
+      size="20"
+    />
+   <column
+      name="b2_name_3"
+      required="true"
+      type="VARCHAR"
+      size="10"
+    />
+    <column
+      name="b2_name_4"
+      required="true"
+      type="VARCHAR"
+      size="10"
+    />
+    <unique name="NAME_UNQ">
+      <unique-column name="b2_name_1" size="20"/>
+      <unique-column name="b2_name_2"/>
+      <unique-column name="b2_name_3" size="5"/>
+      <unique-column name="b2_name_4"/>
+    </unique>
+  </table>
+
+
+  <!-- =================================================== -->
+  <!-- AB  T A B L E                                       -->
+  <!-- =================================================== -->
+
+  <table name="r_ab" description="r_ab table" idMethod="none">
+    <column
+      name="a_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="b_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="50"
+    />
+
+    <foreign-key foreignTable="a">
+      <reference local="a_id" foreign="a_id"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="b">
+      <reference local="b_id" foreign="b_id"/>
+    </foreign-key>
+
+  </table>
+
+  <!-- =================================================== -->
+  <!-- C  T A B L E                                       -->
+  <!-- =================================================== -->
+
+  <table name="c" description="c table contains fk to ar_ab, a and b">
+    <column
+      name="c_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="a_id"
+      required="true"
+      type="INTEGER"
+    />
+    <column
+      name="b_id"
+      required="true"
+      type="INTEGER"
+    />
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="50"
+    />
+
+    <foreign-key foreignTable="r_ab">
+      <reference local="a_id" foreign="a_id"/>
+      <reference local="b_id" foreign="b_id"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="a">
+      <reference local="a_id" foreign="a_id"/>
+    </foreign-key>
+
+    <foreign-key foreignTable="b">
+      <reference local="b_id" foreign="b_id"/>
+    </foreign-key>
+
+  </table>
+
+
+  <table name="d" idMethod="none">
+    <column name="d_id" required="true"
+            primaryKey="true" type="INTEGER"/>
+    <column name="name" required="true" size="255" type="VARCHAR"/>
+    <column name="b_id" primaryKey="true" required="true" type="INTEGER"/>
+    <column name="a_id" primaryKey="true" required="true" type="INTEGER"/>
+    <foreign-key foreignTable="a">
+        <reference local="a_id" foreign="a_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="r_ab">
+        <reference local="a_id" foreign="a_id"/>
+        <reference local="b_id" foreign="b_id"/>
+    </foreign-key>
+  </table>
+
+
+  <!-- =================================================== -->
+  <!-- N O P K  T A B L E                                  -->
+  <!-- =================================================== -->
+
+  <table name="nopk" idMethod="none" description="this table has no pk">
+    <column
+      name="intcol"
+      type="INTEGER"
+    />
+    <column
+      name="name"
+      type="VARCHAR"
+      size="50"
+    />
+  </table>
+
+  <table name="MULTIPK_SELF_REFTABLE" idMethod="none">
+    <column name="COL1" primaryKey="true" required="true" type="DECIMAL"/>
+    <column name="COL2" primaryKey="true" required="true" type="DECIMAL"/>
+
+    <column name="PARENT_COL1" required="true" type="DECIMAL"/>
+    <column name="PARENT_COL2" required="true" type="DECIMAL"/>
+
+    <foreign-key foreignTable="MULTIPK_SELF_REFTABLE">
+      <reference foreign="COL1" local="PARENT_COL1"/>
+      <reference foreign="COL2" local="PARENT_COL2"/>
+    </foreign-key>
+  </table>
+
+  <!-- =================================================== -->
+  <!-- T A B L E  W I T H  I N T E R F A C E               -->
+  <!-- =================================================== -->
+
+  <table name="ifc_table" idMethod="none"
+  	interface="org.apache.torque.TestInterface"
+  	description="this table implements an interface">
+    <column
+      name="id" javaName="ID"
+      primaryKey="true" required="true"
+      type="INTEGER"
+    />
+    <column
+      name="name" javaName="Name"
+      type="VARCHAR"
+      size="50"
+    />
+  </table>
+
+  <table name="ifc_table2" idMethod="none"
+  	interface="LocalTestInterface"
+  	description="this table implements a local interface">
+    <column
+      name="id" javaName="ID"
+      primaryKey="true" required="true"
+      type="INTEGER"
+    />
+    <column
+      name="name" javaName="Name"
+      type="VARCHAR"
+      size="50"
+    />
+  </table>
+  
+  <!-- =================================================== -->
+  <!-- T A B L E  W I T H  I N H E R I T A N C E           -->
+  <!-- =================================================== -->
+
+  <table name="INHERITANCE_TEST" description="Table to test inheritance">
+    <column
+      name="INHERITANCE_TEST"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+    />
+    <column
+      name="CLASS_NAME"
+      inheritance="single"
+      type="CHAR"
+      size="1">
+      <inheritance
+        key="B"
+        class="InheritanceChildB"
+      />
+      <!--  B does not need to explicitely extend from table parent package, this is implicitely done 
+              extends="org.apache.torque.test.InheritanceTest"
+       -->
+      <inheritance
+        key="C"
+        class="InheritanceChildC"
+        package=".attribute.c"
+        extends="org.apache.torque.test.InheritanceTest"
+      />
+      <!-- C  implicitely extends from table parent package, which has to be adjusted explicitely  -->
+      <inheritance
+        key="D"
+        class="InheritanceChildD"
+        package="org.my.attribute.z"
+        extends="org.apache.torque.test.attribute.c.InheritanceChildC"
+      />
+    </column>
+    <column
+      name="PAYLOAD_PARENT"
+      required="true"
+      type="VARCHAR"
+      size="100"
+      protected="false"
+     />
+    <column
+      name="PAYLOAD_B"
+      type="VARCHAR"
+      size="100"
+      protected="true"
+    />
+    <column
+      name="PAYLOAD_C"
+      type="VARCHAR"
+      size="100"
+    />
+    <column
+      name="PAYLOAD_D"
+      type="VARCHAR"
+      size="100"
+    />
+  </table>
+  
+  <!-- =================================================== -->
+  <!-- E X T E R N A L   S C H E M A                       -->
+  <!-- =================================================== -->
+
+  <table name="ext_schema">
+    <column name="ext_schema_id" required="true" primaryKey="true" type="INTEGER"/>
+    <column name="ext_id" type="INTEGER"/>
+    <column name="test" required="true" type="INTEGER"/>
+
+    <index name="index_ext_id">
+      <index-column name="ext_id"/>
+    </index>
+    <foreign-key foreignTable="ext">
+      <reference local="ext_id" foreign="ext_id"/>
+    </foreign-key>
+  </table>
+
+  <table name="extext_schema">
+    <column name="extext_schema_id" required="true" primaryKey="true" type="INTEGER"/>
+    <column name="extext_id" type="INTEGER"/>
+    <column name="test" required="true" type="INTEGER"/>
+
+    <foreign-key foreignTable="extext">
+      <reference local="extext_id" foreign="extext_id"/>
+    </foreign-key>
+  </table>
+  
+  <!-- =================================================== -->
+  <!-- Q U A L I F I E D   T A B L E   N A M E             -->
+  <!-- =================================================== -->
+
+  <table name="torque.qualified_name" >
+    <column name="id" type="INTEGER"/>
+    <column name="payload" type="VARCHAR" size="100"/>
+  </table>
+
+  <!-- =================================================== -->
+  <!-- V I E W                                             -->
+  <!-- =================================================== -->
+
+  <view name="a_b" sqlSuffix="from a join r_ab on a.a_id=r_ab.a_id join b on r_ab.b_id=b.b_id">
+    <column name="a_id" type="INTEGER" select="a.a_id"/>
+    <column name="a_name" type="VARCHAR" select="a.name"/>
+    <column name="b_id" type="INTEGER" select="b.b_id"/>
+    <column name="b_name" type="VARCHAR" select="b.name"/>
+    <column name="enum" type="VARCHAR" enumType="a.b.SomeEnum" select="a.enum"/>
+  </view>
+
+</database>

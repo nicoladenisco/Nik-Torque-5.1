@@ -1,0 +1,95 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: setterReferencedObjectByObjectKey.vm 1850502 2019-01-05 16:47:35Z painter $
+##
+## This template creates setters for setting related objects via ObjectKeys
+## in a BaseDbObject.
+## The template expects as input a "table/foreign-key/local-field" element
+## from the torque schema, which was processed by the OMTransformer.  
+##
+#set ( $foreignKeyElement = $torqueGen.getParent() )
+#set ( $localTableElement = $foreignKeyElement.getParent() )
+#set ( $foreignTableElement = $foreignKeyElement.getChild("table") )
+#set ( $referenceElements = $foreignKeyElement.getChildren("reference") )
+    /**
+     * Provides convenient way to set a relationship based on a
+     * ObjectKey, for example
+     * <code>bar.setFooKey(foo.getPrimaryKey())</code>
+     *
+#if ($referenceElements.size() > 1)
+     * Note: It is important that the xml schema used to create this class
+     * maintains consistency in the order of related columns between
+     * $localTableElement.getAttribute("name") and $foreignTableElement.getAttribute("name").
+     * If for some reason this is impossible, this method should be
+     * overridden in <code>$localTableElement.getAttribute("javaName")</code>.
+#end
+     * @param key the key to set
+     * @throws TorqueException if associated objects are not found
+     */
+    public void ${setter}Key(ObjectKey<?> key) throws TorqueException
+    {
+#if ($referenceElements.size() > 1)
+        SimpleKey<?>[] keys = (SimpleKey[]) key.getValue();
+#end
+       
+#set ($i = 0)
+#foreach ($referenceElement in $referenceElements)
+  #if ($referenceElements.size() > 1)
+    #set ($keyVariable = "keys[$i]" )        
+  #else
+    #set ($keyVariable = "key" )        
+  #end
+  #set ( $localColumnElement = $referenceElement.getChild("local-column").getChild("column") )
+  #set ( $localFieldType = $localColumnElement.getAttribute("fieldType") )
+  #set ( $localFieldSetter = $localColumnElement.getAttribute("setter") )
+  #if ($localFieldType == "short")
+        ${localFieldSetter}(((NumberKey) $keyVariable).shortValue());
+  #elseif ($localFieldType == "int")
+        ${localFieldSetter}(((NumberKey) $keyVariable).intValue());
+  #elseif ($localFieldType == "long")
+        ${localFieldSetter}(((NumberKey) $keyVariable).longValue());
+  #elseif ($localFieldType == "java.math.BigDecimal")
+        ${localFieldSetter}(((NumberKey) $keyVariable).getValue());
+  #elseif ($localFieldType == "byte")
+        ${localFieldSetter}(((NumberKey) $keyVariable).byteValue());
+  #elseif ($localFieldType == "float")
+        ${localFieldSetter}(((NumberKey) $keyVariable).floatValue());
+  #elseif ($localFieldType == "double")
+        ${localFieldSetter}(((NumberKey) $keyVariable).doubleValue());
+  #elseif ($localFieldType == "Short")
+        ${localFieldSetter}(Short.valueOf(((NumberKey) $keyVariable).shortValue()));
+  #elseif ($localFieldType == "Integer")
+        ${localFieldSetter}(Integer.valueOf(((NumberKey) $keyVariable).intValue()));
+  #elseif ($localFieldType == "Long")
+        ${localFieldSetter}(Long.valueOf(((NumberKey) $keyVariable).longValue()));
+  #elseif ($localFieldType == "Byte")
+        ${localFieldSetter}(Byte.valueOf(((NumberKey) $keyVariable).byteValue()));
+  #elseif ($localFieldType == "Float")
+        ${localFieldSetter}(new Float(((NumberKey) $keyVariable).floatValue()));
+  #elseif ($localFieldType == "Double")
+        ${localFieldSetter}(new Double(((NumberKey) $keyVariable).doubleValue()));
+  #elseif ($localFieldType == "String")
+        ${localFieldSetter}(${keyVariable}.toString());
+  #elseif ($localFieldType == "Date")
+        ${localFieldSetter}(((DateKey)$keyVariable).getValue());
+  #end
+  #set ( $i = $i + 1 )
+#end ## end of foreach loop over references
+    }

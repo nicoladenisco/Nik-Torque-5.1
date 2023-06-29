@@ -1,0 +1,288 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: fillReferencedObject.vm 1849387 2018-12-20 13:42:45Z tv $
+##
+## Creates the fillXXX methods for referenced Objects for the base peer
+## implementation.
+## 
+## This template expects the current source element to be a "local-field" 
+## element from the schema, processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+#set ( $foreignKeyElement = $torqueGen.getParent() )
+#set ( $foreignKeyGetter = $foreignKeyElement.getAttribute("foreignKeyGetter") )
+#set ( $referencesPrimaryKey = $foreignKeyElement.getAttribute("referencesPrimaryKey") )
+#set ( $foreignKeyReferences = $foreignKeyElement.getChildren("reference") )
+#set ( $localTableElement = $foreignKeyElement.getParent() )
+#set ( $localTableField = $localTableElement.getAttribute("field") )
+#set ( $localDbObjectClassName = $localTableElement.getAttribute("dbObjectClassName") )
+#set ( $localPeerClassName = $localTableElement.getAttribute("peerClassName") )
+#set ( $foreignTableElement = $foreignKeyElement.getChild("table") )
+#set ( $foreignTablePeerClassName = $foreignTableElement.getAttribute("peerClassName") )
+#set ( $foreignTableName = $foreignTableElement.getAttribute("name") )
+#set ( $trackModified = $torqueGen.booleanOption("torque.om.trackModified"))
+#set ( $trackNew = $torqueGen.booleanOption("torque.om.trackNew"))
+#set ( $trackSaving = $torqueGen.booleanOption("torque.om.trackSaving"))
+#set ( $trackLoading = $torqueGen.booleanOption("torque.om.trackLoading"))
+#set ( $trackDeleted = $torqueGen.booleanOption("torque.om.trackDeleted"))
+    /** 
+     * Fills the referenced ${fieldType} objects in the ${field} fields
+     * of the objects in <code>toFill</code> by reading the database.
+     * ${localPeerClassName}.DEFAULT_FILLER_CHUNK_SIZE is used as chunk size.
+     *
+     * @param toFill Contains the objects to fill, not null,
+     *        may not contain null.
+     *
+     * @return all read ${fieldType} objects.
+     *
+     * @throws TorqueException if an error querying the database occurs.
+     * @throws NullPointerException if toFill is null or contains null elements.
+     */
+    public List<${fieldType}> ${filler}(
+            Collection<${localDbObjectClassName}> toFill) 
+        throws TorqueException
+    {
+        return ${filler}(
+                toFill,
+                ${localPeerClassName}.DEFAULT_FILLER_CHUNK_SIZE);
+    }
+
+    /** 
+     * Fills the referenced ${fieldType} objects in the ${field} fields
+     * of the objects in <code>toFill</code> by reading the database.
+     *
+     * @param toFill Contains the objects to fill, not null,
+     *        may not contain null.
+     * @param chunkSize The maximum number of referencing objects
+     *        to be filled by a single database request, or -1
+     *        to fill all objects at once.
+     *
+     * @return all read ${fieldType} objects.
+     *
+     * @throws TorqueException if an error querying the database occurs.
+     * @throws NullPointerException if toFill is null or contains null elements.
+     */
+    public List<${fieldType}> ${filler}(
+            Collection<${localDbObjectClassName}> toFill,
+            int chunkSize) 
+        throws TorqueException
+    {
+        try (TorqueConnection connection = Transaction.begin(getDatabaseName()))
+        {
+            List<${fieldType}> result 
+                    = ${filler}(toFill, chunkSize, connection);
+            Transaction.commit(connection);
+            return result;
+        }
+    }
+
+    /** 
+     * Fills the referenced ${fieldType} objects in the ${field} fields
+     * of the objects in <code>toFill</code> by reading the database.
+     * ${localPeerClassName}.DEFAULT_FILLER_CHUNK_SIZE is used as chunk size.
+     *
+     * @param toFill Contains the objects to fill, not null,
+     *        may not contain null.
+     * @param connection the database connection to use, not null.
+     *
+     * @return all read ${fieldType} objects.
+     *
+     * @throws TorqueException if an error querying the database occurs.
+     * @throws NullPointerException if toFill is null or contains null elements.
+     */
+    public List<${fieldType}> ${filler}(
+            Collection<${localDbObjectClassName}> toFill,
+            Connection connection) 
+        throws TorqueException
+    {
+        return ${filler}(
+                toFill, 
+                ${localPeerClassName}.DEFAULT_FILLER_CHUNK_SIZE,
+                connection);
+    }
+    
+    /** 
+     * Fills the referenced ${fieldType} objects in the ${field} fields
+     * of the objects in <code>toFill</code> by reading the database.
+     *
+     * @param toFill Contains the objects to fill, not null,
+     *        may not contain null.
+     * @param chunkSize The maximum number of referencing objects
+     *        to be filled by a single database request, or -1
+     *        to fill all objects at once.
+     * @param connection the database connection to use, not null.
+     *
+     * @return all read ${fieldType} objects.
+     *
+     * @throws TorqueException if an error querying the database occurs.
+     * @throws NullPointerException if toFill is null or contains null elements.
+     */
+    public List<${fieldType}> ${filler}(
+            Collection<${localDbObjectClassName}> toFill,
+            int chunkSize,
+            Connection connection) 
+        throws TorqueException
+    {
+        Set<ObjectKey<?>> foreignKeySet = new HashSet<ObjectKey<?>>();
+        for (${localDbObjectClassName} current${localDbObjectClassName} : toFill)
+        {
+            ObjectKey<?> foreignKey = current${localDbObjectClassName}.${foreignKeyGetter}();
+            if (foreignKey != null)
+            {
+                foreignKeySet.add(foreignKey);
+            }
+        }
+        
+        Iterator<ObjectKey<?>> foreignKeyIt = foreignKeySet.iterator();
+        List<ObjectKey<?>> foreignKeyListChunk = new ArrayList<ObjectKey<?>>();
+        Map<ObjectKey<?>, ${fieldType}> referencedKeyTo${fieldType}Map 
+                = new HashMap<ObjectKey<?>, ${fieldType}>();
+        while (foreignKeyIt.hasNext())
+        {
+            ObjectKey<?> currentKey = foreignKeyIt.next();
+            foreignKeyListChunk.add(currentKey);
+            if ((foreignKeyListChunk.size() < chunkSize || chunkSize == -1)
+                && foreignKeyIt.hasNext())
+            {
+                continue;
+            }
+
+#if ($referencesPrimaryKey)
+            List<${fieldType}> referenced${fieldType}List
+                 = ${foreignTablePeerClassName}.retrieveByObjectKeys(
+                     foreignKeyListChunk,
+                     connection);
+#else
+            Criteria criteria = new Criteria();
+  #if ($foreignKeyReferences.size() == 1)
+    #set ( $columnElement = $foreignKeyReferences.get(0).getChild("foreign-column").getChild("column") )
+    #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName"))
+            criteria.andIn(${foreignTablePeerClassName}.${peerColumnName}, foreignKeyListChunk);
+  #else
+            for (ObjectKey<?> foreignKey : foreignKeyListChunk)
+            {
+                SimpleKey<?>[] keys = (SimpleKey[]) foreignKey.getValue();
+    #set ( $i = 0 )
+    #foreach ($referenceElement in $foreignKeyReferences)
+    #set ( $columnElement = $referenceElement.getChild("foreign-column").getChild("column") )
+      #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName"))
+                    Criterion c$i = new Criterion(
+                        ${foreignTablePeerClassName}.${peerColumnName}, keys[$i], Criteria.EQUAL);
+      #set ( $j = $i - 1 )
+      #if ($i > 0)
+                        c${j}.and(c${i});
+      #end
+      #set ( $i = $i + 1 )
+    #end
+                criteria.or(c0);
+            }
+  #end
+            List<${fieldType}> referenced${fieldType}List
+                 = ${foreignTablePeerClassName}.doSelect(
+                     criteria,
+                     connection);
+#end
+
+            for (${fieldType} referencedObject : referenced${fieldType}List)
+            {
+#if ($referencesPrimaryKey)
+                referencedKeyTo${fieldType}Map.put(
+                        referencedObject.getPrimaryKey(),
+                        referencedObject);
+#else
+  #if ($foreignKeyReferences.size() == 1)
+    #set ( $columnElement = $foreignKeyReferences.get(0).getChild("foreign-column").getChild("column") )
+    #set ( $getter = $columnElement.getAttribute("getter") )
+                ObjectKey<?> foreignKey = SimpleKey.keyFor(referencedObject.${getter}());
+  #else
+                SimpleKey<?>[] keyElementArray = new SimpleKey[$foreignKeyReferences.size()];
+    #set ($i = 0)
+    #foreach ($referenceElement in $foreignKeyReferences)
+      #set ( $columnElement = $referenceElement.getChild("foreign-column").getChild("column") )
+      #set ( $getter = $columnElement.getAttribute("getter") )
+                keyElementArray[$i] = SimpleKey.keyFor(
+                        referencedObject.${getter}());
+      #set ($i = $i + 1)
+    #end
+                ObjectKey<?> foreignKey = new ComboKey(keyElementArray);
+  #end
+                referencedKeyTo${fieldType}Map.put(
+                        foreignKey,
+                        referencedObject);
+#end
+            }
+            foreignKeyListChunk.clear();
+        }
+
+        List<${fieldType}> result = new ArrayList<${fieldType}>();
+        for (${localDbObjectClassName} objectToFill : toFill)
+        {
+            ObjectKey<?> foreignKey = objectToFill.${foreignKeyGetter}();
+#if ($foreignKeyReferences.size() == 1)
+            if (foreignKey == null || foreignKey.getValue() == null)
+#else
+            if (foreignKey == null || foreignKey.getValue() == null || (
+  #set ($i = 0)
+  #foreach ($referenceElement in $foreignKeyReferences)
+    #if ($i > 0)                 &&#else                   #end ((SimpleKey[])foreignKey.getValue())[$i].getValue() == null
+    #set ($i = $i + 1)
+  #end
+                ))
+#end
+            {
+                continue;
+            }
+            ${fieldType} referenced = referencedKeyTo${fieldType}Map.get(
+                    foreignKey);
+            if (referenced == null)
+            {
+                throw new NoRowsException("No result found for key " 
+                    + foreignKey + " in table ${foreignTableName}");
+            }
+            // copy the referenced object for the case that more than one
+            // toFill object references the same object; in this case
+            // every toFillObject should have its own instance of the referenced
+            // object to remain consistent with the other Torque reference
+            // treatment
+            ${fieldType} referencedCopy = referenced.copy(false);
+            // copy does not set primary key#if ($trackModified || $trackNew || $trackSaving || $trackLoading || $trackDeleted) and the flags#end
+
+            referencedCopy.setPrimaryKey(referenced.getPrimaryKey());
+#if ($trackModified)
+            referencedCopy.setModified(referenced.isModified());
+#end
+#if ($trackNew)
+            referencedCopy.setNew(referenced.isNew());
+#end
+#if ($trackSaving)
+            referencedCopy.setSaving(referenced.isSaving());
+#end
+#if ($trackLoading)
+            referencedCopy.setLoading(referenced.isLoading());
+#end
+#if ($trackDeleted)
+            referencedCopy.setDeleted(referenced.isDeleted());
+#end
+            objectToFill.${setter}(referencedCopy);
+            result.add(referencedCopy);
+        }
+        return result;
+    }

@@ -1,0 +1,74 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: createDbObjectInstanceFromInheritance.vm 1895112 2021-11-17 15:48:40Z gk $
+##
+## Creates the base peer's mapper class. 
+## 
+## This template expects the current source element to be 
+## a "inheritance-column" element from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The attributes of the current source element must be set
+## as velocity variables.  
+##
+#set ( $inheritanceBaseColumnElement = $torqueGen.getSourceElement() )
+#set ( $tableElement = $torqueGen.getParent() )
+#set ( $tableField = $tableElement.getAttribute("field") )
+#set ( $peerClassName = $tableElement.getAttribute("peerClassName") )
+#set ( $dbObjectClassName = $tableElement.getAttribute("dbObjectClassName") )
+#set ( $columnElement = $inheritanceBaseColumnElement.getChild("column") )
+#set ( $inheritanceElements = $columnElement.getChildren("inheritance"))
+#set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+#set ( $position = $columnElement.getAttribute("position") )
+#set ( $getter = $columnElement.getAttribute("getter") )
+#set ( $primitive = ($columnElement.getAttribute("primitive") == "true") )
+            $columnFieldType classKey =
+                $getter(resultSet, offset + $position);
+            $dbObjectClassName $tableField;
+#if (!$inheritanceElements.isEmpty())
+  #set ($if = "if")
+  #foreach ($inheritanceElement in $inheritanceElements)
+    #set ( $inheritanceClasskeyConstant = $inheritanceElement.getAttribute("classkeyConstant") )
+    #set ( $inheritanceClassName = $inheritanceElement.getAttribute("className") )
+    #set ( $inheritancePackage = $inheritanceElement.getAttribute("package") )
+    #if ($primitive)
+            $if (classKey == $inheritanceClasskeyConstant)
+    #else
+            $if (${peerClassName}.${inheritanceClasskeyConstant}.equals(classKey))
+    #end
+            {
+                $tableField = new ${inheritancePackage}.${inheritanceClassName}();
+            }
+    #set ($if = "else if")
+  #end
+            else
+            {
+                $tableField = new $dbObjectClassName();
+            }
+#else
+            try
+            {
+                Class<?> omClass = Class.forName(classKey.toString());
+                $tableField = ($dbObjectClassName) omClass.newInstance();
+            }
+            catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
+            {
+                throw new TorqueException(e);
+            }
+#end

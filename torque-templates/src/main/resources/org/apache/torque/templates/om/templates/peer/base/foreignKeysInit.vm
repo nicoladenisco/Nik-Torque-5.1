@@ -1,0 +1,68 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: foreignKeysInit.vm 1374508 2012-08-18 03:57:20Z tfischer $
+##
+## Initializes the foreign keys for the table map in the map builder class.
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+#set ( $foreignKeyElements = $torqueGen.getChildren("foreign-key") )
+#if (!$foreignKeyElements.isEmpty())
+
+    // ------------- Foreign keys --------------------
+        ForeignKeyMap foreignKeyMap;
+        TableMap foreignTable;
+        String foreignTableName; 
+  #foreach ($foreignKeyElement in $foreignKeyElements)
+    #set($foreignTableName = $foreignKeyElement.getAttribute("foreignTable"))
+        foreignTableName = "${foreignTableName}"; 
+        foreignTable = dbMap.getTable(foreignTableName);
+        if (foreignTable == null)
+        {
+            foreignKeyMap = new ForeignKeyMap(TABLE, foreignTableName);
+    #set ( $referenceElements = $foreignKeyElement.getChildren("reference") )
+    #foreach ($referenceElement in $referenceElements)
+      #set($localColumn = $referenceElement.getAttribute("local"))
+      #set($foreignColumn = $referenceElement.getAttribute("foreign"))
+            foreignKeyMap.addColumns(new ForeignKeyMap.ColumnPair(
+                foreignKeyMap,
+                TABLE.getColumn("${localColumn}"),
+                "${foreignColumn}"));
+    #end
+        }
+        else
+        {
+            foreignKeyMap = new ForeignKeyMap(TABLE, foreignTable);
+    #foreach ($referenceElement in $referenceElements)
+      #set($localColumn = $referenceElement.getAttribute("local"))
+      #set($foreignColumn = $referenceElement.getAttribute("foreign"))
+            foreignKeyMap.addColumns(new ForeignKeyMap.ColumnPair(
+                foreignKeyMap,
+                TABLE.getColumn("${localColumn}"),
+                foreignTable.getColumn("${foreignColumn}")));
+    #end
+        }
+        TABLE.addForeignKey(foreignKeyMap);
+  #end
+#end
+

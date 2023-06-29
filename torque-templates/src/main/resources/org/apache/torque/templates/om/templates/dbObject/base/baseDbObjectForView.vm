@@ -1,0 +1,139 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: baseDbObjectForView.vm 1868761 2019-10-22 14:45:20Z tv $
+##
+## This template creates source code for a base Database object.
+## The generated code contains the table-specific functionality of a database 
+## object. 
+## The template expects as input a "table" element from the torque schema
+## which was processed by the OMTransformer.  
+##
+package $baseDbObjectPackage;
+
+import java.io.Serializable;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+#if ($torqueGen.booleanOption("torque.addIntakeRetrievable"))
+import $torqueGen.option("torque.retrievableInterface");
+#end
+#if (!$torqueGen.booleanOption("torque.om.complexObjectModel"))
+import org.apache.torque.Torque;
+#end
+import org.apache.torque.TorqueException;
+import org.apache.torque.map.TableMap;
+import org.apache.torque.om.ComboKey;
+import org.apache.torque.om.DateKey;
+import org.apache.torque.om.NumberKey;
+import org.apache.torque.om.ObjectKey;
+import org.apache.torque.om.SimpleKey;
+import org.apache.torque.om.StringKey;
+import org.apache.torque.om.BooleanKey;
+#if ($torqueGen.booleanOption("torque.om.addSaveMethods") && $saveMethodsInDbObjects == "true")
+import org.apache.torque.om.Persistent;
+#end
+import org.apache.torque.om.ObjectModel;
+#if ($torqueGen.booleanOption("torque.om.addGetByNameMethods"))
+import org.apache.torque.om.ColumnAccessByName;
+#end##
+import $torqueGen.option("torque.om.criteriaClass");
+#if ($torqueGen.booleanOption("torque.om.addSaveMethods") && $saveMethodsInDbObjects == "true")
+import org.apache.torque.util.Transaction;
+#end
+
+#foreach ($columnElement in $torqueGen.getSourceElement().getChildren("column"))
+  #set ($colEnumPackage = $columnElement.getAttribute("enumPackage"))
+  #set ($colEnumClassName = $columnElement.getAttribute("enumClassName"))
+  #if ($columnElement.getAttribute("isEnum") == "true" && $colEnumPackage != $baseDbObjectPackage) 
+import ${colEnumPackage}.${colEnumClassName};
+  #end
+#end
+
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+#foreach ($col in $table.Columns)
+ #if ($col.isForeignKey())
+  #set ( $tblFK = $table.Database.getTable($col.RelatedTableName) )
+  #if ($tblFK.Interface && $tblFK.Interface.indexOf('.') != -1)
+import $tblFK.Interface;
+  #end
+ #end
+#end
+#end
+$torqueGen.mergepoint("imports")##
+#if ($torqueGen.booleanOption("torque.om.generateBeans"))
+$torqueGen.mergepoint("objectBeanImports")
+#end
+#if ($peerPackage != $baseDbObjectPackage)
+import ${peerPackage}.${peerClassName};
+#end
+#if ($dbObjectPackage != $baseDbObjectPackage)
+import ${dbObjectPackage}.${dbObjectClassName};
+#end
+$torqueGen.mergepoint("classJavadoc")
+#if ($baseClass == "")
+  #set ($extendsBaseClass = "" )
+#else
+  #set ($extendsBaseClass = "extends $baseClass" )
+#end
+@SuppressWarnings("unused")
+public abstract class $baseDbObjectClassName $extendsBaseClass
+    implements ObjectModel, Serializable##
+#if ($torqueGen.booleanOption("torque.om.addIntakeRetrievable")), $torqueGen.option("torque.om.retrievableInterface")#end##
+#if ($torqueGen.booleanOption("torque.om.addGetByNameMethods")), ColumnAccessByName#end##
+
+{
+$torqueGen.mergepoint("serialVersionUid")
+
+## field definitions for columns
+$torqueGen.mergepoint("fieldDefinitions")##
+$torqueGen.mergepoint("newModifiedFields")##
+#if ($torqueGen.booleanOption("torque.om.trackLoading"))
+$torqueGen.mergepoint("loadingField")##
+#end
+
+## getters and setters for member variables for columns 
+$torqueGen.mergepoint("gettersSetters")
+$torqueGen.mergepoint("newModifiedMethods")
+#if ($torqueGen.booleanOption("torque.om.trackLoading"))
+$torqueGen.mergepoint("loadingMethods")
+#end
+#if ($torqueGen.booleanOption("torque.om.addGetByNameMethods"))
+$torqueGen.mergepoint("getByNameMethods")
+#end
+
+$torqueGen.mergepoint("primaryKeyMethods")
+$torqueGen.mergepoint("foreignKeyGetters")
+$torqueGen.mergepoint("copyMethods")
+$torqueGen.mergepoint("peerGetter")
+$torqueGen.mergepoint("tableMapGetter")
+
+#if ($torqueGen.booleanOption("torque.om.generateBeans"))
+$torqueGen.mergepoint("objectBeanMethods")
+#end
+
+$torqueGen.mergepoint("toString")
+$torqueGen.mergepoint("equalsHashCode")
+$torqueGen.mergepoint("valueEquals")
+$torqueGen.mergepoint("extensions")
+}

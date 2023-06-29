@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<document>
+  <properties>
+    <title>Changes</title>
+  </properties>
+
+  <body>
+  <release version="5.1-SNAPSHOT" date="in SVN">   
+    <action type="update" dev="gk">
+       remove versions in build-helper-maven-plugin, moved to parent build-helper v.3.2.0
+    </action>
+     <action type="fix" dev="gk" issue="TORQUE-360" due-to="Youngho Cho">
+      Moved package to TorqueSchemaAttributeName, allow relative and absolute package in inheritance columns, 
+      update database schema version to 5.1. Thanks to 
+    </action>
+  </release>
+ 
+  <release version="5.0" date="2020-09-22">
+    <action type="change" dev="gk">
+    - extracted java related transformer class from OMColumnTransformer
+    - fixed not generated enum imports in vm-templates 
+    - add not generated, expected test classes (schema.xml)
+    - removed not allowed empty scale attribute
+    - add enum JavaType, TODO/not implemented: generating in OMColumnJavaTransformer#setFieldJavaType
+    - set eol to native to test expected sql 
+    </action>
+    <action type="change" dev="gk">
+    - add parameterized test in junit test class TestProcessing
+    - preliminarily comment html/xdoc tests in junit test class TestProcessing, more info in TORQUE-358
+    - add timestamp test field in schema
+    - add scale handling in type mapping, transformer and platform
+    </action>
+    <action type="change" dev="gk">
+    - Updated Owasp to 5.0.0-M2, due to checks updated guava and suppressions of groovy
+    - Upgraded to log4j2 with log4j 1.2 and commons adapters
+    - Use now commons-lang3 instead of commons.lang
+    - Replace commons-logging with log4j2-jcl
+    - Update Jdbc2SchemaTest test with timestamps.
+    </action>
+    <action type="update" dev="painter">
+       Update to commons-lang3 v3.8.1
+    </action>
+  </release>
+  <release version="4.0-SNAPSHOT" date="2013-03-01">
+    <action type="remove" dev="tfischer">
+       Removed the alias attribute on the table element.
+    </action>
+    <action type="remove" dev="tfischer">
+       Removed checks if the javaType of a column is a Key 
+       (NumberKey, StringKey, DateKey) because this cannot happen anyway.
+    </action>
+  </release>
+  </body>
+</document>
+

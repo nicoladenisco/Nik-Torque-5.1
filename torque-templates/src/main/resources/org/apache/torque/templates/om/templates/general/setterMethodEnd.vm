@@ -1,0 +1,75 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: setterMethodEnd.vm 1868761 2019-10-22 14:45:20Z tv $
+##
+## This template creates additional code for updating referenced or referencing
+## objects in the setter method for a field representing a table column.
+## The template expects as input a "column" element from the torque schema, 
+## which was processed by the OMTransformer.  
+##
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+  ##
+  ## set referenced object(s) to null if the id has changed
+  ## 
+  #set ( $referencedColumns = $torqueGen.getChildren("referenced-column") )
+  #foreach ($referencedColumnElement in $referencedColumns)
+    #set ( $foreignKeyElement = $referencedColumnElement.getChild("foreign-key") )
+    #set ( $foreignColumnElement = $referencedColumnElement.getChild("column") )
+    #set ( $foreignColumnGetter = $foreignColumnElement.getAttribute("getter") )
+    #set ( $localFieldElement = $foreignKeyElement.getChild("local-field") )
+    #set ( $localReferenceFieldName = $localFieldElement.getAttribute("field") )
+    #if ( $localReferenceFieldName )
+      #if ($foreignColumnElement.getAttribute("primitive") == "true")
+        if ($localReferenceFieldName != null && ${localReferenceFieldName}.${foreignColumnGetter}() != v)
+      #else
+        if ($localReferenceFieldName != null && !Objects.equals(${localReferenceFieldName}.${foreignColumnGetter}(), v))
+      #end
+        {
+            $localReferenceFieldName = null;
+        }
+    #end
+  #end
+
+  ##
+  ## update the id in referencing object(s)
+  ## 
+  #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+    #set ( $referencingColumns = $torqueGen.getChildren("referencing-column") )
+    #foreach ($referencingColumnElement in $referencingColumns)
+      ## the column on the foreign table
+      #set ( $foreignColumnElement = $referencingColumnElement.getChild("column") )
+      #set ( $foreignSetterName = $foreignColumnElement.getAttribute("setter") )
+      ## the foreign key defining the relation (the "foreign" side of the relation points to the current table)
+      #set ( $foreignKeyElement = $referencingColumnElement.getChild("foreign-key") )
+      ## the field representing the foreign table objects in the current object
+      #set ( $fieldElement = $foreignKeyElement.getChild("foreign-field") )
+      #set ( $fieldName = $fieldElement.getAttribute("field") )
+      #set ( $fieldContainedType = $fieldElement.getAttribute("fieldContainedType") )
+        // update associated objects in $fieldName 
+        if ($fieldName != null)
+        {
+            for (${fieldContainedType} element : ${fieldName})
+            {
+                element.${foreignSetterName}(v);
+            }
+        }
+    #end
+  #end
+#end

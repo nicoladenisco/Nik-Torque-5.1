@@ -1,0 +1,52 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: tableCreateOptions.vm 1437184 2013-01-22 21:25:57Z tfischer $
+##
+## Creates the options for table creation.
+##
+#set ( $optionElements = $torqueGen.getSourceElement().getChildren("option") )
+#foreach ($optionElement in $optionElements)
+  #set ( $key = ${optionElement.getAttribute("key")})
+  #set ( $value = ${optionElement.getAttribute("value")})
+  #if ($key == "ENGINE" 
+        || $key == "AVG_ROW_LENGTH"
+        || $key == "CHARACTER SET"
+        || $key == "DEFAULT CHARACTER SET"
+        || $key == "CHECKSUM"
+        || $key == "COLLATE"
+        || $key == "DEFAULT COLLATE"
+        || $key == "CONNECTION"
+        || $key == "DATA DIRECTORY"
+        || $key == "DELAY_KEY_WRITE"
+        || $key == "INDEX DIRECTORY"
+        || $key == "INSERT_METHOD"
+        || $key == "KEY_BLOCK_SIZE"
+        || $key == "MAX_ROWS"
+        || $key == "MIN_ROWS"
+        || $key == "PACK_KEYS"
+        || $key == "PASSWORD"
+        || $key == "ROW_FORMAT"
+        || $key == "TABLESPACE"
+        || $key == "UNION")
+ ${optionElement.getAttribute("key")}=${optionElement.getAttribute("value")}##
+  #elseif($key == "PARTITION BY")
+ ${optionElement.getAttribute("key")} ${optionElement.getAttribute("value")}##
+  #end
+#end

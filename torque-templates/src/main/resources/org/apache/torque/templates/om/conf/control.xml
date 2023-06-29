@@ -1,0 +1,1013 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<control loglevel="info"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration
+        http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+  <options xsi:type="propertiesOptions" path="options.properties"/>
+
+  <entityReference
+      systemId="http://db.apache.org/torque/4.0/templates/database.xsd"
+      resource="../../xsd/database-4-0.xsd" />
+  <entityReference
+      systemId="http://db.apache.org/torque/4.0/templates/database-strict.xsd"
+      resource="../../xsd/database-4-0-strict.xsd" />
+  <entityReference
+      systemId="http://db.apache.org/torque/torque-4.0/documentation/orm-reference/database-4-0.xsd"
+      resource="../../xsd/database-4-0.xsd" />
+  <entityReference
+      systemId="http://db.apache.org/torque/torque-4.0/documentation/orm-reference/database-4-0-strict.xsd"
+      resource="../../xsd/database-4-0-strict.xsd" />
+  <entityReference
+      systemId="http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0.xsd"
+      resource="../../xsd/database-5-0.xsd" />
+  <entityReference
+      systemId="http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0-strict.xsd"
+      resource="../../xsd/database-5-0-strict.xsd" />
+
+  <output name="torque.om.dbObject" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+           xsi:type="sourceElementAttributeAction"
+           element="."
+           attribute="dbObjectPackage"
+           acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action 
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="dbObjectClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.dbObject"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.dbObjectForView" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+           xsi:type="sourceElementAttributeAction"
+           element="."
+           attribute="dbObjectPackage"
+           acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action 
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="dbObjectClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.dbObject"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.baseDbObject">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action 
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseDbObjectPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseDbObjectClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.baseDbObject"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+  
+  <output name="torque.om.baseDbObjectForView">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action 
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseDbObjectPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseDbObjectClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.baseDbObjectForView"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+  
+  <output name="torque.om.inheritanceDbObject" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="package"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="className"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table/column/inheritance">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.inheritanceDbObject"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+  
+  <output name="torque.om.inheritanceDbObjectForView" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="package"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="className"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view/column/inheritance">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.inheritanceDbObject"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+  
+  <output name="torque.om.enum">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+           xsi:type="sourceElementAttributeAction"
+           element="."
+           attribute="enumPackage"
+           acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action 
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="enumClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table/column"
+            skipDecider="org.apache.torque.templates.skipdecider.EnumSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.dbObject.enum"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.enumForView">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+           xsi:type="sourceElementAttributeAction"
+           element="."
+           attribute="enumPackage"
+           acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action 
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="enumClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view/column"
+            skipDecider="org.apache.torque.templates.skipdecider.EnumSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.dbObject.enum"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.interface" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="dbObjectPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="interface"
+            acceptNotSet="true"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table"
+        skipDecider="org.apache.torque.templates.skipdecider.InterfaceSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.interface"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+  
+  <output name="torque.om.peerInterface" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="peerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="peerInterface"
+            acceptNotSet="true"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table"
+        skipDecider="org.apache.torque.templates.skipdecider.PeerInterfaceSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.peerInterface"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.peer" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="peerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="peerClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.peer"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.peerForView" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="peerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="peerClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.peer"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.peer.impl" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="peerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="peerImplClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.peer.impl"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.peerForView.impl" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="peerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="peerImplClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.peer.impl"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.basePeer">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="basePeerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="basePeerClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.basePeer"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.basePeerForView">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="basePeerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="basePeerClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.basePeerForView"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.basePeer.impl">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="basePeerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="basePeerImplClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.basePeer.impl"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.basePeerForView.impl">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="basePeerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="basePeerImplClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.basePeerForView.impl"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.recordMapper" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="recordMapperPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="recordMapperClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.recordmapper.recordMapper"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.recordMapperForView" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="recordMapperPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="recordMapperClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.recordmapper.recordMapper"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.baseRecordMapper">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseRecordMapperPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseRecordMapperClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.recordmapper.base.recordMapperBase"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.baseRecordMapperForView">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseRecordMapperPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseRecordMapperClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.recordmapper.base.recordMapperBase"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.bean" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="beanPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="beanClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table"
+        skipDecider="org.apache.torque.templates.skipdecider.BeanSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.bean.bean"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.beanForView" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="beanPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="beanClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view"
+        skipDecider="org.apache.torque.templates.skipdecider.BeanSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.bean.bean"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.baseBean">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseBeanPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseBeanClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table"
+        skipDecider="org.apache.torque.templates.skipdecider.BeanSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.bean.baseBean"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+  
+  <output name="torque.om.baseBeanForView">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseBeanPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseBeanClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view"
+        skipDecider="org.apache.torque.templates.skipdecider.BeanSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.bean.baseBean"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+  
+  <output name="torque.om.inheritanceBean" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="beanPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="beanClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table/column/inheritance"
+        skipDecider="org.apache.torque.templates.skipdecider.BeanSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.inheritanceBean"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+  
+  <output name="torque.om.inheritanceBeanForView" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="beanPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="beanClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view/column/inheritance"
+        skipDecider="org.apache.torque.templates.skipdecider.BeanSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.inheritanceBean"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+  
+  <output name="torque.om.mapInit" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="optionAction"
+            option="torque.om.mapInit.databaseMapInitPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="databaseMapInitClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" combineFiles="true" elements="databaseSets/databaseSet"
+        skipDecider="org.apache.torque.templates.skipdecider.MapInitSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.mapInit.DatabaseMapInitTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.mapInit.mapInit"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.baseMapInit">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="mapInitPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseDatabaseMapInitClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" combineFiles="true" elements="databaseSets/databaseSet"
+        skipDecider="org.apache.torque.templates.skipdecider.MapInitSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.mapInit.DatabaseMapInitTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.mapInit.baseMapInit"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+  
+  <output name="torque.om.manager" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="managerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="managerClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table" 
+        skipDecider="org.apache.torque.templates.skipdecider.ManagerSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.manager.manager"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.managerForView" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="managerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="managerClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view" 
+        skipDecider="org.apache.torque.templates.skipdecider.ManagerSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.manager.manager"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <!-- Base Manager class -->
+  <output name="torque.om.baseManager">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseManagerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseManagerClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-tables/table"
+        skipDecider="org.apache.torque.templates.skipdecider.ManagerSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.manager.baseManager"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+
+  <output name="torque.om.baseManagerForView">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseManagerPackage"
+            acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="baseManagerClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" elements="all-views/view"
+        skipDecider="org.apache.torque.templates.skipdecider.ManagerSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.manager.baseManager"/>
+    <postprocessor class="org.apache.torque.generator.processor.string.RemoveUnusedImportsProcessor" />
+  </output>
+</control>
+  

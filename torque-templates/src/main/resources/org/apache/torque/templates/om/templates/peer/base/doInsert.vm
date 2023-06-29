@@ -1,0 +1,187 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: doInsert.vm 1849386 2018-12-20 13:28:59Z tv $
+##
+## Creates the doInsert methods for a base peer. 
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+    /**
+     * Method to do inserts.
+     *
+     * @param columnValues the values to insert.
+     *
+#if ($torqueGen.getChild("primary-keys").getChildren("column").isEmpty())
+     * @return always null (because the table does not have a primary key).
+#else
+     * @return the primary key of the inserted row.
+#end
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public static ObjectKey<?> doInsert(ColumnValues columnValues) 
+            throws TorqueException
+    {
+        return ${peerImplGetter}().doInsert(columnValues);
+    }
+
+    /**
+     * Method to do inserts.  This method is to be used during a transaction,
+     * otherwise use the doInsert(Criteria) method.
+     *
+     * @param columnValues the values to insert.
+     * @param con the connection to use, not null.
+     *
+#if ($torqueGen.getChild("primary-keys").getChildren("column").isEmpty())
+     * @return always null (because the table does not have a primary key).
+#else
+     * @return the primary key of the inserted row.
+#end
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public static ObjectKey<?> doInsert(ColumnValues columnValues, Connection con)
+            throws TorqueException
+    {
+        return ${peerImplGetter}().doInsert(columnValues, con);
+    }
+    /**
+     * Method to do inserts
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public static void doInsert($dbObjectClassName obj)
+            throws TorqueException
+    {
+        ${peerImplGetter}().doInsert(obj);
+    }
+
+    /**
+     * Method to do inserts.  This method is to be used during a transaction,
+     * otherwise use the doInsert($dbObjectClassName) method.  It will take
+     * care of the connection details internally.
+     *
+     * @param obj the data object to insert into the database.
+     * @param con the connection to use
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public static void doInsert($dbObjectClassName obj, Connection con)
+            throws TorqueException
+    {
+        ${peerImplGetter}().doInsert(obj, con);
+    }
+
+    /**
+     * Executes a insert into...select statement.
+     *
+     * @param toInsertInto the columns in which to insert, not null.
+     * @param criteria the criteria which selects the values to insert,
+     *        not null.
+     *
+     * @return the number of inserted rows.
+     *
+     * @throws TorqueException if a database error occurs.
+     */
+    public static int doInsert(
+                final Column[] toInsertInto,
+                final Criteria criteria)
+            throws TorqueException
+    {
+        return ${peerImplGetter}().doInsert(toInsertInto, criteria);
+    }
+
+    /**
+     * Executes a insert into...select statement.
+     *
+     * @param toInsertInto the columns in which to insert, not null.
+     * @param criteria the criteria which selects the values to insert,
+     *        not null.
+     * @param dbName the database name, or null to take the database name
+     *        from getDatabaseName().
+     *
+     * @return the number of inserted rows.
+     *
+     * @throws TorqueException if a database error occurs.
+     */
+    public static int doInsert(
+                final Column[] toInsertInto,
+                final Criteria criteria,
+                final String dbName)
+            throws TorqueException
+    {
+        return ${peerImplGetter}().doInsert(toInsertInto, criteria, dbName);
+    }
+
+    /**
+     * Executes a insert into...select statement.
+     *
+     * @param toInsertInto the columns in which to insert, not null.
+     * @param criteria the criteria which selects the values to insert,
+     *        not null.
+     * @param connection the database connection to use, not null.
+     *
+     * @return the number of inserted rows.
+     *
+     * @throws TorqueException if a database error occurs.
+     */
+    public static int doInsert(
+                final Column[] toInsertInto,
+                final Criteria criteria,
+                final Connection connection)
+            throws TorqueException
+    {
+        return ${peerImplGetter}().doInsert(toInsertInto, criteria, connection);
+    }
+
+    /**
+     * Executes a insert into...select statement.
+     *
+     * @param toInsertInto the columns in which to insert, not null.
+     * @param criteria the criteria which selects the values to insert,
+     *        not null.
+     * @param dbName the database name, or null to take the database name
+     *        from getDatabaseName().
+     * @param connection the database connection to use, not null.
+     *
+     * @return the number of inserted rows.
+     *
+     * @throws TorqueException if a database error occurs.
+     */
+    public static int doInsert(
+                final Column[] toInsertInto,
+                final Criteria criteria,
+                String dbName,
+                final Connection connection)
+            throws TorqueException
+    {
+        return ${peerImplGetter}().doInsert(
+                 toInsertInto,
+                 criteria,
+                 dbName,
+                 connection);
+    }

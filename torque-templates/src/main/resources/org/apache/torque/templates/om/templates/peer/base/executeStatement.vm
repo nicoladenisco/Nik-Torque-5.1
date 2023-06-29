@@ -1,0 +1,221 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: correctBooleans.vm 1331196 2012-04-27 02:56:12Z tfischer $
+##
+## Creates the executeStatement methods for the base peer.
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+    /**
+     * Utility method which executes a given sql statement
+     * as prepared statement.
+     * This method should be used for update, insert, and delete statements.
+     * Use executeQuery() for selects.
+     *
+     * @param statementString A String with the sql statement to execute.
+     *
+     * @return The number of rows affected.
+     *
+     * @throws TorqueException if executing the statement fails
+     *         or no database connection can be established.
+     */
+    public static int executeStatement(String statementString) 
+            throws TorqueException
+    {
+        return ${peerImplGetter}().executeStatement(statementString);
+    }
+
+    /**
+     * Utility method which executes a given sql statement
+     * as prepared statement.
+     * This method should be used for update, insert, and delete statements.
+     * Use executeQuery() for selects.
+     *
+     * @param statementString A String with the sql statement to execute.
+     * @param replacementValues values to use as placeholders in the query.
+     *        or null or empty if no placeholders need to be filled.
+     *
+     * @return The number of rows affected.
+     *
+     * @throws TorqueException if executing the statement fails
+     *         or no database connection can be established.
+     */
+    public static int executeStatement(
+                String statementString,
+                List<JdbcTypedValue> replacementValues)
+            throws TorqueException
+    {
+        return ${peerImplGetter}().executeStatement(
+                statementString, 
+                replacementValues);
+    }
+
+    /**
+     * Utility method which executes a given sql statement
+     * as prepared statement.
+     * This method should be used for update, insert, and delete statements.
+     * Use executeQuery() for selects.
+     *
+     * @param statementString A String with the sql statement to execute.
+     * @param dbName The name of the database to execute the statement against,
+     *        or null for the default DB.
+     * @param replacementValues values to use as placeholders in the query.
+     *        or null or empty if no placeholders need to be filled.
+     *
+     * @return The number of rows affected.
+     *
+     * @throws TorqueException if executing the statement fails
+     *         or no database connection can be established.
+     */
+    public static int executeStatement(
+            String statementString,
+            String dbName,
+            List<JdbcTypedValue> replacementValues)
+        throws TorqueException
+    {
+        return ${peerImplGetter}().executeStatement(
+                statementString, 
+                dbName,
+                replacementValues);
+    }
+
+    /**
+     * Utility method which executes a given sql statement
+     * as prepared statement.
+     * This method should be used for update, insert, and delete statements.
+     * Use executeQuery() for selects.
+     *
+     * @param statementString A String with the sql statement to execute.
+     * @param con The database connection to use.
+     * @param replacementValues values to use as placeholders in the query.
+     *        or null or empty if no placeholders need to be filled.
+     *
+     * @return The number of rows affected.
+     *
+     * @throws TorqueException if executing the statement fails.
+     */
+    public static int executeStatement(
+            String statementString,
+            Connection con,
+            List<JdbcTypedValue> replacementValues)
+        throws TorqueException
+    {
+        return ${peerImplGetter}().executeStatement(
+                statementString, 
+                con,
+                replacementValues);
+    }
+
+    /**
+     * Utility method which executes a given sql statement
+     * as prepared statement.
+     * This method should be used for update, insert, and delete statements.
+     * Use executeQuery() for selects.
+     *
+     * @param statementString A String with the sql statement to execute,
+     *        containing placeholders of the form ":${placeholderName}".
+     *        ${placeholderName} must contain only letters, digits and the underscore
+     *        Each placeholder must be followed by a space, except when it is at the end of the statement.
+     * @param replacementValues a map mapping the placeholder names to values
+     *        to use as placeholders in the query.
+     *        Can be null or empty if no placeholders need to be filled.
+     *
+     * @return The number of rows affected.
+     *
+     * @throws TorqueException if executing the statement fails.
+     */
+    public static int executeStatement(
+            final String statementString,
+            final Map<String, JdbcTypedValue> replacementValues)
+        throws TorqueException
+    {
+        return ${peerImplGetter}().executeStatement(
+                statementString,
+                replacementValues);
+    }
+
+    /**
+     * Utility method which executes a given sql statement
+     * as prepared statement.
+     * This method should be used for update, insert, and delete statements.
+     * Use executeQuery() for selects.
+     *
+     * @param statementString A String with the sql statement to execute,
+     *        containing placeholders of the form ":${placeholderName}".
+     *        ${placeholderName} must contain only letters, digits and the underscore
+     *        Each placeholder must be followed by a space, except when it is at the end of the statement.
+     * @param dbName The name of the database to execute the statement against,
+     *        or null for the default DB.
+     * @param replacementValues a map mapping the placeholder names to values
+     *        to use as placeholders in the query.
+     *        Can be null or empty if no placeholders need to be filled.
+     *
+     * @return The number of rows affected.
+     *
+     * @throws TorqueException if executing the statement fails.
+     */
+    public static int executeStatement(
+                final String statementString,
+                final String dbName,
+                final Map<String, JdbcTypedValue> replacementValues)
+            throws TorqueException
+        {
+        return ${peerImplGetter}().executeStatement(
+                statementString,
+                dbName,
+                replacementValues);
+        }
+
+        /**
+     * Utility method which executes a given sql statement
+     * as prepared statement.
+     * This method should be used for update, insert, and delete statements.
+     * Use executeQuery() for selects.
+     *
+     * @param statementString A String with the sql statement to execute,
+     *        containing placeholders of the form ":${placeholderName}".
+     *        ${placeholderName} must contain only letters, digits and the underscore
+     *        Each placeholder must be followed by a space, except when it is at the end of the statement.
+     * @param con The database connection to use.
+     * @param replacementValues a map mapping the placeholder names (without leading colons)
+     *        to values to use as placeholders in the query.
+     *        Can be null or empty if no placeholders need to be filled.
+     *
+     * @return The number of rows affected.
+     *
+     * @throws TorqueException if executing the statement fails.
+     */
+    public static int executeStatement(
+                final String statementString,
+                final Connection con,
+                final Map<String, JdbcTypedValue> replacementValues)
+            throws TorqueException
+    {
+        return ${peerImplGetter}().executeStatement(
+                statementString,
+                con,
+                replacementValues);
+    }
+
+    

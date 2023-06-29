@@ -1,0 +1,65 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: correctBooleans.vm 1374905 2012-08-20 03:24:18Z tfischer $
+##
+## Creates the correctBooleans method for the base peer.
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+    /**
+     * changes the boolean values in the criteria to the appropriate type,
+     * whenever a booleanchar or booleanint column is involved.
+     * This enables the user to create criteria using Boolean values
+     * for booleanchar or booleanint columns.
+     *
+     * @param criteria the criteria in which the boolean values
+     *        should be corrected.
+     *
+     * @throws TorqueException if the database map for the criteria cannot be 
+               obtained.
+     */
+    public static void correctBooleans(Criteria criteria) throws TorqueException
+    {
+        ${peerImplGetter}().correctBooleans(criteria);
+    }
+
+    /**
+     * Checks all columns in the criteria to see whether
+     * booleanchar and booleanint columns are queried with a boolean.
+     * If yes, the query values are mapped onto values the database
+     * does understand, i.e. 0 and 1 for booleanints and N and Y for
+     * booleanchar columns.
+     *
+     * @param columnValues The value to be checked for booleanint
+     *        and booleanchar columns.
+     * @throws TorqueException if the database map for the criteria cannot be
+     *         retrieved.
+     */
+    public static void correctBooleans(
+            ColumnValues columnValues)
+        throws TorqueException
+    {
+        ${peerImplGetter}().correctBooleans(columnValues);
+    }
+    

@@ -1,0 +1,87 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: imports.vm 1868761 2019-10-22 14:45:20Z tv $
+##
+## Generates the import statements for the base peer class
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.PreparedStatement;
+import java.sql.Types;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.apache.torque.NoRowsException;
+import org.apache.torque.OptimisticLockingFailedException;
+import org.apache.torque.TooManyRowsException;
+import org.apache.torque.TorqueException;
+import org.apache.torque.TorqueRuntimeException;
+import $torqueGen.option("torque.om.criteriaClass");
+import $torqueGen.option("torque.om.criterionClass");
+import org.apache.torque.ColumnImpl;
+import org.apache.torque.om.mapper.RecordMapper;
+import org.apache.torque.om.mapper.CompositeMapper;
+import org.apache.torque.om.DateKey;
+import org.apache.torque.om.NumberKey;
+import org.apache.torque.om.StringKey;
+import org.apache.torque.om.ObjectKey;
+import org.apache.torque.om.SimpleKey;
+import org.apache.torque.om.ComboKey;
+import org.apache.torque.map.TableMap;
+import org.apache.torque.util.TorqueConnection;
+import org.apache.torque.util.Transaction;
+import org.apache.torque.util.ColumnValues;
+import org.apache.torque.util.JdbcTypedValue;
+
+#if ($basePeerPackage != $dbObjectPackage)
+import ${dbObjectPackage}.*;
+#end
+#if (($basePeerPackage != $recordMapperPackage) && ($recordMapperPackage != $dbObjectPackage))
+import ${recordMapperPackage}.*;
+#end
+#if ($basePeerPackage != $peerPackage)
+import ${peerPackage}.*;
+#end

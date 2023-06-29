@@ -1,0 +1,125 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: fillReferencedObject.vm 1393248 2012-10-03 00:59:32Z tfischer $
+##
+## Creates the fillXXX methods for the base peer implementation.
+## 
+## This template expects the current source element to be a "foreign-field" 
+## element from the schema, processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+#set ( $foreignKeyElement = $torqueGen.getParent() )
+#set ( $localTableElement = $foreignKeyElement.getParent() )
+#set ( $peerImplGetter = $localTableElement.getAttribute("peerImplGetter") )
+#set ( $localDbObjectClassName = $localTableElement.getAttribute("dbObjectClassName") )
+#set ( $foreignTableElement = $foreignKeyElement.getChild("table") )
+#set ( $localPeerClassName = $localTableElement.getAttribute("peerClassName") )
+#if ($foreignTableElement.getChild("primary-keys").getChildren().size() > 0)
+    /** 
+     * Fills the referenced ${fieldType} objects in the ${field} fields
+     * of the objects in <code>toFill</code> by reading the database.
+     * ${localPeerClassName}.DEFAULT_FILLER_CHUNK_SIZE is used as chunk size.
+     *
+     * @param toFill Contains the objects to fill, not null, 
+     *        may not contain null.
+     *
+     * @return all read ${fieldType} objects.
+     *
+     * @throws TorqueException if an error querying the database occurs.
+     * @throws NullPointerException if toFill is null or contains null elements.
+     */
+    public static List<${fieldType}> ${filler}(
+            Collection<${localDbObjectClassName}> toFill) 
+        throws TorqueException
+    {
+        return ${peerImplGetter}().${filler}(toFill);
+    }
+
+    /** 
+     * Fills the referenced ${fieldType} objects in the ${field} fields
+     * of the objects in <code>toFill</code> by reading the database.
+     *
+     * @param toFill Contains the objects to fill, not null,
+     *        may not contain null.
+     * @param chunkSize The maximum number of referencing objects
+     *        to be filled by a single database request, or -1
+     *        to fill all objects at once.
+     *
+     * @return all read ${fieldType} objects.
+     *
+     * @throws TorqueException if an error querying the database occurs.
+     * @throws NullPointerException if toFill is null or contains null elements.
+     */
+    public static List<${fieldType}> ${filler}(
+            Collection<${localDbObjectClassName}> toFill,
+            int chunkSize)
+        throws TorqueException
+    {
+        return ${peerImplGetter}().${filler}(toFill, chunkSize);
+    }
+
+    /** 
+     * Fills the referenced ${fieldType} objects in the ${field} fields
+     * of the objects in <code>toFill</code> by reading the database.
+     * ${localPeerClassName}.DEFAULT_FILLER_CHUNK_SIZE is used as chunk size.
+     *
+     * @param toFill Contains the objects to fill, not null,
+     *        may not contain null.
+     * @param connection the database connection to use, not null.
+     *
+     * @return all read ${fieldType} objects.
+     *
+     * @throws TorqueException if an error querying the database occurs.
+     * @throws NullPointerException if toFill is null or contains null elements.
+     */
+    public static List<${fieldType}> ${filler}(
+            Collection<${localDbObjectClassName}> toFill,
+            Connection connection) 
+        throws TorqueException
+    {
+        return ${peerImplGetter}().${filler}(toFill, connection);
+    }
+
+    /** 
+     * Fills the referenced ${fieldType} objects in the ${field} fields
+     * of the objects in <code>toFill</code> by reading the database.
+     *
+     * @param toFill Contains the objects to fill, not null,
+     *        may not contain null.
+     * @param chunkSize The maximum number of referencing objects
+     *        to be filled by a single database request, or -1
+     *        to fill all objects at once.
+     * @param connection the database connection to use, not null.
+     *
+     * @return all read ${fieldType} objects.
+     *
+     * @throws TorqueException if an error querying the database occurs.
+     * @throws NullPointerException if toFill is null or contains null elements.
+     */
+    public static List<${fieldType}> ${filler}(
+            Collection<${localDbObjectClassName}> toFill,
+            int chunkSize,
+            Connection connection) 
+        throws TorqueException
+    {
+        return ${peerImplGetter}().${filler}(toFill, chunkSize, connection);
+    }
+#end

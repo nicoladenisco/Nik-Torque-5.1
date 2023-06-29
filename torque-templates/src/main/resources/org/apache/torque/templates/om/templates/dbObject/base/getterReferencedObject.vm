@@ -1,0 +1,171 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: getterReferencedObject.vm 1872595 2020-01-10 13:12:32Z gk $
+##
+## This template creates the getter method in the object for the "local" part
+## of a foreign key. The object in the field represents the "foreign" part
+## of the foreign key.  
+## The template expects as input a "local-field" element inside a 
+## "foreign-key" element from the torque schema, which was generated 
+## by the OMTransformer.  
+##
+#set ( $silentDbFetch = $torqueGen.booleanOption("torque.om.silentDbFetch") )
+#set ( $foreignKeyElement = $torqueGen.getParent() )
+#set ( $foreignTableElement = $foreignKeyElement.getChild("table") )
+#if (${foreignTableElement.getAttribute('useManagers')} != "")
+  #set ($useManagers = ${foreignTableElement.getAttribute('useManagers')})
+#end
+#set ( $foreignTablePeerClass = "${foreignTableElement.getAttribute('peerPackage')}.${foreignTableElement.getAttribute('peerClassName')}" )
+#set ( $foreignTableManagerClass = "${foreignTableElement.getAttribute('managerPackage')}.${foreignTableElement.getAttribute('managerClassName')}" )
+#set ( $and = " && " )
+#set ( $conditional = "" )
+#set ( $arglist = "" )
+#set ( $argsize = 0 )
+#set ( $referenceElements = $foreignKeyElement.getChildren("reference") )
+#foreach ($referenceElement in $referenceElements)
+  #set ( $localColumnElement = $referenceElement.getChild("local-column").getChild("column"))
+  #set ( $localColumnField = ($localColumnElement.getAttribute("field")) )
+  #set ( $localColumnFieldType = ($localColumnElement.getAttribute("fieldType")) )
+  #if ($localColumnFieldType == "short" || $localColumnFieldType == "int" || $localColumnFieldType == "long" || $localColumnFieldType == "byte" || $localColumnFieldType == "float" || $localColumnFieldType == "double")
+    #set ( $conditional = "$conditional${and}this.${localColumnField} != 0" )
+  #elseif ($localColumnFieldType == "char")
+    #set ( $conditional = "$conditional${and}this.${localColumnField} != '\0'" )
+  #else
+    #set ( $conditional = "$conditional${and}!Objects.equals(this.${localColumnField}, null)" )
+  #end
+  #if ($arglist != "" )
+    #if (${useManagers} == "true")
+      #set ( $arglist = "${arglist}, SimpleKey.keyFor(this.$localColumnField)" )
+    #else
+      #set ( $arglist = "${arglist}, this.$localColumnField" )
+    #end
+  #else
+    #if (${useManagers} == "true")
+      #set ( $arglist = "SimpleKey.keyFor(this.$localColumnField)" )
+    #else
+      #set ( $arglist = "this.$localColumnField" )
+    #end
+  #end
+  #set ( $argsize = $argsize + 1 )
+#end
+    /**
+     * Returns the associated $fieldType object.
+#if ($silentDbFetch)
+     * If it was not retrieved before, the object is retrieved from
+     * the database
+#end
+     *
+     * @return the associated $fieldType object
+#if ($silentDbFetch)
+     * @throws TorqueException when reading from the database fails.
+#end
+     */
+    public $fieldType ${getter}()
+#if ($silentDbFetch)
+        throws TorqueException
+#end
+    {
+#if ($silentDbFetch)
+        if ($field == null$conditional)
+        {
+  #if ($argsize > 1)
+    #if (${useManagers} == "true")
+            SimpleKey<?>[] keys = { $arglist };
+            $field = ${foreignTableManagerClass}.getInstance(new ComboKey(keys));
+    #else
+            $field = ${foreignTablePeerClass}.retrieveByPK($arglist);
+    #end
+  #else
+    #if (${useManagers} == "true")
+            $field = ${foreignTableManagerClass}.getInstance($arglist);
+    #else
+            $field = ${foreignTablePeerClass}.retrieveByPK(SimpleKey.keyFor($arglist));
+    #end
+  #end
+##            /* The following can be used to
+##               guarantee the related object contains a reference
+##               to this object, but this level of coupling
+##               may be undesirable in many circumstances.
+##               As it can lead to a db query with many results that may
+##               never be used.
+##  #set ( $foreignFieldElement = $foreignKeyElement.getChild("foreign-field") )
+##  #set ( $foreignFieldAdder = $foreignFieldElement.getAttribute("adder") )
+##               $field.$foreignFieldAdder(this);
+##            */
+        }
+#end
+        return $field;
+    }
+
+    /**
+     * Return the associated $fieldType object
+     * If it was not retrieved before, the object is retrieved from
+     * the database using the passed connection
+     *
+     * @param connection the connection used to retrieve the associated object
+     *        from the database, if it was not retrieved before
+     * @return the associated $fieldType object
+     * @throws TorqueException If a problem occurs with the get[$fieldType] method.
+     */
+    public $fieldType ${getter}(Connection connection)
+        throws TorqueException
+    {
+        if ($field == null$conditional)
+        {
+      #if ($argsize > 1)
+        #if (${useManagers} == "true")
+            SimpleKey<?>[] keys = { $arglist };
+            ComboKey comboid = new ComboKey(keys);
+
+            $field = ${foreignTableManagerClass}.getCachedInstance(comboid);
+            if ($field == null)
+            {
+                $field = ${foreignTablePeerClass}.retrieveByPK(comboid, connection);
+                ${foreignTableManagerClass}.putInstance($field);
+            }
+        #else
+            $field = ${foreignTablePeerClass}.retrieveByPK($arglist, connection);
+        #end
+      #else
+        #if (${useManagers} == "true")
+            $field = ${foreignTableManagerClass}.getCachedInstance($arglist);
+            if ($field == null)
+            {
+                $field = ${foreignTablePeerClass}.retrieveByPK($arglist, connection);
+                ${foreignTableManagerClass}.putInstance($field);
+            }
+        #else
+            $field = ${foreignTablePeerClass}.retrieveByPK(SimpleKey.keyFor($arglist), connection);
+        #end
+      #end
+##            /* The following can be used to
+##               guarantee the related object contains a reference
+##               to this object, but this level of coupling
+##               may be undesirable in many circumstances.
+##               As it can lead to a db query with many results that may
+##               never be used.
+##  #set ( $foreignFieldElement = $foreignKeyElement.getChild("foreign-field") )
+##  #set ( $foreignFieldAdder = $foreignFieldElement.getAttribute("adder") )
+##               $field.$foreignFieldAdder(this);
+##            */
+        }
+        return $field;
+    }
+

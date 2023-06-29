@@ -1,0 +1,75 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: tableConstantInit.vm 1622902 2014-09-06 18:29:41Z tfischer $
+##
+## Initializes the constant for the table map in the map builder class.
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+        TABLE = dbMap.getTable("$name");
+        TABLE.setJavaName("$javaName");
+        TABLE.setOMClass(${dbObjectPackage}.${dbObjectClassName}.class);
+        TABLE.setPeerClass(${peerPackage}.${peerClassName}.class);
+#if ( $description )
+        TABLE.setDescription("$description");
+#end
+#if ($idMethod == "native")
+        TABLE.setPrimaryKeyMethod(IDMethod.NATIVE);
+#elseif ($idMethod == "idbroker")
+        TABLE.setPrimaryKeyMethod(IDMethod.ID_BROKER);
+#elseif ($idMethod == "none")
+        TABLE.setPrimaryKeyMethod(IDMethod.NO_ID_METHOD);
+#else
+        TABLE.setPrimaryKeyMethod(IDMethod.getIdMethod("$idMethod"));
+#end
+#set ( $idMethodParameterElements = $torqueGen.getChildren("id-method-parameter"))
+#if (!$idMethodParameterElements.isEmpty())
+## assume one parameter.
+  #set ( $idMethodParameterElement = $idMethodParameterElements.get(0) )
+  #set ( $value = $idMethodParameterElement.getAttribute("value") )
+        TABLE.setPrimaryKeyMethodInfo("$value");
+#else
+        TABLE.setPrimaryKeyMethodInfo(IDMethod.ID_BROKER, TABLE.getName());
+        TABLE.setPrimaryKeyMethodInfo(IDMethod.SEQUENCE, "$sequenceName");
+        TABLE.setPrimaryKeyMethodInfo(IDMethod.AUTO_INCREMENT, "$name");
+#end
+#set ( $primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column") )
+#if (${useManagers} == "true" && $primaryKeyColumnElements.size() > 0)
+        TABLE.setUseManager(true);
+        TABLE.setManagerClass(${managerPackage}.${managerClassName}.class);
+#end
+#set ( $tableOptionElements = $torqueGen.getChildren("option") )
+#foreach ( $optionElement in $tableOptionElements )
+  #set ( $key = $optionElement.getAttribute("key") )
+  #set ( $value = $optionElement.getAttribute("value") )
+        TABLE.setOption("$key", "$value");
+#end
+#set ( $columnElements = $torqueGen.getChildren("column") )
+#set ( $tableUseInheritance = "false" )
+#foreach ($columnElement in $columnElements)
+  #if ($inheritance != "false")
+    #set ( $tableUseInheritance = "true" )
+  #end
+#end
+        TABLE.setUseInheritance($tableUseInheritance);
+

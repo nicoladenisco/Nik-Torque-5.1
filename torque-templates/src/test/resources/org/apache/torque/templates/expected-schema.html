@@ -1,0 +1,993 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+<html>
+<head>
+  <title>bookstore</title>
+  <link rel="stylesheet" type="text/css" href="datamodel.css">
+</head>
+
+<body class="normalFont">
+  <table class="summarytable">
+    <tr class="summaryhead">
+      <th class="summaryheadbackground summaryborder summaryheadtablename">Table Name</th>
+      <th class="summaryheadbackground summaryborder summaryheadjavaname">OM Class</th>
+      <th class="summaryheadbackground summaryborder summaryheaddescription">Description</th>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#a" class="link summarytablenamelink">a</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">A</td>
+      <td class="summarybackground summaryborder summarydescription"> A table</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#b" class="link summarytablenamelink">b</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">B</td>
+      <td class="summarybackground summaryborder summarydescription"> B table</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#b2" class="link summarytablenamelink">b2</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">B2</td>
+      <td class="summarybackground summaryborder summarydescription"> B2 table</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#r_ab" class="link summarytablenamelink">r_ab</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">RAb</td>
+      <td class="summarybackground summaryborder summarydescription"> r_ab table</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#c" class="link summarytablenamelink">c</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">C</td>
+      <td class="summarybackground summaryborder summarydescription"> c table contains fk to ar_ab, a and b</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#d" class="link summarytablenamelink">d</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">D</td>
+      <td class="summarybackground summaryborder summarydescription"> &nbsp;</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#nopk" class="link summarytablenamelink">nopk</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">Nopk</td>
+      <td class="summarybackground summaryborder summarydescription"> this table has no pk</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#MULTIPK_SELF_REFTABLE" class="link summarytablenamelink">MULTIPK_SELF_REFTABLE</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">MultipkSelfReftable</td>
+      <td class="summarybackground summaryborder summarydescription"> &nbsp;</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#ifc_table" class="link summarytablenamelink">ifc_table</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">IfcTable</td>
+      <td class="summarybackground summaryborder summarydescription"> this table implements an interface</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#ifc_table2" class="link summarytablenamelink">ifc_table2</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">IfcTable2</td>
+      <td class="summarybackground summaryborder summarydescription"> this table implements a local interface</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#INHERITANCE_TEST" class="link summarytablenamelink">INHERITANCE_TEST</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">InheritanceTest</td>
+      <td class="summarybackground summaryborder summarydescription"> Table to test inheritance</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#ext_schema" class="link summarytablenamelink">ext_schema</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">ExtSchema</td>
+      <td class="summarybackground summaryborder summarydescription"> &nbsp;</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#extext_schema" class="link summarytablenamelink">extext_schema</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">ExtextSchema</td>
+      <td class="summarybackground summaryborder summarydescription"> &nbsp;</td>
+    </tr>
+    <tr class=summaryrow">
+      <td class="summarybackground summaryborder summarytablename"><a href="#torque.qualified_name" class="link summarytablenamelink">torque.qualified_name</a></td>
+      <td class="summarybackground summaryborder summaryjavaname">QualifiedName</td>
+      <td class="summarybackground summaryborder summarydescription"> &nbsp;</td>
+    </tr>
+  </table>
+
+  <a name="a"/>
+<h2>a</h2>
+A table
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="aa_id">a_id
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">AId</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="aname">name
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 50 </td>
+    <td class="detailbackground detailborder detaildefault"> a_name</td>
+    <td class="detailbackground detailborder detailjavaname">Name</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="acontactdata">contactdata
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 500 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Contactdata</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="acreated_at">created_at
+        </td>
+    <td class="detailbackground detailborder detailtype">java.util.Date</td>
+    <td class="detailbackground detailborder detailsize detailscale"> 6 </td>
+    <td class="detailbackground detailborder detaildefault"> CURRENT_TIMESTAMP</td>
+    <td class="detailbackground detailborder detailjavaname">CreatedAt</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="aupdated_at">updated_at
+        </td>
+    <td class="detailbackground detailborder detailtype">java.util.Date</td>
+    <td class="detailbackground detailborder detailsize detailscale"> 6 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">UpdatedAt</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="aenum">enum
+        </td>
+    <td class="detailbackground detailborder detailtype">EnumEnum</td>
+    <td class="detailbackground detailborder detailsize"> 50 </td>
+    <td class="detailbackground detailborder detaildefault"> x</td>
+    <td class="detailbackground detailborder detailjavaname">EnumEnum</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="b"/>
+<h2>b</h2>
+B table
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="bb_id">b_id
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">BId</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="bname">name
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 50 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Name</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="b2"/>
+<h2>b2</h2>
+B2 table
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="b2b2_id">b2_id
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">B2Id</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="b2b2_id_2">b2_id_2
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">B2Id2</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="b2b2_name_1">b2_name_1
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 50 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">B2Name1</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="b2b2_name_2">b2_name_2
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 20 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">B2Name2</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="b2b2_name_3">b2_name_3
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 10 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">B2Name3</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="b2b2_name_4">b2_name_4
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 10 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">B2Name4</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="r_ab"/>
+<h2>r_ab</h2>
+r_ab table
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey foreignkey notnull" id="r_aba_id">a_id
+    <a href="#a" title="Foreign key to a.a_id" class="link detailforeignkeylink">(fk)</a>
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">AId</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center> X </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey foreignkey notnull" id="r_abb_id">b_id
+    <a href="#b" title="Foreign key to b.b_id" class="link detailforeignkeylink">(fk)</a>
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">BId</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center> X </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="r_abname">name
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 50 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Name</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="c"/>
+<h2>c</h2>
+c table contains fk to ar_ab, a and b
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="cc_id">c_id
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">CId</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname foreignkey notnull" id="ca_id">a_id
+    <a href="#r_ab" title="Foreign key to r_ab.a_id" class="link detailforeignkeylink">(fk)</a>
+    <a href="#a" title="Foreign key to a.a_id" class="link detailforeignkeylink">(fk)</a>
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">AId</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center> X </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname foreignkey notnull" id="cb_id">b_id
+    <a href="#r_ab" title="Foreign key to r_ab.b_id" class="link detailforeignkeylink">(fk)</a>
+    <a href="#b" title="Foreign key to b.b_id" class="link detailforeignkeylink">(fk)</a>
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">BId</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center> X </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="cname">name
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 50 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Name</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="d"/>
+<h2>d</h2>
+
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="dd_id">d_id
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">DId</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="dname">name
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 255 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Name</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey foreignkey notnull" id="db_id">b_id
+    <a href="#r_ab" title="Foreign key to r_ab.b_id" class="link detailforeignkeylink">(fk)</a>
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">BId</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center> X </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey foreignkey notnull" id="da_id">a_id
+    <a href="#a" title="Foreign key to a.a_id" class="link detailforeignkeylink">(fk)</a>
+    <a href="#r_ab" title="Foreign key to r_ab.a_id" class="link detailforeignkeylink">(fk)</a>
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">AId</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center> X </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="nopk"/>
+<h2>nopk</h2>
+this table has no pk
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="nopkintcol">intcol
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Intcol</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="nopkname">name
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 50 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Name</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="MULTIPK_SELF_REFTABLE"/>
+<h2>MULTIPK_SELF_REFTABLE</h2>
+
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="MULTIPK_SELF_REFTABLECOL1">COL1
+        </td>
+    <td class="detailbackground detailborder detailtype">java.math.BigDecimal</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Col1</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="MULTIPK_SELF_REFTABLECOL2">COL2
+        </td>
+    <td class="detailbackground detailborder detailtype">java.math.BigDecimal</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Col2</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname foreignkey notnull" id="MULTIPK_SELF_REFTABLEPARENT_COL1">PARENT_COL1
+    <a href="#MULTIPK_SELF_REFTABLE" title="Foreign key to MULTIPK_SELF_REFTABLE.COL1" class="link detailforeignkeylink">(fk)</a>
+        </td>
+    <td class="detailbackground detailborder detailtype">java.math.BigDecimal</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">ParentCol1</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center> X </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname foreignkey notnull" id="MULTIPK_SELF_REFTABLEPARENT_COL2">PARENT_COL2
+    <a href="#MULTIPK_SELF_REFTABLE" title="Foreign key to MULTIPK_SELF_REFTABLE.COL2" class="link detailforeignkeylink">(fk)</a>
+        </td>
+    <td class="detailbackground detailborder detailtype">java.math.BigDecimal</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">ParentCol2</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center> X </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="ifc_table"/>
+<h2>ifc_table</h2>
+this table implements an interface
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="ifc_tableid">id
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">ID</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="ifc_tablename">name
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 50 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Name</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="ifc_table2"/>
+<h2>ifc_table2</h2>
+this table implements a local interface
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="ifc_table2id">id
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">ID</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="ifc_table2name">name
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 50 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Name</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="INHERITANCE_TEST"/>
+<h2>INHERITANCE_TEST</h2>
+Table to test inheritance
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="INHERITANCE_TESTINHERITANCE_TEST">INHERITANCE_TEST
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">InheritanceTest</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="INHERITANCE_TESTCLASS_NAME">CLASS_NAME
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 1 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">ClassName</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="INHERITANCE_TESTPAYLOAD_PARENT">PAYLOAD_PARENT
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 100 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">PayloadParent</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="INHERITANCE_TESTPAYLOAD_B">PAYLOAD_B
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 100 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">PayloadB</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="INHERITANCE_TESTPAYLOAD_C">PAYLOAD_C
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 100 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">PayloadC</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="INHERITANCE_TESTPAYLOAD_D">PAYLOAD_D
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 100 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">PayloadD</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="ext_schema"/>
+<h2>ext_schema</h2>
+
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="ext_schemaext_schema_id">ext_schema_id
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">ExtSchemaId</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname foreignkey" id="ext_schemaext_id">ext_id
+    <a href="#ext" title="Foreign key to ext.ext_id" class="link detailforeignkeylink">(fk)</a>
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">ExtId</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center> X </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="ext_schematest">test
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Test</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="extext_schema"/>
+<h2>extext_schema</h2>
+
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname primarykey notnull" id="extext_schemaextext_schema_id">extext_schema_id
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">ExtextSchemaId</td>
+    <td class="detailbackground detailborder detailpk"><center> X </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname foreignkey" id="extext_schemaextext_id">extext_id
+    <a href="#extext" title="Foreign key to extext.extext_id" class="link detailforeignkeylink">(fk)</a>
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">ExtextId</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center> X </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname notnull" id="extext_schematest">test
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Test</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center> X </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+<a name="torque.qualified_name"/>
+<h2>torque.qualified_name</h2>
+
+<p/>
+<table class="detailtable">
+  <tr class="detailhead">
+    <th class="detailheadbackground detailborder detailheadname">Name</th>
+    <th class="detailheadbackground detailborder detailheadtype">Type</th>
+    <th class="detailheadbackground detailborder detailheadsize">Size</th>
+    <th class="detailheadbackground detailborder detailheaddefault">Default</th>
+    <th class="detailheadbackground detailborder detailheadjavaname">JavaName</th>
+    <th class="detailheadbackground detailborder detailheadpk">PK</th>
+    <th class="detailheadbackground detailborder detailheadfk">FK</th>
+    <th class="detailheadbackground detailborder detailheadnotnull">not null</th>
+    <th class="detailheadbackground detailborder detailheaddescription">Description</th>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="torque.qualified_nameid">id
+        </td>
+    <td class="detailbackground detailborder detailtype">int</td>
+    <td class="detailbackground detailborder detailsize"> &nbsp;</td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Id</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+  <tr class="detailrow">
+  
+    <td class="detailbackground detailborder detailname" id="torque.qualified_namepayload">payload
+        </td>
+    <td class="detailbackground detailborder detailtype">String</td>
+    <td class="detailbackground detailborder detailsize"> 100 </td>
+    <td class="detailbackground detailborder detaildefault"> &nbsp;</td>
+    <td class="detailbackground detailborder detailjavaname">Payload</td>
+    <td class="detailbackground detailborder detailpk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailfk"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detailnotnull"><center>  &nbsp; </center></td>
+    <td class="detailbackground detailborder detaildescription"> &nbsp;</td>
+  </tr>
+</table>
+
+</body>
+</html>

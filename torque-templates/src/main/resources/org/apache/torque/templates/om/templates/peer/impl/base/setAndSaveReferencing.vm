@@ -1,0 +1,325 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: saveMethods.vm 1377465 2012-08-26 17:25:38Z tv $
+##
+## This template expects the current source element to be a "foreign-field" 
+## element from the schema, processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.
+##
+#set ( $foreignKeyElement = $torqueGen.getParent() )
+#set ( $foreignKeyGetter = $foreignKeyElement.getAttribute("foreignKeyGetter") )
+#set ( $referencesPrimaryKey = $foreignKeyElement.getAttribute("referencesPrimaryKey") )
+#set ( $foreignKeyReferences = $foreignKeyElement.getChildren("reference") )
+#set ( $localTableElement = $foreignKeyElement.getChild("table") )
+#set ( $localTableField = $localTableElement.getAttribute("field") )
+#set ( $localDbObjectClassName = $localTableElement.getAttribute("dbObjectClassName") )
+#set ( $localPeerClassName = $localTableElement.getAttribute("peerClassName") )
+#set ( $foreignTableElement = $foreignKeyElement.getParent() )
+#set ( $foreignTablePeerClassName = $foreignTableElement.getAttribute("peerClassName") )
+#set ( $foreignDbObjectClassName = $foreignTableElement.getAttribute("dbObjectClassName") )
+#set ( $foreignPrimaryKeyColumnElements = $foreignTableElement.getChild("primary-keys").getChildren("column"))
+#if ($foreignTableElement.getAttribute("saveMethodsInDbObjects"))
+#set ($saveMethodsInDbObjects = $foreignTableElement.getAttribute("saveMethodsInDbObjects"))
+#end
+#if ($foreignTableElement.getChild("primary-keys").getChildren().size() > 0)
+    /** 
+     * Saves the passed collection as linked objects.
+     * This means the following is done:
+     * <ul>
+     *  <li>
+     *    The current collection of objects which are linked to toLinkTo
+     *    and which are also in the list toSave is read from the database
+     *    into the list intersection.
+     *  </li>
+     *  <li>
+     *    All objects in toSave which are not in intersection are inserted.
+     *  </li>
+     *  <li>
+     *    All objects in intersection are updated with the 
+     *    corresponding values in toSave and saved.
+     *  </li>
+     *  <li>
+     *    All objects in the database which are linked to toLinkTo but are 
+     *    not in toSave are deleted from the database.
+     *  </li>
+     * </ul>
+     *
+     * @param toLinkTo the object which collections should be set with the
+     *        values in toSave.
+     * @param toSave Contains the objects to save, not null, 
+     *        may not contain null.
+     *
+     * @throws TorqueException if an error accessing the database occurs.
+     * @throws NullPointerException if toSave is null or contains null elements.
+     */
+    public void ${setAndSaveMethodName}(
+            ${localDbObjectClassName} toLinkTo,
+            Collection<${foreignDbObjectClassName}> toSave) 
+        throws TorqueException
+    {
+        try (TorqueConnection connection = Transaction.begin(getDatabaseName()))
+        {
+            ${setAndSaveMethodName}(toLinkTo, toSave, connection);
+            Transaction.commit(connection);
+        }
+    }
+
+    /** 
+     * Saves the passed collection as linked objects.
+     * This means the following is done:
+     * <ul>
+     *  <li>
+     *    The current collection of objects which are linked to toLinkTo
+     *    and which are also in the list toSave is read from the database
+     *    into the list intersection.
+     *  </li>
+     *  <li>
+     *    All objects in toSave which are not in intersection are inserted.
+     *  </li>
+     *  <li>
+     *    All objects in intersection are updated with the 
+     *    corresponding values in toSave and saved.
+     *  </li>
+     *  <li>
+     *    All objects in the database which are linked to toLinkTo but are 
+     *    not in toSave are deleted from the database.
+     *  </li>
+     * </ul>
+     *
+     * @param toLinkTo the object which collections should be set with the
+     *        values in toSave.
+     * @param toSave Contains the objects to save, not null, 
+     *        may not contain null.
+     * @param connection the database connection to use.
+     *
+     * @throws TorqueException if an error accessing the database occurs.
+     * @throws NullPointerException if toSave is null or contains null elements.
+     */
+    public void ${setAndSaveMethodName}(
+            ${localDbObjectClassName} toLinkTo,
+            Collection<${foreignDbObjectClassName}> toSave,
+            Connection connection) 
+        throws TorqueException
+    {
+        // make sure the collection cache in toLinkTo represents the current
+        // database state
+        toLinkTo.${resetter}();
+        toLinkTo.${getter}(connection);
+#if ($referencesPrimaryKey)
+        ObjectKey<?> localKey = toLinkTo.getPrimaryKey();
+#else
+  #if ($foreignKeyReferences.size() == 1)
+    #set ( $localReferenceColumnElement = $foreignKeyReferences.get(0).getChild("foreign-column").getChild("column") )
+    #set ( $localFieldGetter = $localReferenceColumnElement.getAttribute("getter") )
+        ObjectKey<?> localKey = SimpleKey.keyFor(toLinkTo.${localFieldGetter}());
+  #else
+        SimpleKey<?>[] keyElementArray = new SimpleKey[$foreignKeyReferences.size()];
+    #set ($i = 0)
+    #foreach ($referenceElement in $foreignKeyReferences)
+      #set ( $localReferenceColumnElement = $referenceElement.getChild("foreign-column").getChild("column") )
+      #set ( $localFieldGetter = $localReferenceColumnElement.getAttribute("getter") )
+        keyElementArray[$i] = SimpleKey.keyFor(
+                toLinkTo.${localFieldGetter}());
+      #set ($i = $i + 1)
+    #end
+        ObjectKey<?> localKey = new ComboKey(keyElementArray);
+  #end
+#end
+
+        Criteria criteria = new Criteria();
+#if ($foreignKeyReferences.size() == 1)
+  #set ( $columnElement = $foreignKeyReferences.get(0).getChild("local-column").getChild("column") )
+  #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName"))
+        Criterion onlyReferencingCriterion = new Criterion(
+                ${foreignTablePeerClassName}.${peerColumnName}, 
+                localKey);
+#else
+        SimpleKey<?>[] keys = (SimpleKey[]) localKey.getValue();  // more than one foreign key reference
+  #set ( $i = 0 )
+  #foreach ($referenceElement in $foreignKeyReferences)
+    #set ( $columnElement = $referenceElement.getChild("local-column").getChild("column") )
+    #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName"))
+        Criterion c$i = new Criterion(
+                ${foreignTablePeerClassName}.${peerColumnName}, keys[$i]);
+    #set ( $j = $i - 1 )
+    #if ($i > 0)
+        c${j}.and(c${i});
+    #end
+    #set ( $i = $i + 1 )
+  #end
+        Criterion onlyReferencingCriterion = c0;
+#end
+        criteria.where(onlyReferencingCriterion);
+        Set<ObjectKey<?>> toSaveKeys = new HashSet<ObjectKey<?>>();
+        for (${foreignDbObjectClassName} toSaveElement : toSave)
+        {
+            ObjectKey<?> toSaveKey = toSaveElement.getPrimaryKey();
+            if (toSaveKey.getValue() != null)
+            {
+                toSaveKeys.add(toSaveKey);
+            }
+        }
+        
+        // calculate intersection between objects in the database
+        // and objects in the list
+        List<${foreignDbObjectClassName}> intersection;
+        if (toSaveKeys.isEmpty())
+        {
+            intersection = new ArrayList<${foreignDbObjectClassName}>();
+        }
+        else
+        {
+#if ($foreignPrimaryKeyColumnElements.size() == 1)
+  #set ( $columnElement = $foreignPrimaryKeyColumnElements.get(0) )
+  #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName"))
+            criteria.and(
+                    ${foreignTablePeerClassName}.${peerColumnName},
+                     toSaveKeys,
+                      Criteria.IN);
+#else
+            Criterion toSaveKeyCriterion = null;
+            for (ObjectKey<?> toSaveKey : toSaveKeys)
+            {
+                SimpleKey<?>[] toSavePrimaryKeys = (SimpleKey[]) toSaveKey.getValue();
+  #set ( $i = 0 )
+  ## more than one foreign primary key 
+  #foreach ($referenceElement in $foreignPrimaryKeyColumnElements)
+    #set ( $columnElement = $referenceElement ) ## foreignPrimaryKeyColumnElement is already column
+    #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName"))
+                Criterion p$i = new Criterion(
+                        ${foreignTablePeerClassName}.${peerColumnName},
+                        toSavePrimaryKeys[$i]);
+    #set ( $j = $i - 1 )
+    #if ($i > 0)
+                p${j}.and(p${i});
+    #end
+    #set ( $i = $i + 1 )
+  #end
+                if (toSaveKeyCriterion == null)
+                {
+                    toSaveKeyCriterion = p0;
+                }
+                else
+                {
+                    toSaveKeyCriterion.or(p0);
+                }
+            }
+            criteria.and(toSaveKeyCriterion);
+#end
+            intersection = ${foreignTablePeerClassName}.doSelect(
+                    criteria,
+                    connection);
+        }
+        if (toLinkTo.${isInitialized}())
+        {
+            toLinkTo.${getter}().clear();
+        }
+        else
+        {
+           toLinkTo.${initializer}();
+        }
+        for (${foreignDbObjectClassName} toSaveElement : toSave)
+        {
+            int listIndex = intersection.indexOf(toSaveElement);
+            if (listIndex == -1)
+            {
+                toLinkTo.${adder}(toSaveElement);
+#if ("$!saveMethodsInDbObjects" != "true")
+                if (toSaveElement.isNew())
+                {
+                    ${foreignTablePeerClassName}.doInsert(toSaveElement, connection);
+                }
+                else
+                {
+                    ${foreignTablePeerClassName}.doUpdate(toSaveElement, connection);
+                }
+#else
+                toSaveElement.save(connection);
+#end
+            }
+            else
+            {
+                toLinkTo.${adder}(toSaveElement);
+#if ($torqueGen.booleanOption("torque.om.trackNew"))
+                toSaveElement.setNew(false);
+#end
+#if ($torqueGen.booleanOption("torque.om.trackModified"))
+                if (!toSaveElement.valueEquals(intersection.get(listIndex)))
+                {
+                    //force saving if content differs
+                    toSaveElement.setModified(true);
+                }
+#end
+#if ("$!saveMethodsInDbObjects" != "true")
+                ${foreignTablePeerClassName}.doUpdate(toSaveElement, connection);
+#else
+                toSaveElement.save(connection);
+#end
+            }
+            toSaveKeys.add(toSaveElement.getPrimaryKey());
+        }
+        
+        // delete elements not in intersection
+        Criteria deleteCriteria = new Criteria();
+        deleteCriteria.where(onlyReferencingCriterion);
+        if (!toSaveKeys.isEmpty())
+        {
+#if ($foreignPrimaryKeyColumnElements.size() == 1)
+  #set ( $columnElement = $foreignPrimaryKeyColumnElements.get(0) )
+  #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName"))
+            deleteCriteria.and(
+                    ${foreignTablePeerClassName}.${peerColumnName}, 
+                    toSaveKeys, 
+                    Criteria.NOT_IN);
+#else
+            Criterion toSaveKeyCriterion = null;
+            for (ObjectKey<?> toSaveKey : toSaveKeys)
+            {
+                SimpleKey<?>[] toSavePrimaryKeys = (SimpleKey[]) toSaveKey.getValue();
+  #set ( $i = 0 )
+  #foreach ($referenceElement in $foreignPrimaryKeyColumnElements)
+    #set ( $columnElement = $referenceElement ) ## .getChild("local-column").getChild("column") foreignPrimaryKeyColumnElement is aready column
+    #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName"))
+                 Criterion p$i = new Criterion(
+                         ${foreignTablePeerClassName}.${peerColumnName},
+                         toSavePrimaryKeys[$i],
+                         Criteria.NOT_EQUAL);
+    #set ( $j = $i - 1 )
+    #if ($i > 0)
+                p${j}.or(p${i});
+    #end
+    #set ( $i = $i + 1 )
+  #end
+                if (toSaveKeyCriterion == null)
+                {
+                    toSaveKeyCriterion = p0;
+                }
+                else
+                {
+                    toSaveKeyCriterion.and(p0);
+                }
+            }
+            deleteCriteria.and(toSaveKeyCriterion);
+#end
+        }
+        ${foreignTablePeerClassName}.doDelete(deleteCriteria, connection);
+    }
+#end

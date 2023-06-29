@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<outlets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+  <outlet name="torque.om.serialVersionUid"
+      xsi:type="velocityOutlet"
+      path="general/serialVersionUid.vm">
+  </outlet>
+
+  <outlet name="torque.om.fieldDefinition"
+      xsi:type="velocityOutlet"
+      path="general/fieldDefinition.vm">
+    <mergepoint name="annotations" /><!-- extension -->
+  </outlet>
+
+  <outlet name="torque.om.getterSetter"
+      xsi:type="velocityOutlet"
+      path="general/getterSetter.vm">
+    <mergepoint name="getter">
+      <action xsi:type="applyAction" outlet="torque.om.getter"/>
+    </mergepoint>
+    <mergepoint name="setter">
+      <action xsi:type="applyAction" outlet="torque.om.setter"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.getter"
+      xsi:type="velocityOutlet"
+      path="general/getter.vm">
+    <mergepoint name="methodStart" />
+  </outlet>
+
+  <outlet name="torque.om.setter"
+      xsi:type="velocityOutlet"
+      path="general/setter.vm">
+    <mergepoint name="methodStart">
+      <action xsi:type="applyAction" outlet="torque.om.setterMethodStart"/>
+    </mergepoint>
+    <mergepoint name="methodEnd">
+      <action xsi:type="applyAction" outlet="torque.om.setterMethodEnd"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.setterMethodStart"
+      xsi:type="velocityOutlet"
+      path="general/setterMethodStart.vm">
+  </outlet>
+
+  <outlet name="torque.om.setterMethodEnd"
+      xsi:type="velocityOutlet"
+      path="general/setterMethodEnd.vm">
+  </outlet>
+
+  <outlet name="torque.om.setterReferencedObject"
+      xsi:type="velocityOutlet"
+      path="general/setterReferencedObject.vm">
+  </outlet>
+  
+  <outlet name="torque.om.createDbObjectInstance"
+      xsi:type="velocityOutlet"
+      path="general/createDbObjectInstance.vm">
+  </outlet>
+  
+    <outlet name="torque.om.saveMethods"
+      xsi:type="velocityOutlet"
+      path="general/saveMethods.vm">
+  </outlet>
+
+</outlets>

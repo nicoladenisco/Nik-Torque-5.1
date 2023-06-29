@@ -1,0 +1,266 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: baseManager.vm 1850322 2019-01-04 08:21:41Z tv $
+##
+## Creates the base manager class. 
+## This template expects as input a "table" element from the torque schema
+## which was processed by the OMTransformer.  
+##
+package ${baseManagerPackage};
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.torque.Torque;
+import org.apache.torque.TorqueException;
+import org.apache.torque.criteria.Criteria;
+import org.apache.torque.manager.AbstractBaseManager;
+import org.apache.torque.manager.CacheListener;
+import org.apache.torque.manager.MethodResultCache;
+import org.apache.torque.om.ObjectKey;
+import org.apache.torque.om.SimpleKey;
+import org.apache.torque.om.Persistent;
+
+#if ($baseManagerPackage != $managerPackage)
+import ${managerPackage}.${managerClassName};
+#end
+#if ($baseManagerPackage != $peerPackage)
+import ${peerPackage}.${peerClassName};
+#end
+#if ($baseManagerPackage != $dbObjectPackage)
+import ${dbObjectPackage}.${dbObjectClassName};
+#end
+
+$torqueGen.mergepoint("classJavadoc")
+public abstract class ${baseManagerClassName}
+    extends AbstractBaseManager<${dbObjectClassName}>
+{
+$torqueGen.mergepoint("serialVersionUid")
+    /** The name of the manager */
+    protected static final String MANAGED_CLASS = "${dbObjectPackage}.${dbObjectClassName}";
+   
+    /** The name of our class to pass to Torque as the default manager. */
+    protected static final String DEFAULT_MANAGER_CLASS
+        = "${managerPackage}.${managerClassName}";
+
+    /**
+     * Retrieves an implementation of the manager, based on the settings in
+     * the configuration.
+     *
+     * @return an implementation of ${managerClassName}.
+     */
+    public static ${managerClassName} getManager()
+    {
+        return (${managerClassName})
+            Torque.getManager(${baseManagerClassName}.MANAGED_CLASS,
+                ${baseManagerClassName}.DEFAULT_MANAGER_CLASS);
+    }
+
+    /**
+     * Static accessor for the @see #getOMInstance().
+     *
+     * @return a <code>${dbObjectClassName}</code> value
+     * @exception TorqueException if an error occurs
+     */
+    public static ${dbObjectClassName} getInstance()
+        throws TorqueException
+    {
+        return getManager().getOMInstance();
+    }
+
+    /**
+     * Static accessor for the @see #getOMInstance(ObjectKey).
+     *
+     * @param id an <code>ObjectKey</code> value
+     * @return a <code>${dbObjectClassName}</code> value
+     * @exception TorqueException if an error occurs
+     */
+    public static ${dbObjectClassName} getInstance(ObjectKey<?> id)
+        throws TorqueException
+    {
+        return getManager().getOMInstance(id);
+    }
+
+    /**
+     * Static accessor for the @see #cacheGet(ObjectKey).
+     * Loads <code>${dbObjectClassName}</code> from cache, returns
+     * <code>null</code>, if instance is not in cache
+     *
+     * @param id an <code>ObjectKey</code> value
+     * @return a <code>${dbObjectClassName}</code> value
+     * @exception TorqueException if an error occurs
+     */
+    public static ${dbObjectClassName} getCachedInstance(ObjectKey<?> id)
+        throws TorqueException
+    {
+        return getManager().cacheGet(id);
+    }
+
+    /**
+     * Static accessor for the @see #getOMInstance(ObjectKey, boolean).
+     *
+     * @param id an <code>ObjectKey</code> value
+     * @param fromCache if true, look for cached ${dbObjectClassName}s before loading
+     * from storage.
+     * @return a <code>${interfaceName}</code> value
+     * @exception TorqueException if an error occurs
+     */
+    public static ${dbObjectClassName} getInstance(ObjectKey<?> id, boolean fromCache)
+        throws TorqueException
+    {
+        return getManager().getOMInstance(id, fromCache);
+    }
+
+#set ($primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column"))
+#if ($primaryKeyColumnElements.size() == 1)
+  #set ($primaryKeyColumnElement = $primaryKeyColumnElements.get(0))
+  #set ($columnFieldType = $primaryKeyColumnElement.getAttribute("fieldType"))
+    /**
+     * Static accessor for the @see #getOMInstance(ObjectKey).
+     *
+     * @param id an <code>ObjectKey</code> value
+     * @return a <code>${dbObjectClassName}</code> value
+     * @exception TorqueException if an error occurs
+     */
+    public static ${dbObjectClassName} getInstance($columnFieldType id)
+        throws TorqueException
+    {
+        return getManager().getOMInstance(SimpleKey.keyFor(id));
+    }
+
+    /**
+     * Static accessor for the @see #getOMInstance(ObjectKey).
+     *
+     * @param id an <code>ObjectKey</code> value
+     * @param fromCache if true, look for cached ${dbObjectClassName}s before loading
+     * from storage.
+     * @return a <code>${dbObjectClassName}</code> value
+     * @exception TorqueException if an error occurs
+     */
+    public static ${dbObjectClassName} getInstance($columnFieldType id, boolean fromCache)
+        throws TorqueException
+    {
+        return getManager().getOMInstance(SimpleKey.keyFor(id), fromCache);
+    }
+#end
+
+    /**
+     * Static accessor for the @see #getOMs(List).
+     *
+     * @param ids a <code>List</code> value
+     * @return a <code>List</code> value
+     * @exception TorqueException if an error occurs
+     */
+    public static List<${dbObjectClassName}> getInstances(List<? extends ObjectKey<?>> ids)
+        throws TorqueException
+    {
+        return getManager().getOMs(ids);
+    }
+
+    /**
+     * Static accessor for the @see #getOMs(List, boolean).
+     *
+     * @param ids a <code>List</code> value
+     * @param fromCache if true, look for cached ${dbObjectClassName}s before loading
+     * from storage.
+     * @return a <code>List</code> value
+     * @exception TorqueException if an error occurs
+     */
+    public static List<${dbObjectClassName}> getInstances(List<? extends ObjectKey<?>> ids, boolean fromCache)
+        throws TorqueException
+    {
+        return getManager().getOMs(ids, fromCache);
+    }
+
+    public static void putInstance(${dbObjectClassName} om)
+        throws TorqueException
+    {
+        getManager().putInstanceImpl(om);
+    }
+
+    public static void clear()
+        throws TorqueException
+    {
+        getManager().clearImpl();
+    }
+
+    public static boolean exists(${dbObjectClassName} obj)
+        throws TorqueException
+    {
+        return getManager().existsImpl(obj);
+    }
+
+    public static MethodResultCache getMethodResult()
+    {
+        return getManager().getMethodResultCache();
+    }
+
+    public static void addCacheListener(CacheListener<? extends Persistent> listener)
+    {
+        getManager().addCacheListenerImpl(listener);
+    }
+
+    /**
+     * Creates a new <code>${baseManagerClassName}</code> instance.
+     *
+     * @exception TorqueException if an error occurs
+     */
+    public $baseManagerClassName()
+        throws TorqueException
+    {
+        setClassName(${baseManagerClassName}.MANAGED_CLASS);
+    }
+
+    /**
+     * check for a duplicate project name
+     */
+    protected boolean existsImpl(${dbObjectClassName} om)
+        throws TorqueException
+    {
+        Criteria crit = ${peerClassName}.buildSelectCriteria(om);
+        return ${peerClassName}.doSelect(crit).size() > 0;
+    }
+
+    /**
+     * Gets a ModuleEntity based on id.
+     *
+     * @param id a <code>NumberKey</code> value
+     */
+    protected ${dbObjectClassName} retrieveStoredOM(ObjectKey<?> id)
+        throws TorqueException
+    {
+        return ${peerClassName}.retrieveByPK(id);
+    }
+
+    /**
+     * Gets a list of ModuleEntities based on id's.
+     *
+     * @param ids a <code>NumberKey[]</code> value
+     * @return a <code>List</code> value
+     * @exception TorqueException if an error occurs
+     */
+    protected List<${dbObjectClassName}> retrieveStoredOMs(List<? extends ObjectKey<?>> ids)
+        throws TorqueException
+    {
+        return ${peerClassName}.retrieveByObjectKeys((List<ObjectKey<?>>)ids);
+    }
+$torqueGen.mergepoint("extensions")
+}

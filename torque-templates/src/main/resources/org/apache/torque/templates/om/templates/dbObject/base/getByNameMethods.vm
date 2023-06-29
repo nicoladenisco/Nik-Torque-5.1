@@ -1,0 +1,307 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: getByNameMethods.vm 1855051 2019-03-08 15:16:28Z tv $
+##
+## Creates getters/setters by name.
+## This template expects as input a "table" element from the torque schema
+## which was processed by the OMTransformer.  
+##
+#set ( $columnElements = $torqueGen.getChildren("column") )
+#set ( $peerName = "${peerPackage}.${peerClassName}" )
+
+    private static final List<String> FIELD_NAMES;
+
+    static
+    {
+        List<String> fieldNames
+                = new ArrayList<String>();
+#foreach ($columnElement in $columnElements)
+        fieldNames.add("${columnElement.getAttribute("javaName")}");
+#end
+        FIELD_NAMES = Collections.unmodifiableList(fieldNames);
+    }
+
+    /**
+     * Generate a list of field names.
+     *
+     * @return a list of field names
+     */
+    public static List<String> getFieldNames()
+    {
+        return FIELD_NAMES;
+    }
+
+    /**
+     * Retrieves a field from the object by field (Java) name passed in as a String.
+     *
+     * @param name field name
+     * @return value
+     */
+    public Object getByName(String name)
+    {
+#foreach ($columnElement in $columnElements)
+  #set ( $columnFieldType = ${columnElement.getAttribute("fieldType")} )
+  #set ( $javaName = ${columnElement.getAttribute("javaName")} )
+  #set ( $getter = ${columnElement.getAttribute("getter")} )
+        if (name.equals("$javaName"))
+        {
+  #if ($columnFieldType == "int")
+            return Integer.valueOf(${getter}());
+  #elseif ($columnFieldType == "long")
+            return Long.valueOf(${getter}());
+  #elseif ($columnFieldType == "float")
+            return Float.valueOf(${getter}());
+  #elseif ($columnFieldType == "double")
+            return Double.valueOf(${getter}());
+  #elseif ($columnFieldType == "boolean")
+            return Boolean.valueOf(${getter}());
+  #elseif ($columnFieldType == "short")
+            return Short.valueOf(${getter}());
+  #elseif ($columnFieldType == "byte")
+            return Byte.valueOf(${getter}());
+  #elseif ($columnFieldType == "char")
+            return Character.valueOf(${getter}());
+  #else
+            return ${getter}();
+  #end
+        }
+#end
+        return null;
+    }
+
+    /**
+     * Set a field in the object by field (Java) name.
+     *
+     * @param name field name
+     * @param value field value
+     * @return True if value was set, false if not (invalid name / protected field).
+     * @throws IllegalArgumentException if object type of value does not match field object type.
+     * @throws TorqueException If a problem occurs with the set[Field] method.
+     */
+    public boolean setByName(String name, Object value)
+        throws TorqueException, IllegalArgumentException
+    {
+#foreach ($columnElement in $columnElements)
+  #set ( $columnFieldType = ${columnElement.getAttribute("fieldType")} )
+  #set ( $javaName = ${columnElement.getAttribute("javaName")} )
+  #set ( $setter = ${columnElement.getAttribute("setter")} )
+  #set ( $primitive = ${columnElement.getAttribute("primitive")} )
+        if (name.equals("${javaName}"))
+        {
+  #if ( ${primitive} == "true" )
+    #if ($columnFieldType == "int")
+            if (value == null || ! (Integer.class.isInstance(value)))
+            {
+                throw new IllegalArgumentException("setByName: value parameter was null or not an Integer object.");
+            }
+            ${setter}(((Integer) value).intValue());
+    #elseif ($columnFieldType == "long")
+            if (value == null || ! (Long.class.isInstance(value)))
+            {
+                throw new IllegalArgumentException("setByName: value parameter was null or not a Long object.");
+            }
+            ${setter}(((Long) value).longValue());
+    #elseif ($columnFieldType == "float")
+            if (value == null || ! (Float.class.isInstance(value)))
+            {
+                throw new IllegalArgumentException("setByName: value parameter was null or not a Float object.");
+            }
+            ${setter}(((Float) value).floatValue());
+    #elseif ($columnFieldType == "double")
+            if (value == null || ! (Double.class.isInstance(value)))
+            {
+                throw new IllegalArgumentException("setByName: value parameter was null or not a Double object.");
+            }
+            ${setter}(((Double) value).doubleValue());
+    #elseif ($columnFieldType == "boolean")
+            if (value == null || ! (Boolean.class.isInstance(value)))
+            {
+                throw new IllegalArgumentException("setByName: value parameter was null or not a Boolean object.");
+            }
+            ${setter}(((Boolean)value).booleanValue());
+    #elseif ($columnFieldType == "short")
+            if (value == null || ! (Short.class.isInstance(value)))
+            {
+                throw new IllegalArgumentException("setByName: value parameter was null or not a Short object.");
+            }
+            ${setter}(((Short)value).shortValue());
+    #elseif ($columnFieldType == "byte")
+            if (value == null || ! (Byte.class.isInstance(value)))
+            {
+                throw new IllegalArgumentException("setByName: value parameter was null or not a Byte object.");
+            }
+            ${setter}(((Byte) value).byteValue());
+    #elseif ($columnFieldType == "char")
+            if (value == null || ! (Character.class.isInstance(value)))
+            {
+                throw new IllegalArgumentException("setByName: value parameter was null or not a Character object.");
+            }
+            ${setter}(((Character) value).charValue());
+    #end
+  #else
+    #if ( ${columnFieldType} )
+            // Object fields can be null
+            if (value != null && ! ${columnFieldType}.class.isInstance(value))
+            {
+                throw new IllegalArgumentException("Invalid type of object specified for value in setByName");
+            }
+            ${setter}(($columnFieldType) value);
+    #else
+            // Hmm, using column type that can't be mapped to a Java object class, make this obvious.
+            throw IllegalStateException("Can't determine Java Object type for column, ${javaName}!");
+    #end
+  #end
+            return true;
+        }
+#end
+        return false;
+    }
+
+    /**
+     * Retrieves a field from the object by name passed in
+     * as a String.  The String must be one of the static
+     * Strings defined in this Class' Peer.
+     *
+     * @param name peer name
+     * @return value
+     */
+    public Object getByPeerName(String name)
+    {
+#foreach ($columnElement in $columnElements)
+  #set ( $columnFieldType = ${columnElement.getAttribute("fieldType")} )
+  #set ( $getter = ${columnElement.getAttribute("getter")} )
+  #set ( $peerColumnName = ${columnElement.getAttribute("peerColumnName")} )
+        if (${peerName}.${peerColumnName}.getSqlExpression().equals(name)
+            || ${peerName}.${peerColumnName}.getColumnName().equals(name))
+        {
+  #if ($columnFieldType == "int")
+            return Integer.valueOf(${getter}());
+  #elseif ($columnFieldType == "long")
+            return Long.valueOf(${getter}());
+  #elseif ($columnFieldType == "float")
+            return Float.valueOf(${getter}());
+  #elseif ($columnFieldType == "double")
+            return Double.valueOf(${getter}());
+  #elseif ($columnFieldType == "boolean")
+            return Boolean.valueOf(${getter}());
+  #elseif ($columnFieldType == "short")
+            return Short.valueOf(${getter}());
+  #elseif ($columnFieldType == "byte")
+            return Byte.valueOf(${getter}());
+  #elseif ($columnFieldType == "char")
+            return Character.valueOf(${getter}());
+  #else
+            return ${getter}();
+  #end
+        }
+#end
+        return null;
+    }
+
+    /**
+     * Set field values by Peer Field Name
+     *
+     * @param name field name
+     * @param value field value
+     * @return True if value was set, false if not (invalid name / protected field).
+     * @throws IllegalArgumentException if object type of value does not match field object type.
+     * @throws TorqueException If a problem occurs with the set[Field] method.
+     */
+    public boolean setByPeerName(String name, Object value)
+        throws TorqueException, IllegalArgumentException
+    {
+#foreach ($columnElement in $columnElements)
+  #set ( $columnFieldType = ${columnElement.getAttribute("fieldType")} )
+  #set ( $javaName = ${columnElement.getAttribute("javaName")} )
+  #set ( $peerColumnName = ${columnElement.getAttribute("peerColumnName")} )
+        if (${peerName}.${peerColumnName}.getSqlExpression().equals(name)
+            || ${peerName}.${peerColumnName}.getColumnName().equals(name))
+        {
+            return setByName("${javaName}", value);
+        }
+#end
+        return false;
+    }
+
+    /**
+     * Retrieves a field from the object by Position as specified
+     * in the xml schema.  Zero-based.
+     *
+     * @param pos position in xml schema
+     * @return value
+     */
+    public Object getByPosition(int pos)
+    {
+#set ($i = 0)
+#foreach ($columnElement in $columnElements)
+  #set ( $columnFieldType = ${columnElement.getAttribute("fieldType")} )
+  #set ( $getter = ${columnElement.getAttribute("getter")} )
+        if (pos == $i)
+        {
+  #if ($columnFieldType == "int")
+            return Integer.valueOf(${getter}());
+  #elseif ($columnFieldType == "long")
+            return Long.valueOf(${getter}());
+  #elseif ($columnFieldType == "float")
+            return Float.valueOf(${getter}());
+  #elseif ($columnFieldType == "double")
+            return Double.valueOf(${getter}());
+  #elseif ($columnFieldType == "boolean")
+            return Boolean.valueOf(${getter}());
+  #elseif ($columnFieldType == "short")
+            return Short.valueOf(${getter}());
+  #elseif ($columnFieldType == "byte")
+            return Byte.valueOf(${getter}());
+  #elseif ($columnFieldType == "char")
+            return Character.valueOf(${getter}());
+  #else
+            return ${getter}();
+  #end
+        }
+  #set ($i = $i + 1)
+#end
+        return null;
+    }
+
+    /**
+     * Set field values by its position (zero based) in the XML schema.
+     *
+     * @param position The field position
+     * @param value field value
+     * @return True if value was set, false if not (invalid position / protected field).
+     * @throws IllegalArgumentException if object type of value does not match field object type.
+     * @throws TorqueException If a problem occurs with the set[Field] method.
+     */
+    public boolean setByPosition(int position, Object value)
+        throws TorqueException, IllegalArgumentException
+    {
+#set ($i = 0)
+#foreach ($columnElement in $columnElements)
+  #set ( $columnFieldType = ${columnElement.getAttribute("fieldType")} )
+  #set ( $javaName = ${columnElement.getAttribute("javaName")} )
+  #set ( $setter = ${columnElement.getAttribute("setter")} )
+        if (position == $i)
+        {
+            return setByName("${javaName}", value);
+        }
+  #set ( $i = $i + 1)
+#end
+        return false;
+    }

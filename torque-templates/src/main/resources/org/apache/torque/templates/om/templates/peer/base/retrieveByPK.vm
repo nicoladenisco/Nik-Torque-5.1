@@ -1,0 +1,234 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: retrieveByPK.vm 1849386 2018-12-20 13:28:59Z tv $
+##
+## Creates the retrieveByPk methods for the base peer.
+## 
+## This template expects the current source element to be a "table" element 
+## from the torque schema.
+## The schema needs to be processed by the OMTransformer.
+## The options and the attributes of the current source element must be set
+## as velocity variables.  
+##
+#set ( $primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column"))
+#if (!$primaryKeyColumnElements.isEmpty())
+  #if ($primaryKeyColumnElements.size() == 1)
+    #set ( $columnElement = $primaryKeyColumnElements.get(0) )
+    #set ( $columnFieldType = $columnElement.getAttribute("fieldType"))
+    
+    /**
+     * Retrieve a single object by pk
+     *
+     * @param pk the primary key
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     * @throws NoRowsException Primary key was not found in database.
+     * @throws TooManyRowsException Primary key was not found in database.
+     * @deprecated use equivalent with specific connection
+     */
+    public static $dbObjectClassName retrieveByPK($columnFieldType pk)
+        throws TorqueException, NoRowsException, TooManyRowsException
+    {
+        return ${peerImplGetter}().retrieveByPK(pk);
+    }
+
+    /**
+     * Retrieve a single object by pk
+     *
+     * @param pk the primary key
+     * @param con the connection to use
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     * @throws NoRowsException Primary key was not found in database.
+     * @throws TooManyRowsException Primary key was not found in database.
+     */
+    public static $dbObjectClassName retrieveByPK($columnFieldType pk, Connection con)
+        throws TorqueException, NoRowsException, TooManyRowsException
+    {
+        return ${peerImplGetter}().retrieveByPK(pk, con);
+    }
+    
+
+    /**
+     * Retrieve a single object by pk
+     *
+     * @param pk the primary key
+     * @deprecated use equivalent with specific connection
+     */
+    public static $dbObjectClassName retrieveByPKQuiet($columnFieldType pk)
+    {
+      try
+      {
+        return ${peerImplGetter}().retrieveByPK(pk);
+      }
+      catch(Exception e)
+      {
+        return null;
+      }
+    }
+
+    /**
+     * Retrieve a single object by pk
+     *
+     * @param pk the primary key
+     * @param con the connection to use
+     */
+    public static $dbObjectClassName retrieveByPKQuiet($columnFieldType pk, Connection con)
+    {
+      try
+      {
+        return ${peerImplGetter}().retrieveByPK(pk, con);
+      }
+      catch(Exception e)
+      {
+        return null;
+      }    
+    }
+    
+    
+    
+  #elseif ($primaryKeyColumnElements.size() > 1)
+    /**
+     * retrieve object using using pk values.
+     *
+    #foreach ($columnElement in $primaryKeyColumnElements)
+    #set ( $columnField = $columnElement.getAttribute("field") )
+    #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+     * @param $columnField $columnFieldType
+    #end
+     * @deprecated use equivalent with specific connection
+     */
+    public static $dbObjectClassName retrieveByPK(
+    #set ( $elementCount = 1 )
+    #foreach ($columnElement in $primaryKeyColumnElements)
+      #set ( $columnField = $columnElement.getAttribute("field") )
+      #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+            $columnFieldType $columnField#if($elementCount != $primaryKeyColumnElements.size()),#else)#end
+
+      #set ( $elementCount = $elementCount + 1 )
+    #end
+        throws TorqueException
+    {
+        return ${peerImplGetter}().retrieveByPK(
+    #set ( $elementCount = 1 )
+    #foreach ($columnElement in $primaryKeyColumnElements)
+      #set ( $columnField = $columnElement.getAttribute("field") )
+                $columnField#if($elementCount != $primaryKeyColumnElements.size()),#else);#end
+
+      #set ( $elementCount = $elementCount + 1 )
+    #end
+    }
+
+    /**
+     * retrieve object using using pk values.
+     *
+    #foreach ($columnElement in $primaryKeyColumnElements)
+      #set ( $columnField = $columnElement.getAttribute("field") )
+      #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+     * @param $columnField $columnFieldType
+    #end
+     * @param con Connection
+     */
+    public static $dbObjectClassName retrieveByPK(
+    #foreach ($columnElement in $primaryKeyColumnElements)
+      #set ( $columnField = $columnElement.getAttribute("field") )
+      #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+            $columnFieldType ${columnField},
+    #end
+            Connection con) throws TorqueException
+    {
+        return ${peerImplGetter}().retrieveByPK(
+    #foreach ($columnElement in $primaryKeyColumnElements)
+      #set ( $columnField = $columnElement.getAttribute("field") )
+                ${columnField},
+    #end
+                con);
+    }
+  #end
+
+    /**
+     * Retrieve a single object by pk
+     *
+     * @param pk the primary key
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     * @throws NoRowsException Primary key was not found in database.
+     * @throws TooManyRowsException Primary key was not found in database.
+     * @deprecated use equivalent with specific connection
+     */
+    public static $dbObjectClassName retrieveByPK(ObjectKey<?> pk)
+        throws TorqueException, NoRowsException, TooManyRowsException
+    {
+        return ${peerImplGetter}().retrieveByPK(pk);
+    }
+
+    /**
+     * Retrieve a single object by pk
+     *
+     * @param pk the primary key
+     * @param con the connection to use
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     * @throws NoRowsException Primary key was not found in database.
+     * @throws TooManyRowsException Primary key was not found in database.
+     */
+    public static $dbObjectClassName retrieveByPK(ObjectKey<?> pk, Connection con)
+        throws TorqueException, NoRowsException, TooManyRowsException
+    {
+        return ${peerImplGetter}().retrieveByPK(pk, con);
+    }
+
+    /**
+     * Retrieve a single object by pk
+     *
+     * @param pk the primary key
+     * @deprecated use equivalent with specific connection
+     */
+    public static $dbObjectClassName retrieveByPKQuiet(ObjectKey<?> pk)
+    {
+      try
+      {
+        return ${peerImplGetter}().retrieveByPK(pk);
+      }
+      catch(Exception e)
+      {
+        return null;
+      }
+    }
+
+    /**
+     * Retrieve a single object by pk
+     *
+     * @param pk the primary key
+     * @param con the connection to use
+     */
+    public static $dbObjectClassName retrieveByPKQuiet(ObjectKey<?> pk, Connection con)
+    {
+      try
+      {
+        return ${peerImplGetter}().retrieveByPK(pk, con);
+      }
+      catch(Exception e)
+      {
+        return null;
+      }
+    }
+    
+#end

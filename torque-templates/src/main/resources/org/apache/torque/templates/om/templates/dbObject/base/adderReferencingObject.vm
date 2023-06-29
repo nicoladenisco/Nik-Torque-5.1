@@ -1,0 +1,72 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: adderReferencingObject.vm 1850502 2019-01-05 16:47:35Z painter $
+##
+## This template creates the adder method in the object for the "foreign" part
+## of a foreign key. The addable objects represent the "local" part
+## of the foreign key.  
+## The template expects as input a "foreign-field" element inside a 
+## "foreign-key" element from the torque schema, which was generated 
+## by the OMTransformer.  
+##
+#set ( $silentDbFetch = $torqueGen.booleanOption("torque.om.silentDbFetch") )
+#set ( $foreignKeyElement = $torqueGen.getParent() )
+#set ( $localTableElement = $foreignKeyElement.getChild("table") )
+#set ( $localClassName = $localTableElement.getAttribute("dbObjectClassName") )
+#set ( $foreignKeyLocalFieldElement = $foreignKeyElement.getChild("local-field") )
+#set ( $foreignKeyLocalColumnSetter = $foreignKeyLocalFieldElement.getAttribute("setter"))
+    /**
+     * Method called to associate a $fieldContainedType object to this object
+     * through the $field foreign key attribute.
+#if ($silentDbFetch)
+     * If the associated objects were not retrieved before
+     * and this object is not new, the associated objects are retrieved
+     * from the database before adding the <code>toAdd</code> object.
+#end
+     *
+     * @param toAdd the object to add to the associated objects, not null.
+#if ($silentDbFetch)
+     *
+     * @throws TorqueException if retrieval of the associated objects fails.
+#end
+     * @throws NullPointerException if toAdd is null.
+     */
+    public void ${adder}($fieldContainedType toAdd)
+#if ($silentDbFetch)
+        throws TorqueException
+#end
+    {
+        toAdd.${foreignKeyLocalColumnSetter}(($localClassName) this);
+        ${getter}().add(toAdd);
+    }
+
+    /**
+     * Method called to associate a $fieldContainedType object to this object
+     * through the $field foreign key attribute using connection.
+     *
+     * @param l $fieldContainedType
+     * @throws TorqueException if retrieval of the associated objects fails.
+     */
+    public void ${adder}($fieldContainedType l, Connection con) throws TorqueException
+    {
+        ${getter}(con).add(l);
+        l.${foreignKeyLocalColumnSetter}(($localClassName) this);
+    }
+    
