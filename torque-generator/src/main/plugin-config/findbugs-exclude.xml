@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<FindBugsFilter>
+  <Match>
+    <!-- 
+        Returning null as a Boolean value is ok.
+        Why else would the method signature be Boolean instead of boolean ?
+    -->
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL" />
+  </Match>
+  <Match>
+    <!-- 
+        TemplateOutletImpl.load uses the default encoding if no
+        encoding is given. This behavior is ok.
+    -->
+    <Class name="org.apache.torque.generator.template.TemplateOutletImpl" />
+    <Method name="load" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+  <Match>
+    <!-- 
+        VelocityTemplateFilter.filter uses the default encoding if no
+        encoding is given. This behavior is ok.
+    -->
+    <Class name="org.apache.torque.generator.template.velocity.VelocityTemplateFilter" />
+    <Method name="filter" />
+    <Bug pattern="DM_DEFAULT_ENCODING" />
+  </Match>
+  <Match>
+    <!-- 
+        OutletResult is only a wrapper around String or byte array data.
+        It is ok if the data can in principle be manipulated from the outside.
+    -->
+    <Class name="org.apache.torque.generator.outlet.OutletResult" />
+    <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+  </Match>
+  <Match>
+    <!-- 
+        getPropertyDescriptor caches the result for efficiency.
+        While in principle this can be misused, the current version of 
+        commons-jxpath doesn't.
+    -->
+    <Class name="org.apache.torque.generator.source.ModelPropertyPointer" />
+    <Method name="getPropertyDescriptor" />
+    <Bug pattern="EI_EXPOSE_REP" />
+  </Match>
+  <Match>
+    <!-- 
+        getPropertyNames caches the result for efficiency.
+        While in principle this can be misused, the current version of 
+        commons-jxpath doesn't.
+    -->
+    <Class name="org.apache.torque.generator.source.ModelPropertyPointer" />
+    <Method name="getPropertyNames" />
+    <Bug pattern="EI_EXPOSE_REP" />
+  </Match>
+</FindBugsFilter>

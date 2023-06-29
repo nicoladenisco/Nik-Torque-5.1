@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<outlets xmlns="http://db.apache.org/torque/4.0/generator/configuration"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <outlet name="nestingOutlet0"
+      xsi:type="velocityOutlet" 
+      path="nesting.vm">
+    <mergepoint name="mergepoint">
+      <action xsi:type="applyAction" outlet="nestingOutlet1"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="nestingOutlet1"
+      xsi:type="velocityOutlet" 
+      path="nesting.vm">
+    <mergepoint name="mergepoint">
+      <action xsi:type="applyAction" outlet="nestingOutlet2"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="nestingOutlet2"
+      xsi:type="velocityOutlet" 
+      path="nesting.vm">
+    <mergepoint name="mergepoint">
+      <action xsi:type="applyAction" outlet="nestingOutlet3"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="nestingOutlet3"
+      xsi:type="velocityOutlet" 
+      path="nesting.vm">
+    <mergepoint name="mergepoint">
+      <action xsi:type="applyAction" outlet="nestingOutlet4"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="nestingOutlet4"
+      xsi:type="velocityOutlet" 
+      path="nesting.vm">
+    <mergepoint name="mergepoint">
+      <action xsi:type="applyAction" outlet="nestingOutlet5"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="nestingOutlet5"
+      xsi:type="velocityOutlet" 
+      path="nesting.vm">
+    <mergepoint name="mergepoint">
+      <action xsi:type="applyAction" outlet="nestingOutlet6"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="nestingOutlet6"
+      xsi:type="velocityOutlet" 
+      path="nesting.vm">
+    <mergepoint name="mergepoint">
+      <action xsi:type="applyAction" outlet="nestingOutlet7"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="nestingOutlet7"
+      xsi:type="velocityOutlet" 
+      path="nesting.vm">
+    <mergepoint name="mergepoint">
+      <action xsi:type="applyAction" outlet="nestingOutlet8"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="nestingOutlet8"
+      xsi:type="velocityOutlet" 
+      path="nesting.vm">
+    <mergepoint name="mergepoint">
+      <action xsi:type="applyAction" outlet="nestingOutlet9"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="nestingOutlet9"
+      xsi:type="velocityOutlet" 
+      path="nesting.vm">
+    <mergepoint name="mergepoint">
+      <action xsi:type="applyAction" outlet="contentOutlet"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="contentOutlet"
+      xsi:type="velocityOutlet" 
+      path="content.vm"/>
+</outlets>

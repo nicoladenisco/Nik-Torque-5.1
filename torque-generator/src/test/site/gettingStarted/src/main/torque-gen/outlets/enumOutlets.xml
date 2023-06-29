@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<outlets xmlns="http://db.apache.org/torque/4.0/generator/configuration"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <outlet name="classFrame" xsi:type="velocityOutlet" path="classFrame.vm">
+    <mergepoint name="constants">
+      <action xsi:type="traverseAllAction" element="entry" outlet="constant"/>
+    </mergepoint>
+    <mergepoint name="fields">
+      <action xsi:type="applyAction" outlet="keyField"/>
+      <action xsi:type="applyAction" outlet="newline"/>
+    </mergepoint>
+    <mergepoint name="methods">
+      <action xsi:type="applyAction" outlet="constructor"/>
+      <action xsi:type="applyAction" outlet="newline"/>
+      <action xsi:type="applyAction" outlet="getKey"/>
+      <action xsi:type="applyAction" outlet="newline"/>
+      <action xsi:type="applyAction" outlet="toString"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="constant" xsi:type="velocityOutlet" path="constant.vm">
+    <mergepoint name="constantName">
+      <action xsi:type="applyAction" outlet="constantName"/>
+    </mergepoint>
+  </outlet>
+  <outlet name="constantName" xsi:type="javaOutlet" class="org.apache.torque.generator.outlet.java.ConstantNameOutlet">
+    <inputSourceElement>.</inputSourceElement>
+    <sourceElementAttribute>key</sourceElementAttribute>
+  </outlet>
+  <outlet name="keyField" xsi:type="velocityOutlet" path="keyField.vm"/>
+  <outlet name="constructor" xsi:type="velocityOutlet" path="constructor.vm"/>
+  <outlet name="getKey" xsi:type="velocityOutlet" path="getKey.vm"/>
+  <outlet name="toString" xsi:type="velocityOutlet" path="toString.vm"/>
+  <outlet name="newline" xsi:type="javaOutlet" class="org.apache.torque.generator.outlet.java.NewlineOutlet"/>
+</outlets>
