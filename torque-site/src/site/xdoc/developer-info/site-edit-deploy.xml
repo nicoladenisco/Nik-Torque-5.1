@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+  <properties>
+    <title>Editing and Deploying the Torque site</title>
+  </properties>
+
+  <body>
+   <section name="Introduction">
+     <p>
+       This document is addressed to Torque committers who wish to edit and
+       deploy the Torque site.  If you find anything missing or wrong,
+       please edit this document.  If you find any procedure unsatisfactory,
+       change it and document it here :-).
+     </p>
+   </section>
+   
+   <section name="Site source code and build process">
+     <p>
+       The complete Torque site resides in the module torque-site.
+       Only the reports from the subprojects are pulled into the main
+       site via a process documented below.
+       The subprojects do not have an own xdoc subdirectory.
+     </p>
+     <p>
+       For a local build of the site, cd into the torque parent dir and run
+       <code>mvn post-site</code> (if you just run <code>mvn site</code>,
+       the reports from the other modules will not be pulled in).
+       When finished, the site can be found in 
+       torque-site/target/site.
+     </p>
+     <subsection name="Transferring the module reports to the main site">
+       <p>
+         The project reports of the subprojects are pulled into the
+         main site during the site lifecycle of the main site. 
+         This happens in the following automated steps, which are defined
+         in the pom.xml of the torque-site module:
+       </p>
+       <ul>
+         <li>
+           In the pre-site phase, the reports are copied from the
+           site directories of the respective modules to the target directory
+           of the site module 
+           (directories generator-site, runtime-site, ...).
+           They are renamed to xml, the doctype header
+           is removed, and in some cases xhtml errors are fixed.
+         </li>  
+         <li>
+           In the site phase, the copied reports are transformed by the xslt
+           stylesheet torque-site/src/site/xslt/body-content.xsl
+           such that only the body part remains and the "page frame"
+           is omitted. The result is written to the directories
+           generator-site-content, runtime-site-content...
+         </li>
+         <li>
+           In the post-site phase, the body parts of the report are
+           inserted into the placeholder pages which sources can be found in
+           torque-site/src/site/xdoc/documentation/modules/generator/reports,
+           torque-site/src/site/xdoc/documentation/modules/runtime/reports...
+           Some reports do not need to be transformed, e.g. the
+           cobertura report, the javadocs and the sources xref, they are copied
+           unchanged.
+         </li>
+      </ul>
+     </subsection>
+   </section>
+   
+   <section name="Deploying the site">
+     <p>
+       This is a step-by-step guide to deploy the whole site. 
+       
+       Follow the recommendations in <a href="https://infra.apache.org/publishing-maven-artifacts.html">Apache Infrastructure Information concerning Publishing Maven artifacts</a>. 
+      Recent releases do not use ssh deployment anymore, but instead the <a href="https://maven.apache.org/plugins/maven-scm-publish-plugin/">scm-publishing</a> mechanism. 
+      </p> 
+   <subsection name="Step by step">
+     <p>
+       Now you can begin to build and deploy the site:
+     </p>
+     <ul>
+       <li>
+         run <i>mvn clean post-site</i> in the torque parent (root) module.
+         <source><![CDATA[
+        mvn clean post-site  ]]>
+         </source>
+       </li>
+       <li>
+         check the site in <strong>torque-site/target/site</strong>
+       </li>
+       <li>
+         It might be a good idea to create a tar.gz or zip backup of the current
+         state of the site in your apache home directory, in case anything goes
+         wrong.
+         Find the current site in pom.xml: project->distributionManagement->site->url.
+       </li>
+       <li>
+         run <i>mvn site:deploy</i> in the torque-site module. This should trigger <i>mvn scm-publish:publish-scm</i>.
+          <source><![CDATA[
+        mvn site:deploy  ]]>
+         </source>
+         
+       </li>
+       <li>
+         Wait till the site is rsynced to the apache web servers
+         (might take some hours). Alternatively, check 
+         <a href="http://www.apache.org/dev/project-site.html">http://www.apache.org/dev/project-site.html</a>
+         for a proxy setting which allows to look at the newly deployed site
+         before the rsync happens,
+         but this might not work under all circumstances.
+       </li>
+       <li>
+         Empty the cache of your browser and check everything is ok on
+         <a href="http://db.apache.org/torque/torque-5.0/index.html">http://db.apache.org/torque/torque-5.0/index.html</a>
+       </li>
+       <li>
+         If you are satisfied with the new site and no-one complains during
+         the next few days, delete the backup tar.gz or zip.
+       </li>
+     </ul>
+    </subsection>
+   </section>
+   
+   <section name="Updating the site for a new release">
+     <ul>
+       <li>
+         Check that all version numbers are up to date, especially in the
+         tutorial, usage pages and on the download page.
+       </li>
+       <li>
+         Check that the correct internal version id is in the configuration
+         <i>fixVersionIds</i> of the maven-changes-plugin in the pom of the
+         torque-site project. The correct number can be determined by opening
+         the torque project in jira, clicking on "versions" in the left menu,
+         click on the appropriate version and then on "release notes" on top
+         of the site. The version number is the number appearing last in the
+         URL of the page. 
+       </li>
+     </ul>
+   </section>
+
+  </body>
+</document>

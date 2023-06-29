@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Logging and Debugging</title>
+ </properties>
+
+ <body>
+  
+  <section name="Logging Output of the Torque generator">
+    <p>
+      The Torque generator uses logging to visualize the work it does.
+      The log information is written to the console, plus it is written
+      to the file target/torque-gen/log/torque-gen.log. The default log
+      level is INFO. The log level can be changed in two places:
+    </p>
+    <ul>
+      <li>
+        The templates can define a default log level 
+        using the loglevel attribute of the control element 
+        in the control.xml configuration file.
+      </li>
+      <li>
+        When executing the templates, another log level can be passed in,
+        overriding the log level defined in the templates.
+      </li>
+    </ul>
+    
+    <p>
+      How to set the log level on template execution depends on the way 
+      the generator is started:
+    </p>
+    <ul>
+      <li>
+        Torque Maven Plugin: set the property loglevel 
+        on the goal generate to trace, debug, info, warn or error.
+      </li>
+      <li>
+        Torque Ant Task: set the property loglevel to true
+        on the Torque generator task to trace, debug, info, warn or error.
+      </li>
+      <li>
+        Plain Java: use the setLoglevel method in the UnitDescriptor
+        you pass in when starting the generator.
+      </li>
+    </ul>
+    
+    <p>
+      Note that the loglevel from the control.xml configuration file
+      is applied after the configuration is read, so the log level before this
+      point may be different.
+    </p>
+    <p>
+      In principle, one can also overwrite the logging behaviour by
+      overwriting the logging configuration file in the class path.
+      (the file used is org.apache.torque.generator.log4j2.xml).
+      There are several (typically hacky) ways to do this, depending
+      on your execution environment; one of them is simply exchanging the 
+      logging configuration file in the generator jar you use 
+      (or remove it from the jar and add it to the classpath by another means).
+    </p>
+  </section>
+
+  <section name="Adding debug information to the output">
+    <p>
+     You can add debug information to the currently generated output.
+     This feature is typically switched off but can be switched on
+     per generation run. How to set the flag depends on the way to start the
+     generation:
+    </p>
+    <ul>
+      <li>
+        Torque Maven Plugin: set the property addDebuggingInfoToOutput to true
+        on the goal generate.
+      </li>
+      <li>
+        Torque Ant Task: set the property addDebuggingInfoToOutput to true
+        on the Torque generator task.
+      </li>
+      <li>
+        Plain Java: call setAddDebuggingInfoToOutput(true) on the
+        UnitDescriptor used for the generation.
+      </li>
+    </ul>
+  </section>
+
+  <section name="Logging Implementation for the Torque generator">
+    <p>
+     Note: This section is for people who want to change the underlying logging
+     framework for the Torque generator. This is not needed when using
+     the Torque Maven Plugin or Torque Ant tasks to start the generator.
+    </p>
+    <p>
+     The Torque generator uses  commons-logging as logging abstraction,
+     so in principle, it is logging-framework agnostic.
+    </p>
+    <p>
+      However, the loglevel of the Torque generator can be changed by its
+      configuration. This is because it is typically a hassle to configure
+      the logging framework in the build tools where the torque generator
+      is normally running. The ability to set the loglevel is not provided by
+      commons-logging, therefore an adapter (an implementation of
+      <code>org.apache.torque.generator.configuration.controller.LoggingAdapter</code>)
+      is used. 
+    </p>
+    <p>
+      Natively, the Torque generator contains two implementations:
+    </p>
+    <ul>
+      <li>
+        A log4j adapter which reads and sets the current loglevel
+        by reading and changing the level of log4j2's root logger
+        (<code>org.apache.torque.generator.configuration.controller.Log4j2LoggingAdapter</code>).
+      </li>
+      <li>
+        A dummy adapter which implements the LoggingAdapter interface
+        but cannot read or change a log level
+        (<code>org.apache.torque.generator.configuration.controller.DummyLoggingAdapter</code>).
+      </li>
+    </ul>
+    <p>
+      The adapter can be changed at runtime by calling the static method
+      <code>setLoggingAdapter(LoggingAdapter)</code> of the class
+      <code>org.apache.torque.generator.configuration.controller.Loglevel</code>.
+      By default, the <code>Log4jLoggingAdapter</code> is used in Torque 5.0 and
+      <code>Log4j2LoggingAdapter</code> in Torque 5.1.
+    </p>
+  </section>
+ </body>
+</document>

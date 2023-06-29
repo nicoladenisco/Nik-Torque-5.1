@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Configuration</title>
+ </properties>
+
+ <body>
+  <section name="Introduction">
+    The Torque generator can be configured by the following files:
+    <ul>
+      <li>
+        The file conf/control.xml tells the generator which files should be
+        generated, and which sources, options and outlets should be
+        used to generate them.
+      </li>
+      <li>
+        For the generation process, outlets (which create String output
+        out of sources) must be defined.
+        In each outlet XML configuration file in the outlets directory,
+        one or more outlets can be defined. 
+        The minimum information needed for each outlet is a unique name,
+        its type, and the information to invoke the outlet of this 
+        given type. 
+        For example, if the outlet has the type &quot;velocityOutlet&quot;
+        i.e. the outlet is a velocity template, then the path to
+        the template is needed as well.<br/>
+        All outlet properties can be overridden in the controller
+        configuration.<br/>
+        For each template with a known file extension, an outlet definition
+        is created automatically.<br/>
+        See below for details on defining outlets.
+      </li>
+    </ul>
+    <p>
+      Some settings can also be passed directly when calling the generator.
+      Typically these settings specify which config directory resp. package
+      is used, which source directory is used, which source files
+      are included and excluded etc. 
+      Also, debug output can be added to the output which helps determine
+      which output snippet stems from which outlet.
+      <br/>
+      These settings are typically made available through the build system
+      adapter, e.g.the maven plugin or the ant tasks.
+    </p>
+  </section>
+  <section name="Standard directory layout">
+    The Torque generator uses a standard directory layout for its
+    configuration:
+    <source>
+      - torque-gen directory (e.g. src/main/torque-gen for maven 3)
+        - conf
+          - control.xml
+          - options.properties (not always present, name can differ)
+        - outlets
+          - outlet_config_example.xml (name not fixed)
+          - ... (other outlet definition files)
+        - templates (only if template generators are used)
+          - template_example.vm (name not fixed)
+          - ... (other templates)
+        - resources (only if xsd schema validation is used for sources)
+          - schema_example.xsd (name not fixed)
+          - ... (other xsd schemata)
+          - binary resources (images etc.)
+    </source>
+    The sources are not considered part of the configuration; thus they do not
+    appear here (If you have no idea where to put the sources,
+    create a src directory in the torque-gen directory and put them there.)
+    The content of the various directories is described below.  
+  </section>
+  
+  <section name="The control configuration">
+    The main configuration consists of the file <code>control.xml</code>, 
+    and maybe of one or more options file, and is located in the directory
+    <code>conf</code>.<br/>
+    <p>
+     The configuraton file complies to
+        <a href="configuration.xsd">configuration.xsd</a> and the referenced <a href="outlet.xsd">outlet.xsd</a>.
+      </p>
+    In the file <code>control.xml</code>, the option files are declared,
+    and the output files are defined. A control file may like this:
+    <source><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<control loglevel="info"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+
+  <options xsi:type="propertiesOptions" path="options.properties"/>
+
+  <entityReference
+      systemId="http://foo.org/bar.xsd"
+      resource="bar.xsd" />
+
+  <output name="torque.om.dbObject" existingTargetStrategy="skip" outputDirKey="modifiable">
+    <filenameOutlet
+        xsi:type="javaOutlet"
+        class="org.apache.torque.generator.outlet.java.JavaFilenameOutlet">
+      <mergepoint name="package">
+        <action
+           xsi:type="sourceElementAttributeAction"
+           element="."
+           attribute="dbObjectPackage"
+           acceptNotSet="false"/>
+      </mergepoint>
+      <mergepoint name="classname">
+        <action 
+            xsi:type="sourceElementAttributeAction"
+            element="."
+            attribute="dbObjectClassName"
+            acceptNotSet="false"/>
+      </mergepoint>
+    </filenameOutlet>
+    <source xsi:type="fileSource" 
+        elements="database/table"
+        skipDecider="org.apache.torque.templates.sourcefilter.OmSkipDecider">
+      <transformer class="org.apache.torque.templates.transformer.om.OMTransformer"/>
+      <include>*schema.xml</include>
+      <exclude>id-table-schema.xml</exclude>
+    </source>
+    <outlet name="torque.om.dbObject"/>
+  </output>
+</control>
+    ]]></source>
+    The loglevel attribute on the control file defines the amount of logging
+    during generation. Possible values are "debug", "info", "warn" and "error",
+    default is "info".<br/>
+    The "options" elements define which option files should be read
+    (more than one options file is possible).
+    If the same option is defined in different files, the value in the 
+    last file takes precedence.<br/>
+    The "entityReference" element tells an XML parser used to read
+    XML source files to resolve the systemId "http://foo.org/bar.xsd"
+    to the file bar.xsd in the resources directory.
+    More than one entityReference is possible.
+    If you do not use XML sources, XSD validation cannot be used
+    and defining entity references makes no sense.<br/>
+    The output tags define which output files are generated.
+    The name attribute of the output is used for debugging purposes and
+    must be set.
+    The existingTargetStrategy attribute of the output tag defines 
+    how to handle existing files.
+    Default is "replace" (replace the existing file),
+    other modes are "skip" (skip generation and leave existing file as is),
+    "append" (append generation result to the existing file)
+    and "merge" (merge changes in the generation output with changed generation
+    result, see 
+    <a href="existing-target-modes.html">the existing target modes documentation</a>
+    for details).
+    The outputDirKey attribute of the output tag allows to write the
+    output files to another output directory, the outputDirKey defines
+    a symbolic name for this directory. On generation time, the user needs
+    to assign real directories to the symbolic names. E.g. in the torque 
+    templates, the outputDirKey "modifiable" is used for files which are
+    intended to be modifiable by the user; the "modifiable" key defaults
+    to the src/main/generated-java directory.
+    The filename of the output files can either be defined in the "filename"
+    attribute if the filename is fixed, or in the filenameOutlet 
+    child element if the filename is generated from the sources.
+    The files to read as input and the source elements for which 
+    output files are generated are defined in the source child element
+    of the output tag.
+    The filename outlet can be either referenced by name (if it is defined
+    elsewhere), or can be defined here by using the "type" and "class"
+    attributes.<br/>
+    A XPath-like notation can be used to traverse the source graph 
+    (note that only the simplest XPath elements are recognized,
+     i.e. explicit element names and the Tokens "/", ".." and ".").
+    In principle, for each source element which matches the description
+    in the elements attribute in each source file matching the include/exclude
+    pattern, an output file is generated. 
+    However, the SkipDecider class which can be configured in the
+    "skipDecider" attribute of the "source" element can determine to
+    skip generation under certain circumstances.
+    Note that this multiple processing also applies for fixed output filenames.
+    <br/>
+    If the source needs to be transformed before generation, transformer
+    tags are included as children of the source tag. For each transformer,
+    the class must be given. If more than one transformer is defined for a 
+    given source, the output of the first transformer is used as input for the 
+    second transformer, and so on, and the output of the last transformer is 
+    fed into the generators.
+  </section>
+  
+  <section name="Configuring the outlets">
+    <p>
+      The outlets can be defined and wired together in the outlets 
+      subdirectory (recommended) or in the control.xml file 
+      (should only be used when overriding settings in existing 
+      template sets).
+      Each file in this directory defines one or more outlets.
+      Each outlet must have an unique name; it is possible to use
+      dot(.)-separated namespaces for avoiding name conflicts 
+      if more than one template set is used
+      (e.g. the outlet name org.apache.torque.someOutlet has the
+      namespace org.apache.torque and the unqualified name someOutlet).
+      For template-based outlets, the name attribute can be omitted;
+      the name is then calculated from the path of the template
+      relative to the templates directory
+      (e.g. the template with the relative path someDir/someTemplate.groovy
+      will get the name someDir.someTemplate if no explicit name is set).
+      Also, the type of the outlet must be given (currently
+      supported are "velocity", "groovy", and "java"). 
+      Depending on the type, further informations need to be given: 
+      The velocity and groovy outlets need the path to the template 
+      (relative to the templates subdirectory),
+      the java outlets need the class of the outlet class.
+      For example, this defines a java and a velocity outlet:
+    </p>
+    
+<source><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<outlets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+  <outlet name="org.apache.torque.generator.javaOutlet"
+      xsi:type="javaOutlet" 
+      class="org.apache.torque.generator.JavaGenerator">
+  </generator>
+  <outlet name="torque.om.bean.baseBean" 
+      xsi:type="velocityOutlet"
+      path="bean/base/baseBean.vm"/>
+</outlets>
+]]></source>
+
+    <subsection name="mergepoints">
+      <p>
+        In each outlet, mergepoints can be defined. 
+        Into each mergepoint, external content may be inserted 
+        (e.g. the value of an option or a 
+        variable or the output of another template). To keep your templates
+        flexible, it makes sense to define mergepoints where you do not need
+        them now but may need them in the future (you do not have to assign
+        content to a mergepoint, it can also stay empty).
+        The mergepoint inside the outlet is referenced by
+        its name. For example, the following configuration defines three outlets,
+        and the output of the last two outlet is used in mergepoints of
+        the first outlet:
+      </p>
+<source><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<outlets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+  <outlet name="torque.om.bean.base.getterSetter"
+      xsi:type="velocityOutlet"
+      path="general/getterSetter.vm">
+    <mergepoint name="getter">
+      <action xsi:type="applyAction" outlet="torque.om.bean.base.getter"/>
+    </mergepoint>
+    <mergepoint name="setter">
+      <action xsi:type="applyAction" outlet="torque.om.bean.base.setter"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.bean.base.getter"
+      xsi:type="velocityOutlet"
+      path="bean/base/getter.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.setter"
+      xsi:type="velocityOutlet"
+      path="bean/base/setter.vm">
+  </outlet>
+</outlets>
+]]></source>
+      <p>
+        A more exotic case is the definition of mergepoints outside
+        an outlet tag. This is useful when overriding a mergepoint definition
+        in a child project. The mergepoint can be accessed by 
+        ${outletName}.${mergepointName}. For example, if we want to override
+        the <i>setter</i> mergepoint in the 
+        <i>torque.om.bean.base.getterSetter</i> to use a custom velocity
+        template named <i>setter2.vm</i>, we could use the following
+        configuration in the child project:
+      </p>
+<source><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<outlets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://db.apache.org/torque/4.0/generator/configuration http://db.apache.org/torque/4.0/generator/configuration.xsd"
+    xmlns="http://db.apache.org/torque/4.0/generator/configuration">
+  <outlet name="torque.om.bean.base.setter2"
+      xsi:type="velocityOutlet"
+      path="bean/base/setter2.vm">
+  </outlet>
+
+  <mergepoint name="torque.om.bean.base.getterSetter.setter">
+    <action xsi:type="applyAction" outlet="torque.om.bean.base.setter2"/>
+  </mergepoint>
+</outlets>
+]]></source>
+      <p>
+        Note that by virtue of the standalone mergepoint definition, 
+        we need not override the whole definition for the outlet
+        <i>torque.om.bean.base.getterSetter</i>, but can override a single
+        mergepoint definition.
+      </p>
+    </subsection>
+    <subsection name="automatic outlet definition for templates">
+      <p>
+        For each template with a known file extension
+        (currently .vm for velocity templates and .groovy for groovy scripts),
+        the generator automatically creates an outlet. 
+        The name of these outlets is the path of the file in the template
+        directory, with path separators replaced by dots and the file extension
+        removed. For example, for a file templates/peer/impl/peerImpl.vm,
+        an outlet with the name peer.impl.peerImpl will be created.
+        No outlet will be defined automatically if an outlet definition
+        with the given name already exists.
+      </p>
+      <p>
+        Note that the outlet definitions which are created automatically
+        do not have mergepoint mappings,
+        so you will still have to map the mergepoint mappings explicitly
+        (or define an extra outlets with the mergepoint mappings).
+        Also, the encoding of the templates will be assumed to be 
+        the vm's default encoding.
+      </p>
+      <p>
+        If a template exists in two known languages 
+        (e.g. myTemplate.vm and myTemplate.groovy), it is currently undefined
+        which template of the two will be used for automatic outlet definition.
+        So if automatic outlet definition is used for defining outlets,
+        make sure all templates have a different filename even when omitting
+        the suffix.
+      </p>
+    </subsection>
+  </section>
+ </body>
+</document>

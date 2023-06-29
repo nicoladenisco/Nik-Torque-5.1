@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+  <properties>
+    <title>Migration from Torque 3</title>
+  </properties>
+
+  <body>
+   <section name="Changes in Torque 4">
+     <p>
+       The most prominent changes in Torque 4 are:
+     </p>
+     <ul>
+       <li>
+         At least java 1.5 is now required.
+       </li>
+       <li>
+         The following databases are now officially supported:
+         MySQL, PostgreSQL, Derby, HSQLDB, Oracle and MSSQL.
+       </li>
+       <li>
+         Column names are now stored in objects implementing
+         the org.apache.torque.Column interface. As the Peer column name
+         constants are generated accordingly, you only need to consider this
+         if you assemble column names from strings
+         (use org.apache.torque.ColumnImpl constructors to create Column
+         instances from Strings).
+       </li>
+       <li>
+         The org.apache.torque.util.Criteria object is now deprecated 
+         and is replaced by a new implementation 
+         org.apache.torque.criteria.Criteria. The old Criteria object has
+         the same semantics as the Torque 3.3 Criteria and is perfectly 
+         functional, but will be removed in the future. The new Criteria 
+         object differs from the old one in that it has a different semantics
+         in the "or" methods (check the javadoc) and treats Strings
+         in the first argument as Strings, not as column names 
+         (e.g. criteria.and("string1", "string2") has a different meaning in
+         the old and the new Criteria).<br/>
+         Also the new Criteria object does not define the operator 
+         Criteria.CUSTOM any more, but instead contains the methods
+         andVerbatimSql() and orVerbatimSql().<br/>
+         The doDelete(Criteria) and doDelete(Criteria, Connection) methods
+         have a different semantics for the old and the new Criteria object.
+         For the old Criteria object, the table name to delete from is guessed
+         from the Criteria object's contents. For the new Criteria object,
+         the table name is always the table name of the Peer class used to
+         do the delete.
+       </li>
+       <li>
+         Database views are now supported out-of-the-box.
+       </li>
+       <li>
+         The Torque generator is now a general-purpose code generator.
+         This has the effect that the templates used by the generator need to be
+         specified. See the template docs, the Maven plugin docs or 
+         the tutorial on how to specify the Torque templates for the generator.
+         See the generator docs for more details on how to use it 
+         as code generator.
+       </li>
+       <li>
+         The Torque runtime does not use the village library any more.
+       </li>
+       <li>
+         Supplying "null" as value for a database connection now results in
+         an error in Torque 4. In Torque 3, Torque automatically opened
+         a database connection if a connection argument was null.
+       </li>
+     </ul>
+     <p>
+       There are many more improvements and bug fixes. See the 
+       <a href="../../jira-report.html">changes report</a> for details.
+     </p>
+   </section>
+   <section name="Migrating from Torque 3 to Torque 4">
+     <p>
+       There are no big API Redesigns in Torque 4 as compared to Torque 3,
+       so migrating an existing application from Torque 3 to Torque 4 should
+       be possible without too much pain.
+     </p>
+     <p>
+       As a first migration step, check out the changes above to see whether
+       they affect your application. If yes, modify these parts.
+     </p>
+     <p>
+       Validate your database schema against the torque 4 xsd
+       (from the torque templates documentation).
+       If there are any validation errors, check the subtasks of the jira issue
+       <a href="https://issues.apache.org/jira/browse/TORQUE-126" >TORQUE-126</a> 
+       whether a matching change is reported there; if yes, modify your schema
+       accordingly. If in doubt, ask the users list.
+     </p>
+     <p>
+       Then, change your project's build system to use Torque 4 instead of
+       Torque 3. This is best done by glancing through the ORM part of the
+       tutorial and checking your settings against the settings described there.
+       For example, the versions of the maven artifacts have changed,
+       an ant build must now use the torque-ant-tasks lib instead of
+       using the generator directly, and the configuration and available goals
+       of the maven plugin have changed.
+     </p>
+     <p>
+       After changing your build setup, build your application.
+       If your application compiles, chances are that your application is ok.
+     </p>
+     <p>
+       Finally, test your application thoroughly. Though
+       Torque 4 looks and feels similar to Torque 3, many changes have been
+       made under the hood and perhaps your application depended on a
+       special implementation of a Torque feature.
+     </p>
+   </section>
+  </body>
+</document>

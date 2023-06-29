@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+  <properties>
+    <title>Subversion</title>
+    <author email="hps@intermeta.de">Henning P. Schmiedehausen</author>
+    <author email="fischer@seitenbau.de">Thomas Fischer</author>
+    <author email="gk@apache.org">Georg Kallidis</author>
+  </properties>
+
+  <body>
+   <section name="Torque Source code management">
+     <p>
+      The Torque source code is located inside the Apache Software 
+      Foundation's 
+      <a href="http://subversion.tigris.org">subversion</a>
+      repository.
+      If you have never worked with Subversion before, please take a
+      look at <a href="http://svnbook.red-bean.com/">the free
+      subversion book</a> and also at <a
+      href="http://www.apache.org/dev/version-control.html">Source
+      code repositories at the Apache Software Foundation</a> to get
+      more information.
+    </p>
+   </section>
+
+   <section name="The Torque repository">
+
+    <subsection name="Torque Repository Structure">
+
+      <p>
+        Torque 3 releases were in db/torque, Torque 4 and 5 (development history) is in /torque/torque4. 
+        The base directory of current develoment again now is in <i>db/torque</i>.
+        The main branch is located in the trunk subdirectory of that
+        directory. The layout is:
+      </p>
+
+      <source><![CDATA[
+      trunk/
+      <root> 				<--- contains the maven parent project and files
+                                common to all modules.
+      torque-runtime       <--- contains the runtime module
+      torque-generator     <--- contains the generator module
+      torque-templates     <--- contains the generator templates module
+      torque-maven-plugin  <--- contains the maven plugin module
+      maven-ant-tasks      <--- contains the ant tasks module
+      torque-test          <--- contains the test module
+      torque-site          <--- contains the sources of the homepage 
+      ]]></source>
+    </subsection>
+    
+    <subsection name="Torque Developer Modules (new releases)">
+     <p>
+      Torque contains the following modules:
+
+      <table>
+       <tr><th>Module</th><th>Trunk repository location</th></tr>
+
+       <tr><td>Runtime</td>       <td><a href="http://svn.apache.org/viewvc/db/torque/trunk/torque-runtime">http://svn.apache.org/repos/asf/db/torque/trunk/torque-runtime</a></td></tr>
+       <tr><td>Generator</td>     <td><a href="http://svn.apache.org/viewvc/db/torque/trunk/torque-generator">http://svn.apache.org/repos/asf/db/torque/trunk/torque-generator</a></td></tr>
+       <tr><td>Templates</td>     <td><a href="http://svn.apache.org/viewvc/db/torque/trunk/torque-templates">http://svn.apache.org/repos/asf/db/torque/trunk/torque-templates</a></td></tr>
+       <tr><td>Maven Plugin</td>  <td><a href="http://svn.apache.org/viewvc/db/torque/trunk/torque-maven-plugin">http://svn.apache.org/repos/asf/db/torque/trunk/torque-maven-plugin</a></td></tr>
+       <tr><td>Ant Tasks</td>     <td><a href="http://svn.apache.org/viewvc/db/torque/trunk/maven-ant-tasks">http://svn.apache.org/repos/asf/db/torque/trunk/maven-ant-tasks</a></td></tr>
+       <tr><td>Site</td>          <td><a href="http://svn.apache.org/viewvc/db/torque/trunk/torque-site">http://svn.apache.org/repos/asf/db/torque/trunk/torque-site</a></td></tr>
+        <tr><td>Test Project</td>  <td><a href="http://svn.apache.org/viewvc/db/torque/trunk/torque-test">http://svn.apache.org/repos/asf/db/torque/trunk/torque-test</a></td></tr>
+      </table>
+     </p>
+    </subsection>
+
+    <subsection name="Torque 4 and 5 Module Releases">
+     <p>
+       This has been the trunk for Torque 4 and 5 development ans is now historical. 
+       The current development trunk is now in <a href="http://svn.apache.org/repos/asf/db/torque/trunk/">http://svn.apache.org/repos/asf/db/torque//trunk/</a>, see above.
+       
+      <table>
+       <tr><th>Module</th><th>Trunk repository location</th></tr>
+
+       <tr><td>Runtime</td>       <td><a href="http://svn.apache.org/repos/asf/db/torque/torque4/trunk/torque-runtime">http://svn.apache.org/repos/asf/db/torque/torque4/trunk/torque-runtime</a></td></tr>
+       <tr><td>Generator</td>     <td><a href="http://svn.apache.org/viewvc/db/torque/torque4/trunk/torque-generator">http://svn.apache.org/repos/asf/db/torque/torque4/trunk/torque-generator</a></td></tr>
+       <tr><td>Templates</td>     <td><a href="http://svn.apache.org/viewvc/db/torque/torque4/trunk/torque-templates">http://svn.apache.org/repos/asf/db/torque/torque4/trunk/torque-templates</a></td></tr>
+       <tr><td>Maven Plugin</td>  <td><a href="http://svn.apache.org/viewvc/db/torque/torque4/trunk/torque-maven-plugin">http://svn.apache.org/repos/asf/db/torque/torque4/trunk/torque-maven-plugin</a></td></tr>
+       <tr><td>Ant Tasks</td>     <td><a href="http://svn.apache.org/viewvc/db/torque/torque4/trunk/maven-ant-tasks">http://svn.apache.org/repos/asf/db/torque/torque4/trunk/maven-ant-tasks</a></td></tr>
+       <tr><td>Site</td>          <td><a href="http://svn.apache.org/viewvc/db/torque/torque4/trunk/torque-site">http://svn.apache.org/repos/asf/db/torque/torque4/trunk/torque-site</a></td></tr>
+       <tr><td>Maven Parent</td>  <td><a href="http://svn.apache.org/viewvc/db/torque/torque4/trunk/torque-maven-parent/trunk/">http://svn.apache.org/repos/asf/db/torque/torque4/trunk/torque-maven-parent</a></td></tr>
+       <tr><td>Test Project</td>  <td><a href="http://svn.apache.org/viewvc/db/torque/torque4/trunk/torque-test">http://svn.apache.org/repos/asf/db/torque/torque4/trunk/torque-test</a></td></tr>
+      </table>
+     </p>
+    </subsection>
+
+    <subsection name="Runtime, Generator, Templates, Maven 2 Plugin, Ant Tasks">
+     <p>
+      These modules make up the main torque distribution.
+      Tags and Branches are the same for all modules and are located
+      in the directories
+      <code>db/torque/tags</code> , <code>db/torque/branches</code>, and for 4 and 5.0 releases 
+      <code>db/torque/torque4/tags</code> and
+      <code>db/torque/torque4/branches</code>.
+     </p>
+    </subsection>
+
+    <subsection name="Maven Root (Parent)">
+     <p>
+      The maven root module contains files
+      that are needed in all main modules of the Torque source tree.
+     </p>
+    </subsection>
+    <subsection name="Test Project">
+     <p>
+      The test project is used by Torque developers to test the functionality
+      of Torque. See the <a href="test-project.html">test guide</a> 
+      for an explanation of how to run the tests.
+     </p>
+    </subsection>
+    <subsection name="Site">
+     <p>
+      The Torque site contains the information global to all Torque
+      releases such as main navigation, download page or the page
+      you're currently reading.
+     </p>
+    </subsection>
+   </section>
+  </body>
+</document>

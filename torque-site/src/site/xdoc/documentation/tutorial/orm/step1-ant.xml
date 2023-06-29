@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+  <properties>
+    <title>Torque ORM Tutorial - Step 1: Configuring the Torque generation process using Ant</title>
+    <author email="pete-apache-dev@kazmier.com">Pete Kazmier</author>
+    <author email="seade@backstagetech.com.au">Scott Eade</author>
+    <author email="fischer@seitenbau.de">Thomas Fischer</author>
+  </properties>
+  <body>
+
+<section name="Step 1: Configuring the Torque generation process">
+
+<p>
+  The following section outlines the necessary steps to
+  configure a Torque-based ORM project using ant.
+  For this, you need to create ant's build.xml file
+  and make the necessary libraries available.
+  It is recommended to run the tutorial against a mysql database, as
+  all of the explanation in this tutorial assumes that you use mysql.
+</p>
+
+<p>
+  As a starting point, create a directory as a
+  base directory for your project (also called
+  the project's top level directory).
+  All the paths in the following steps will be
+  relative to this base directory.
+</p>
+
+</section>
+
+<section name="Ant build file">
+
+<p>
+  As a starting point for the build file in your project,
+  use the following template and save it
+  as build.xml in the project's base directory.
+  Then edit it to reflect your specific needs
+  (typically you need to change the database URLs, 
+  the database host, the database user and password):
+</p>
+
+<source><![CDATA[
+<?xml version="1.0"?>
+<project name="Torque" default="main" basedir=".">
+
+  <property name="build.properties" value="build.properties"/>
+  <property name="torque.contextProperties" value="${build.properties}"/>
+  <property file="${torque.contextProperties}"/>  
+
+  <path id="ant-classpath">
+    <fileset dir="libs">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <path id="runtime-classpath">
+    <fileset dir="libs">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+  
+   <pathconvert property="classpathRuntime" refid="runtime-classpath"/>
+
+  <taskdef
+    name="torque-generator"
+    classpathref="ant-classpath"
+    classname="org.apache.torque.ant.task.TorqueGeneratorTask"/>
+
+  <target name="generate"
+      description="==> generates sql + om classes">
+    <torque-generator 
+        packaging="classpath"
+        configPackage="org.apache.torque.templates.om"
+        sourceDir="src/main/schema">
+      <option key="torque.om.package" value="org.apache.torque.tutorial.om"/>
+      <option key="torque.database" value="mysql"/>
+    </torque-generator>
+    <torque-generator 
+        packaging="classpath"
+        configPackage="org.apache.torque.templates.sql"
+        sourceDir="src/main/schema"
+        defaultOutputDir="target/generated-sql">
+      <option key="torque.database" value="mysql"/>
+    </torque-generator>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="target/classes"/>
+     <javac debug="on" source="1.8" target="1.8" destdir="target/classes" includeAntRuntime="false" classpathref="runtime-classpath" fork="yes">   
+      <src path="src/main/java"/>
+      <src path="src/main/generated-java"/>
+      <src path="target/generated-sources"/>
+      <classpath refid="runtime-classpath"/>
+    </javac>
+    <copy todir="target/classes">
+      <fileset dir="src/main/resources"/>
+    </copy>
+  </target>
+
+  <target name="execute-sql">
+    <sql classpathref="ant-classpath"
+        driver="${torque.database.driver}"
+        url="jdbc:mysql://localhost:3306/bookstore"
+        userid="${torque.database.user}"
+        password="${torque.database.password}"
+        onerror="continue"
+        src="target/generated-sql/bookstore-schema.sql"/>
+  </target>
+  
+  <taskdef
+    name="torque-jdbc2schema"
+    classpathref="ant-classpath"
+    classname="org.apache.torque.ant.task.Torque4JDBCTransformTask"/>
+    
+  <target name="jdbc"  description="==> jdbc to xml">
+    <echo> Generating XML from JDBC connection with jars: ${antClasspath} ...</echo>
+    <echo message="+-----------------------------------------------+"/>
+    <echo message="|                                               |"/>
+    <echo message="| Generating XML from JDBC connection !         |"/>
+    <echo message="|                                               |"/>
+    <echo message="+-----------------------------------------------+"/>
+
+    <torque-jdbc2schema 
+      dbDriver="${torque.database.driver}"
+      dbPassword="${torque.database.password}"
+      dbUrl="${torque.database.url}"
+      dbUser="${torque.database.user}"
+      packaging="classpath"
+      configPackage="org.apache.torque.templates.jdbc2schema"
+      defaultOutputDir="target/generated-schema"
+      >
+    </torque-jdbc2schema>
+  </target> 
+
+  <target name="clean">
+    <delete dir="target" />
+  </target>
+
+  <target name="main" description="build all" depends="generate, compile">
+  </target>
+</project>
+]]></source>
+
+<p>
+  This build file contains the following definitions: 
+</p>
+<ul>
+  <li>
+    The runtime dependencies of your project to Torque
+    (needed when you compile and use the generated java sources)
+  </li>
+  <li>
+    The definition and configuration of the Torque ant task
+  </li>
+  <li>
+    The configuration of ant's SQL task
+    (needed if you want to execute the generated SQL using ant)
+  </li>
+  <li>
+    The configuration of the java compiler
+    (needed when you compile the generated java sources)
+  </li>
+  <li>
+    The configuration of the clean target (removes the compiled classes,
+    some generated classes and the generated SQL).
+  </li>
+  <li>
+    The configuration of the main target (generates classes and SQL
+    and compiles the java classes).
+  </li>
+</ul>
+<p>
+  A correct ant build file is very important.
+  This enables the Torque generator to generate all of
+  the required sources and SQL for your specific
+  database.  If you experience problems later in this
+  tutorial, it would be wise to double-check this file.
+</p>
+
+</section>
+
+<section name="Library set-up">
+<p>
+  For the Torque generator/jdbc and SQL ant tasks to work correctly,
+  you need to provide them with some additional libraries.
+  This is done as follows:
+</p>
+<ul>
+  <li>
+    Create the directory <strong>libs</strong> in your project.
+  </li>
+  <li>
+    Download the binary distribution of torque-templates. 
+    Put the torque-templates-${version}.jar from its root directory 
+    in the libs directory of your project.
+  </li>
+  <li>
+    Download the binary distribution of torque-ant-tasks. 
+    Put the torque-ant-tasks-${version}.jar from its root directory 
+    in the libs directory of your project.
+  </li>
+  <li>
+    Download the binary distribution of torque-generator-tasks. 
+    Put the torque-generator-tasks-${version}.jar from its root directory to the directory of your project containing your dependency libraries ("libs" in this example).
+  </li>
+  <li>
+   Download the <a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/">sources</a>  and run from the source repo's sub folder 
+   <code>cd torque-5.0/torque-generator</code> the following command, which copies all dependencies if Torque Generator to libs.
+    <code>mvn clean dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=libs -DexcludeScope=test</code>)
+  </li>
+  <li>To configure Logging (Log4j2) set e.g.
+     <code>set ANT_OPTS=-Dlog4j.configurationFile=libs/log4j2.xml</code>
+  </li>
+  <li>
+    Download the appropriate mysql driver jar, e.g. from
+    <a href="http://repo1.maven.org/maven2/mysql/mysql-connector-java/">here</a>
+    and add the jar to the libs directory of your project.
+  </li>
+  <li>Add any <a href="http://www.apache.org/dyn/closer.cgi/turbine/fulcrum/">Fulcrum dependencies</a>
+  (fulcrum-security-api and fulcrum-security-torque, if you are using <a href="https://turbine.apache.org/">Turbine</a> and references of peer interfaces in the schema.
+  </li>
+</ul>
+
+</section>
+
+<section name="Where to next">
+
+  <p>
+    This completes the configuration of the Torque ant tasks
+    (and other settings to be made in the build.xml).
+  </p>
+  <p>
+    Next we will look at
+    <a href="step2.html">Defining the database schema</a>.
+  </p>
+
+</section>
+
+<section name="User Comments">
+  <a href="https://cwiki.apache.org/DBTORQUE/TutorialUserCommentsStep2">User comments</a>
+  for this step
+</section>
+
+  </body>
+</document>

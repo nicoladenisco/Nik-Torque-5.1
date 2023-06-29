@@ -1,0 +1,578 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Torque ORM Reference - Initialisation and Configuration</title>
+  <author email="jmcnally@apache.org">John McNally</author>
+  <author email="mpoeschl@marmot.at">Martin Poeschl</author>
+  <author email="seade@backstagetech.com.au">Scott Eade</author>
+  <author email="fischer@seitenbau.de">Thomas Fischer</author>
+ </properties>
+
+ <body>
+ 
+  <section name="Initialisation">
+    <p>
+      Torque is initialized by calling one of the <code>Torque.init()</code>
+      methods. Torque must be initialized before it is used, and it must not
+      be initialized more than once.
+    </p>
+
+    <p>
+      When calling one of the <code>Torque.init()</code> methods, you
+      must supply either the path to a configuration file or the configuration 
+      itself.  The configuration must contain a valid <code>DataSource</code>,
+      a default database handle, and an adapter for each 
+      <code>DataSource</code>.
+      For details, see the section <a href="#Configuration">Configuration</a>
+      below.
+    </p>
+    
+    <p>
+      Upon initialisation, also the runtime model of the database,
+      i.e. the <code>DatabaseMaps</code>, are built by generated
+      <code>MapBuilder</code> classes.  This happens automatically,
+      so usually you need not bother about it.
+    </p>
+    
+    <p>
+      Also, a runtime model of the database
+      (accessible via the methods Torque.getDatabaseMap())
+      is built during Torque startup: 
+      Each peer class constructs its runtime model when the Base Peer Class
+      is loaded and registers the table model with the corresponding database
+      model in the Torque runtime.
+      (Usually, a peer class is loaded if one of the constants
+      for a column name is accessed, or a method is called).
+      If the property <code>torque.om.generateMapInit</code>
+      was set to true while generating the torque classes,
+      the map builder will then also load the peer classes
+      for all other tables in the same database, which will register all
+      tables in the database.
+    </p>
+    
+    <p>
+      This means that possibly you will not see a table in the database map if
+      its peer class is not loaded.  If you want to make sure that all
+      tables appear in the Database map, set the property 
+      <code>torque.om.generateMapInit</code> to true when generating
+      the torque classes, and then call the <code>initDatabaseMap()</code>
+      method of any generated peer class.
+    </p>
+
+  </section>
+
+  <section name="Configuration">
+  
+    <subsection name="Database handles">
+
+      <p>
+        A database handle is the name attribute that was used in the
+        <code>&lt;database&gt;</code> tag of the schema.xml file.  If the name
+        attribute is not used, then the handle would be 'default'.
+      </p>
+
+      <p>
+        In all examples that follow we will use the handle 'bookstore'.
+        As Torque has the ability to use multiple databases you can tell it 
+        which one to use by default thus:
+      </p>
+
+<source><![CDATA[
+torque.database.default=bookstore
+]]></source>
+
+      <p>
+        The handle name 'default' is reserved, as Torque uses it as a reference
+        to the default database.
+        So you should not define the handle 'default' yourself (but of course
+        you can use it e.g. in generated code).
+      </p>
+
+    </subsection>
+
+    <subsection name="Database Adapters">
+
+      <p>
+        For each database handle, an adapter must be configured 
+        (adapters are used to account for differences among databases).
+        The adapter property is given as:
+      </p>
+
+<source><![CDATA[
+torque.database.bookstore.adapter=mysql
+]]></source>
+
+      <p>
+        The valid values are:
+      </p>
+
+      <table align="center">
+        <tr>
+          <td>
+            <ul>
+              <li>derby</li>
+              <li>hsqldb</li>
+              <li>mssql</li>
+            </ul>
+          </td>
+          <td>
+            <ul>
+              <li>mysql</li>
+              <li>oracle</li>
+              <li>postgresql</li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+      
+      <p>
+        For application in environments that should support different databases,
+        you can use the special adapter <code>auto</code>, which tries to
+        detect the correct adapter type from JDBC metadata.
+      </p>
+
+      <p>
+        If you want to use a custom adapter that is not supplied by Torque,
+        you need to choose a custom key (not one of the above) and specify
+        the class of the adapter. For example, if the adapter class is
+        <code>com.acme.DBMyAdapter</code>, you could use the following
+        snippet in your configuration file:
+      </p>
+ 
+      <source>
+torque.database.bookstore.adapter=myadapter
+torque.database.bookstore.adapter.myadapter.className=com.acme.DBMyAdapter
+      </source>
+
+    </subsection>
+
+    <subsection name="Connection pool">
+    
+      <p>
+        Torque can use any connection pool implementing the interface
+        <code>DataSource</code>.  Torque expects a factory that can return a 
+        <code>DataSource</code> which can be configured using Torque's
+        configuration file.
+      </p>
+
+      <p>
+        Torque provides factories to use the commons-dbcp pools as well as a 
+        general factory that uses JNDI to retrieve the <code>DataSource</code>.
+        The JNDI factory looks up a <code>DataSource</code> bound to JNDI; it
+        also provides a simple property file based way
+        to configure and deploy most <code>DataSource</code>'s,
+        though in many cases a pool may already be bound to JNDI
+        and Torque only needs to use it.<br/>
+        See the sections
+        <a href="#SharedPoolDataSourceFactory">SharedPoolDataSourceFactory</a>
+        and
+        <a href="#JndiDataSourceFactory">JndiDataSourceFactory</a>
+        for the most commonly used built-in data source factories in Torque.
+      </p>
+
+    </subsection>
+
+    <subsection name="Multiple databases">
+      <p>
+        The configuration of multiple databases is very similar to the
+        configurations described in the rest of this section,
+        however you will need to define more than one database handle.
+      </p>
+    </subsection>
+  
+  </section>
+
+  <section name="SharedPoolDataSourceFactory">
+
+    <p>
+      This factory uses the SharedDataSource available in the
+      commons-dbcp package. SharedPoolDataSourceFactory provides an easy way
+      to configure this pool and it assumes you will have a JDBC Driver class
+      providing the physical database connections.  Again, you must let 
+      Torque know you are using this factory:
+    </p>
+
+<source><![CDATA[
+torque.dsfactory.bookstore.factory= \
+  org.apache.torque.dsfactory.SharedPoolDataSourceFactory
+]]></source>
+
+    <p>
+      The SharedPoolDataSourceFactory depends on commons-dbcp which is an
+      optional dependency of the Torque runtime. So don't forget to add
+      the dependency to your project if you want to use this factory:
+    </p>
+
+<source><![CDATA[
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.4</version>
+    </dependency>
+]]></source>
+
+    <p>
+      Then there are two sets of properties related to the pool 
+      configuration and settings for making the connection to the database.
+      The &quot;connection&quot; set contains all information to create a
+      physical connection to the database:
+    </p>
+
+<source><![CDATA[
+torque.dsfactory.bookstore.connection.driver = org.gjt.mm.mysql.Driver
+torque.dsfactory.bookstore.connection.url = jdbc:mysql://localhost:3306/bookstore
+torque.dsfactory.bookstore.connection.user = root
+torque.dsfactory.bookstore.connection.password = 1234
+]]></source>
+
+    <p>
+      The &quot;pool&quot; set contains information of how the pool should
+      handle the physical connections.  See
+      <a href="http://commons.apache.org/dbcp/configuration.html">the dbcp reference</a>
+      for possible properties.  For example, you could use: 
+    </p>
+
+<source><![CDATA[
+torque.dsfactory.bookstore.pool.maxActive=30
+torque.dsfactory.bookstore.pool.testOnBorrow=true
+torque.dsfactory.bookstore.pool.validationQuery=SELECT 1
+]]></source>
+
+
+    <p>
+      Torque also includes a factory for the 
+      <code>PerUserPoolDataSource</code>.
+      Please see the commons-dbcp javadoc for more info.
+    </p>
+
+  </section>
+  
+  <section name="SharedPool2DataSourceFactory">
+
+    <p>
+      This factory uses the SharedDataSource available in the
+      commons-dbcp2 package. All other properties are identical to those of the
+      SharedPoolDataSourceFactory.
+    </p>
+
+    <p>
+      The SharedPool2DataSourceFactory depends on commons-dbcp2 which is an
+      optional dependency of the Torque runtime. So don't forget to add
+      the dependency to your project if you want to use this factory:
+    </p>
+
+<source><![CDATA[
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-dbcp2</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+]]></source>
+
+    <p>
+      The &quot;pool&quot; set contains information of how the pool should
+      handle the physical connections.  See
+      <a href="https://commons.apache.org/proper/commons-dbcp/configuration.html">the dbcp reference</a>
+      for possible properties.
+    </p>
+
+    <p>
+      Torque also includes a factory for the 
+      <code>PerUserPoolDataSource</code>.
+      Please see the commons-dbcp2 javadoc for more info.
+    </p>
+
+  </section>
+
+  <section name="JndiDataSourceFactory">
+
+    <p>
+      This factory is used if the <code>DataSource</code> is to be available 
+      via JNDI.  It is possible to use this factory to deploy a
+      <code>DataSource</code> into JNDI, but in many cases for using this 
+      factory the <code>DataSource</code> is already deployed. 
+      This factory is specified with the following property:
+    </p>
+
+<source><![CDATA[
+torque.dsfactory.bookstore.factory = \
+  org.apache.torque.dsfactory.JndiDataSourceFactory
+]]></source>
+
+
+    <subsection name="Using JndiDataSourceFactory with pre-configured pool">
+    
+      <p>
+        In this section, it is assumed that a <code>DataSource</code>
+        is available via JNDI.  Usually, a J2EE environment can be configured
+        to bind a <code>DataSource</code> into JNDI for further use.
+        For example, Tomcat can bind a <code>DataSource</code> into JNDI, see
+        <a href="http://tomcat.apache.org/tomcat-5.5-doc/jndi-datasource-examples-howto.html">the Tomcat Documentation</a>
+        for details.
+      </p>
+
+      <p>
+        If a pool is known to already be available via JNDI, 
+        only one more property is required for Torque:
+      </p>
+
+<source><![CDATA[
+torque.dsfactory.bookstore.jndi.path=jdbc/bookstore
+]]></source>
+
+      <p>
+        This line defines the string that will be used to lookup the
+        <code>DataSource</code> within the default JNDI 
+        <code>InitialContext</code>.
+        If everything is configured and the default <code>InitialContext</code>
+        contains the <code>DataSource</code>, this is all that is
+        needed.  The default <code>InitialContext</code> is chosen 
+        according to the rules given in the class's javadoc.  
+        If the default has not been configured, you can specify any other 
+        environment properties that are needed to instantiate
+        the <code>InitialContext</code> as extra properties of the form,
+        torque.jndi.&lt;handle&gt;.&lt;env-var&gt;.
+        A couple of examples are shown below:
+      </p>
+
+<source><![CDATA[
+torque.dsfactory.bookstore.jndi.java.naming.factory.initial = \
+  org.apache.naming.java.javaURLContextFactory
+torque.dsfactory.bookstore.jndi.java.naming.factory.url.pkgs = \
+  org.apache.naming
+]]></source>
+
+      <p>
+        Such environment settings will most likely not be necessary when running 
+        within a J2EE container, but they are useful in other cases.
+      </p>
+
+      <p>
+        One of the advantages of JNDI is that it supports changing
+        the <code>DataSource</code> on the fly.
+        On the other hand this means that the actual <code>DataSource</code>
+        object must be looked up in the context with every database operation.
+        To avoid this, the factory provides a simple caching mechanism,
+        which stores the <code>DataSource</code> object for a configurable
+        amount of time (im ms). The <b>t</b>ime between <b>t</b>wo
+        <b>l</b>ookups is specified as follows:
+      </p>
+
+<source><![CDATA[
+torque.dsfactory.bookstore.jndi.ttl=60000
+]]></source>
+
+      <p>
+        This property is optional. If not specified, it defaults to 0 
+        (no caching).
+      </p>
+
+    </subsection>
+
+    <subsection name="Using Torque to bind a pool to JNDI">
+
+      <p>
+        Generally a J2EE environment such as a servlet engine or application
+        server is expected to provide a jdbc2 compatible connection pool.
+        If your application is not running within such an environment,
+        or even if it is and Torque is your only use of a connection pool,
+        Torque provides a simple properties file method of configuring a
+        <code>DataSource</code> and deploying it via JNDI.
+      </p>
+      
+      <p>
+        Too use this feature, you need to specify the JNDI configuration 
+        parameters as shown above, setting the factory and the JNDI path.
+        In addition to that, you need to configure
+        the <code>DataSource</code> which should be bound into JNDI.
+        The one property that is necessary for all <code>DataSource</code>'s 
+        is the classname of the <code>DataSource</code> implementation.
+        Beyond that the properties are implementation specific, depending on the
+        <code>DataSource</code>'s setters for the configuration.
+        You can specify the values for the setters as properties in the
+        configuration file.  For example, dbcp's <code>BasicDataSource</code>
+        could be configured as shown below:
+      </p>
+
+<source><![CDATA[
+torque.dsfactory.bookstore.datasource.classname= \
+  org.apache.commons.dbcp.BasicDataSource
+torque.dsfactory.bookstore.datasource.driver = org.gjt.mm.mysql.Driver
+torque.dsfactory.bookstore.datasource.url = jdbc:mysql://localhost:3306/bookstore
+torque.dsfactory.bookstore.datasource.user = root
+torque.dsfactory.bookstore.datasource.password = 1234
+]]></source>
+
+      <p>
+        plus the properties for the factory and the jndi path:
+      </p>
+      
+<source><![CDATA[
+torque.dsfactory.bookstore.factory = \
+  org.apache.torque.dsfactory.JndiDataSourceFactory
+torque.dsfactory.bookstore.jndi.path=jdbc/bookstore
+]]></source>
+
+      <p>
+        Note that in dbcp 1.2.1, the SharedPoolDataSourceFactory and 
+        PerUserPoolDataSourceFactory cannot be bound into jndi (this is a dbcp 
+        problem).  
+      </p>
+
+    </subsection>
+    
+  </section>
+
+  <section name="Using Database Schemas (Namespaces)">
+  
+    <subsection name="Configuring Schema Names at Runtime">
+      <p>
+        You can configure the default database schema (mysql-speak: "database")
+        which is prepended to table names in the runtime either per database 
+        or as a global setting.
+        (The old way of configuring a schema per-datasource was removed
+         in Torque 5.0).
+        Defining a schema allows e.g. in oracle to access another
+        database schema than the one of the user which connects to the database.
+        <br/>
+        To configure a schema, add the following statements to the 
+        <code>torque.properties</code> file:
+      </p>
+    
+      <source><![CDATA[
+      ##
+      ## Selecting a database schema for all data sources:
+      ##
+      
+      # All data sources use the public schema unless overridden
+      torque.defaults.schema = public
+      
+      ##
+      ## Selecting the schema 'foo' for the database "bar"
+      
+      # use the foo database
+      torque.database.bar.schema = foo
+      ]]>
+      </source>
+    
+      <p>
+        If no schema is configured in the torque properties or in other places,
+        Torque will not qualify its table names.
+      </p>
+    
+    </subsection>
+
+    <subsection name="Other Means to Control schemas">
+      <p>
+        You can change the schema which is used for unqualified table names 
+        per-Database in the Torque Runtime. The schema name is
+        queried dynamically whenever a Torque command accesses the database
+        and can be changed (if you have the same table layout on multiple
+        schemas, you can reuse your Peer classes thus reducing the number of
+        classes used).
+      </p>
+    
+      <source><![CDATA[
+      /* Set the schema name for database "bar" to "foo" */
+      
+      Torque.setSchema("bar", "foo");
+      
+      /* Reset the schema names (no longer qualify
+       * accesses to the tables of the "bar" database
+       */
+      Torque.setSchema("bar", null);
+      
+      /* Get the current schema for the "bar" database */
+      String barSchema = Torque.getSchema("bar");
+      ]]>
+      </source>
+    
+    </subsection>
+  </section>
+
+  <section name="Examples">
+
+    <p>
+      In this section, the bits explained above are assembled to full
+      examples of configuration files for the Torque runtime.  Do not forget
+      to change the values to match your database environment.
+    </p>
+      
+    <p>
+      Using SharedPoolDataSourceFactory (this example is also used in the 
+      Tutorial):
+    </p>
+      
+<source><![CDATA[
+torque.database.default = bookstore
+torque.database.bookstore.adapter = mysql
+
+#Using commons-dbcp
+torque.dsfactory.bookstore.factory =\
+  org.apache.torque.dsfactory.SharedPoolDataSourceFactory
+torque.dsfactory.bookstore.connection.driver = org.gjt.mm.mysql.Driver
+torque.dsfactory.bookstore.connection.url =\
+  jdbc:mysql://localhost:3306/bookstore
+torque.dsfactory.bookstore.connection.user = user
+torque.dsfactory.bookstore.connection.password = password
+]]></source>
+
+    <p>
+      Using JndiDataSourceFactory with externally bound 
+      <code>DataSource</code>:
+    </p>
+      
+<source><![CDATA[
+torque.database.default = bookstore
+torque.database.bookstore.adapter = mysql
+torque.dsfactory.bookstore.factory =\
+  org.apache.torque.dsfactory.JndiDataSourceFactory
+torque.dsfactory.bookstore.jndi.path = jdbc/jndiTestDataSource
+]]></source>
+
+    <p>
+      Using JndiDataSourceFactory to bind a <code>DataSource</code> to jndi:
+    </p>
+      
+<source><![CDATA[
+torque.database.default = bookstore
+torque.database.bookstore.adapter = mysql
+torque.dsfactory.bookstore.factory =\
+  org.apache.torque.dsfactory.JndiDataSourceFactory
+torque.dsfactory.bookstore.jndi.path = jdbc/jndiTestDataSource
+torque.dsfactory.bookstore.jndi.java.naming.factory.initial =\
+  org.apache.naming.java.javaURLContextFactory
+torque.dsfactory.bookstore.datasource.classname =\
+  org.apache.commons.dbcp.BasicDataSource
+torque.dsfactory.bookstore.datasource.password = mysql
+torque.dsfactory.bookstore.datasource.username = root
+torque.dsfactory.bookstore.datasource.driverClassName =\
+  org.gjt.mm.mysql.Driver
+torque.dsfactory.bookstore.datasource.url =\
+  jdbc:mysql://localhost:3306/bookstore
+]]></source>
+
+  </section>
+
+ </body>
+</document>

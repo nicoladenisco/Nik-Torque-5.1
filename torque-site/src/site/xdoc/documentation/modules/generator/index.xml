@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+
+ <properties>
+  <title>Torque Generator</title>
+ </properties>
+
+ <body>
+  <section name="Introduction">
+    <p>
+      The Torque generator is a general-purpose code generator.
+      It is intended to make code generation easy and provides all necessary 
+      ingredients like reading in the sources, possibly transforming the
+      sources before generation, applying templates, writing the output files,
+      and plugging code generation into your build process. Of course, you still
+      need to write the generation templates and possibly transformators, 
+      link them together and define which templates are used for which output
+      file.
+    </p>
+    <p>
+      The Torque generator is also used to generate the OM Classes and SQL
+      for the Torque persistence framework. This part, however, is not covered
+      in the documentation of the generator, but in the documentation of
+      the <a href="../templates/index.html">templates</a>.
+    </p>
+  </section>
+
+  <section name ="Features">
+    <ul>
+      <li>
+        Different input formats can be used, currently XML 
+        and property files
+      </li>
+      <li>
+        Different template languages can be used, even inside the same project
+        and for the same output file (currently velocity and java are
+        implemented)
+      </li>
+      <li>
+        The input can be transformed before applying the generation templates.        
+      </li>
+      <li>
+        Output from different templates can be inserted in pre-defined
+        mergepoints. 
+      </li>
+      <li>
+        Linkage of the template output is defined outside the templates, making
+        the templates more reusable.
+      </li>
+      <li>
+        Options can be used to fine-tune the outcome of the generation process.
+      </li>
+      <li>
+        Variables can be defined with different scopes
+        (template, template and children, output file, generation process)
+      </li>
+    </ul>
+  </section>      
+      
+ </body>
+</document>

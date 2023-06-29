@@ -1,0 +1,299 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+  <properties>
+    <title>Torque ORM Tutorial - Step 2: Defining the database schema</title>
+    <author email="pete-apache-dev@kazmier.com">Pete Kazmier</author>
+    <author email="seade@backstagetech.com.au">Scott Eade</author>
+    <author email="fischer@seitenbau.de">Thomas Fischer</author>
+  </properties>
+  <body>
+
+<section name="Step 2: Defining the Torque Database Schema">
+
+<p>
+  The second file that you must edit to configure
+  Torque is the database schema.  The database schema
+  is an XML file that represents the structure of your
+  SQL database in Torque.
+  This is where you define all of your
+  tables, column names and types, as well as the keys
+  used to index these tables.
+</p>
+
+<p>If you already hava a database set up, you can generate a base schema with the
+  following command in your top-level project directory:
+</p>
+
+<source><![CDATA[
+ant jdbc
+]]></source>
+
+<p>
+ This will by default generate a <i>schema.xml</i> file. 
+ By default or if you do not define <i>defaultOutputDir</i> it will be located in <em>target/generated-schema</em>.
+ 
+ <i>Hint</i>: Copy the generated schema to <em>src/main/schema</em> directory and rename it to bookstore-schema.xml, 
+ then add appropriate attributes e.g. 
+ <li>defaultIdMethod to database element</li>
+ <li>autoIncrement attribute to columns</li>
+ 
+ <source><![CDATA[
+ <database xmlns="http://db.apache.org/torque/5.0/templates/database"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://db.apache.org/torque/5.0/templates/database
+        http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0.xsd"
+  name="default"
+  defaultIdMethod="none" defaultJavaType="object">
+ ]]></source>
+ 
+</p>
+
+<p>
+  Your database schema file is typically located in the
+  <em>src/main/schema</em> directory under the base of your project.
+  In this directory, you will create the file <em>bookstore-schema.xml</em>
+  which defines your database schema. The name of
+  your database schema file must end with
+  <em>schema.xml</em> because Torque will only
+  generate object models for files ending with that
+  pattern.
+</p>
+
+<p>
+  In this tutorial, we will use a simple
+  database that might be used to support a bookstore
+  application.  The database will contain three
+  tables: author, publisher, and book.  The first
+  table will contain publisher information (name).
+  The second table will contain author information (first
+  and last name).  And the third
+  table will contain book information (title, and
+  ISBN).  The author id and publisher id will be
+  foreign keys in the book table.  The schema
+  representation for this database is stored
+  in the file <em>bookstore-schema.xml</em>, which should
+  be created in the <em>src/main/schema</em> directory
+  and contain the following:
+</p>
+
+<source><![CDATA[
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<database xmlns="http://db.apache.org/torque/5.0/templates/database"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://db.apache.org/torque/5.0/templates/database
+        http://db.apache.org/torque/torque-5.0/documentation/orm-reference/database-5-0-strict.xsd"
+  name="bookstore"
+  defaultIdMethod="native">
+
+  <table name="publisher" description="Publisher Table">
+    <column
+      name="publisher_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="Publisher Id"/>
+    <column
+      name="name"
+      required="true"
+      type="VARCHAR"
+      size="128"
+      description="Publisher Name"/>
+  </table>
+  <table name="author" description="Author Table">
+    <column
+      name="author_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="Author Id"/>
+    <column
+      name="first_name"
+      required="true"
+      type="VARCHAR"
+      size="128"
+      description="First Name"/>
+    <column
+      name="last_name"
+      required="true"
+      type="VARCHAR"
+      size="128"
+      description="Last Name"/>
+  </table>
+  <table name="book" description="Book Table">
+    <column
+      name="book_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="Book Id"/>
+    <column
+      name="title"
+      required="true"
+      type="VARCHAR"
+      size="255"
+      description="Book Title"/>
+    <column
+      name="isbn"
+      required="true"
+      type="VARCHAR"
+      size="24"
+      javaName="ISBN"
+      description="ISBN Number"/>
+    <column
+      name="publisher_id"
+      required="true"
+      type="INTEGER"
+      description="Foreign Key Publisher"/>
+    <column
+      name="author_id"
+      required="true"
+      type="INTEGER"
+      description="Foreign Key Author"/>
+    <foreign-key foreignTable="publisher">
+      <reference
+        local="publisher_id"
+        foreign="publisher_id"/>
+    </foreign-key>
+    <foreign-key foreignTable="author">
+      <reference
+        local="author_id"
+        foreign="author_id"/>
+    </foreign-key>
+  </table>
+</database>
+]]></source>
+
+<p>
+  There are several items of importance to note.  The
+  <em>database</em> element's <em>name</em> attribute
+  must be the same as the database's' name in the runtime property file
+  <em>torque.properties</em> described later in this tutorial.
+  Failure to do so will prevent your object
+  model from working properly.
+</p>
+
+<p>
+  Another item of importance is the <em>database</em>
+  element's <em>defaultIdMethod</em> attribute.  This
+  attribute specifies the default method that Torque
+  will use to generate IDs for primary keys (columns
+  with the <em>primaryKey</em> attribute set to
+  <em>true</em>: <em>book_id</em>,
+  <em>publisher_id</em>, and <em>author_id</em>) in
+  your database tables.  There are several possible
+  values:
+</p>
+
+<table>
+  <tr>
+    <th>Property</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>native</td>
+    <td>
+      Instructs Torque to use the underlying
+      database's mechanism to generate IDs (varies
+      per database e.g. autoincrement for mysql and schemata for postgresql).
+    </td>
+  </tr>
+  <tr>
+    <td>idbroker</td>
+    <td>
+      Instructs Torque to use its
+      <a href="../../orm-reference/relevant-classes.html#ID_Broker">IDBroker</a>
+      service to generate IDs in a database agnostic manner.
+      An extra table is used for this, which needs to be created separately.
+    </td>
+  </tr>
+  <tr>
+    <td>none</td>
+    <td>
+      Instructs Torque to not generate IDs.
+      Use this setting if you want to define the primary key yourself.
+    </td>
+  </tr>
+</table>
+
+<p>
+  The <em>defaultIdMethod</em> selected will be used
+  for all tables in your schema unless an individual
+  <em>table</em> element contains the
+  <em>idMethod</em> attribute, in which case, its
+  value will override the <em>defaultIdMethod</em>.
+  <em>idMethod</em> takes the same values as
+  <em>defaultIdMethod</em>.
+</p>
+
+<p>
+  Another common mistake is to forget that XML is
+  <b>case-sensitive</b>.  All of the elements and
+  attributes must be specified according to either the 
+  <li>4.0 strict schema or default
+  <a href="../../orm-reference/database-4-0-strict.xsd">strict Schema XSD</a>
+  or the
+  <a href="../../orm-reference/database-4-0.xsd">Schema XSD</a>
+  </li>
+  <li>5.0 strict schema or default
+  <a href="../../orm-reference/database-5-0-strict.xsd">strict Schema XSD</a>
+  or the
+  <a href="../../orm-reference/database-5-0.xsd">Schema XSD</a>
+  </li>
+  for the database schema.  In addition, you should
+  include the XML declaration and XML schema specification
+  in your database schema file.
+  This helps to detect errors in the schema file easily.
+</p>
+
+<p>
+  For additional information on
+  the XML elements and attributes, please refer to the
+  <a href="../../orm-reference/database-4-0.xsd">Schema XSD</a> 
+  or <a href="../../orm-reference/database-5-0.xsd">5.0 Schema XSD</a>.
+</p>
+
+</section>
+
+
+<section name="Where to next">
+
+  <p>
+    That completes the configuration of the Torque generator.
+    You are now ready to start building your object model
+    and creating your database.
+  </p>
+  <p>
+    Maven users should look at
+    <a href="step3-maven.html">Invoking the Torque Maven plugin</a>,
+    wheras ant users should go to
+    <a href="step3-ant.html">Invoking the ant build containing Torque</a>.
+  </p>
+
+</section>
+
+<section name="User Comments">
+  <a href="https://cwiki.apache.org/DBTORQUE/TutorialUserCommentsStep2">User comments</a>
+  for this step
+</section>
+
+  </body>
+</document>

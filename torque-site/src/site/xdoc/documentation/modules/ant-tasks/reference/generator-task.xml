@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+ <properties>
+  <title>Torque Ant Tasks - Generator Task</title>
+ </properties>
+
+ <body>
+  <section name="Generator Task">
+    <p>
+      The generator task is defined as follows in the build file:
+    </p>
+    <source><![CDATA[
+  <taskdef
+    name="torque-generator"
+    classpathref="ant-classpath"
+    classname="org.apache.torque.ant.task.TorqueGeneratorTask"/>
+    ]]></source>
+    <p>
+      The generator task has the following configuration parameters:
+    </p>
+    <subsection name="Attributes">
+      <p>
+        Packaging attributes: They define where the generation unit
+        (also known as "templates") is located.
+      </p>
+      <ul>
+        <li>
+          packaging: The packaging type of the generation unit,
+          either "directory" , "jar" or "classpath". Default is "directory".
+        </li>
+        <li>
+          configDir: The configuration directory of the torque generator.
+          Has no effect if packaging is "classpath".
+        </li>
+        <li>
+          configPackage: The configuration package of the generation unit.
+          Has only effect if packaging is "classpath".
+          
+         <i>Hint</i>: If you use the prefined Torque Templates the package is
+          <code>org.apache.torque.templates.om</code>.
+          
+        </li>
+        <li>
+          jarFile: The filename of the jar file of the generation unit.
+          Has only effect if packaging is "jar".
+        </li>
+        <li>
+          overrideConfigDir: The config directory of the project
+          overriding the defined generation unit.
+          If set, the settings of this directory are used as child
+          and the "normal" settings are used as parent.
+          See the
+          <a href="../../../codegen-reference/concepts.html#Overriding">generator reference</a>
+          for details.
+        </li>
+        <li>
+          projectRootDir: The root directory of the project.
+          Has no effect if packaging is "classpath".
+          Default is ".".
+        </li>
+      </ul>
+      <p>
+        Source attributes: They define which sources are read.
+      </p>
+      <ul>
+        <li>
+          sourceDir: The directory where the source files reside.
+        </li>
+        <li>
+          sourceIncludes: Include patterns for the source files.
+          If set, the include and exclude patterns from the templates
+          are overridden.
+          If not set, then the include patterns from the templates are used.
+          The patterns are case sensitive, wildcards are * and ?.
+        </li>
+        <li>
+          sourceExcludes: Exclude patterns for the source files.
+          If set, the include and exclude patterns from the templates
+          are overridden.
+          If not set, then the include patterns from the templates are used.
+          The patterns are case sensitive, wildcards are * and ?.
+        </li>
+      </ul>
+      <p>
+        Target attributes: They define where the target files are created.
+      </p>
+      <ul>
+        <li>
+          defaultOutputDir: The target directory for files
+          which are generated each time anew.
+          Default is "./generated-sources".
+        </li>
+        <li>
+          outputDirMap: 
+          The mapping from outputDirKey to output directories.
+          The outputDirKeys are defined in the templates you use.
+          Default is modifiable -> "./src/main/generated-java"
+        </li>
+      </ul>
+      <p>
+        Other attributes:
+      </p>
+      <ul>
+        <li>
+          loglevel: The Loglevel to use in the generation process.
+          Must be one of trace, debug, info, warn or error.
+          If not set, the log level defined in the generation unit is used.
+        </li>
+      </ul>
+    </subsection>
+   </section>
+ </body>
+</document>

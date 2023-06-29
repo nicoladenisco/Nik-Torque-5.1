@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+ <properties>
+  	<title>Using Torque as an Avalon Component</title>
+    <author email="tv@apache.org">Thomas Vandahl</author>
+ </properties>
+
+ <body>
+
+  <section name="General">
+    <p>
+     Torque has provided Avalon Component support for some time now. This little
+     HowTo should provide the necessary information to use Torque with some Avalon 
+     containers, namely ECM, Merlin and Fulcrum-YAAFI.
+    </p>
+  </section>
+
+  <section name="Configuration">
+    <p>
+     The configuration is straightforward. Use the following snippet to make
+     the Torque component available in your container:
+    </p>
+    <source><![CDATA[
+<role-list>
+    <role
+        name="org.apache.torque.avalon.Torque"
+        shorthand="Torque"
+        default-class="org.apache.torque.avalon.TorqueComponent"/>
+</role-list>
+]]></source>
+    <p>
+     Torque will need access to its configuration file, so the component 
+     configuration looks like this:
+    </p>
+    <source><![CDATA[
+<componentConfig>
+    <Torque>
+      <configFile>/WEB-INF/conf/Torque.properties</configFile>
+    </Torque>
+</componentConfig>
+]]></source>
+    <p>
+     The path of the configuration file is relative to the application root
+     of the container.
+    </p>
+  </section>
+
+  <section name="Use">
+
+    <p>
+     All access to the Torque component should go through the 
+     <code>org.apache.torque.avalon.Torque</code> interface. It provides all methods
+     available in <code>TorqueInstance</code>.
+     The role name to lookup the component in your container is also
+     <code>org.apache.torque.avalon.Torque</code>.
+    </p>
+
+  </section>
+
+ </body>
+</document>

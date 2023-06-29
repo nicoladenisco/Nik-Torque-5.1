@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+  <properties>
+    <title>Torque ORM Tutorial - Step 1: Configuring the Torque generation process using maven 2</title>
+    <author email="pete-apache-dev@kazmier.com">Pete Kazmier</author>
+    <author email="seade@backstagetech.com.au">Scott Eade</author>
+    <author email="fischer@seitenbau.de">Thomas Fischer</author>
+  </properties>
+  <body>
+
+<section name="Step 1: Configuring the Torque generation process">
+
+<p>
+  The following section outlines the necessary steps to
+  configure a Torque-based ORM project using Maven.
+  For this, you need to create maven's pom file
+  (the maven project descriptor file) which describes your project.
+  It is recommended to run the tutorial against a Mysql database, as
+  all of the explanation in this tutorial assumes that you use Mysql.
+</p>
+
+<p>
+  As a starting point, create a directory as a
+  base directory for your project (also called
+  the project's top level directory).
+  All the paths in the following steps will be
+  relative to this base directory.
+</p>
+
+</section>
+
+<section name="Maven Project descriptor">
+
+<p>
+  As a starting point for the pom file in your project,
+  use the following template and save it as pom.xml
+  in the project's base directory.
+  Then edit it to reflect your specific needs (
+  typically you need to change the database URLs, 
+  the database host, the database user and password):
+</p>
+
+<source><![CDATA[
+<?xml version="1.0"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.apache.torque.tutorial</groupId>
+  <artifactId>torque-test</artifactId>
+  <packaging>jar</packaging>
+  <name>Torque Tutorial Test Project</name>
+  <version>1.0-SNAPSHOT</version>
+
+  <dependencies>
+    <!-- Torque runtime -->
+    <dependency>
+      <artifactId>torque-runtime</artifactId>
+      <groupId>org.apache.torque</groupId>
+      <version>5.0</version>
+    </dependency>
+
+    <!-- db driver -->
+    <dependency>
+      <artifactId>mysql-connector-java</artifactId>
+      <groupId>mysql</groupId>
+      <version>8.0.21</version>
+    </dependency>
+
+    <!-- Logging via log4j2 -->
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>2.13.3</version>
+        <scope>runtime</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.torque</groupId>
+        <artifactId>torque-maven-plugin</artifactId>
+        <version>5.0</version>
+        <executions>
+          <execution>
+            <id>generate-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <packaging>classpath</packaging>
+              <configPackage>org.apache.torque.templates.om</configPackage>
+              <sourceDir>src/main/schema</sourceDir>
+              <options>
+                <torque.om.package>org.apache.torque.tutorial.om</torque.om.package>
+                <torque.database>mysql</torque.database>
+              </options>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-sql</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <packaging>classpath</packaging>
+              <configPackage>org.apache.torque.templates.sql</configPackage>
+              <sourceDir>src/main/schema</sourceDir>
+              <defaultOutputDir>target/generated-sql</defaultOutputDir>
+              <defaultOutputDirUsage>none</defaultOutputDirUsage>
+              <options>
+                <torque.database>mysql</torque.database>
+              </options>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.torque</groupId>
+            <artifactId>torque-templates</artifactId>
+            <version>5.0</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>sql-maven-plugin</artifactId>
+        <version>1.4</version>
+        <configuration>
+          <driver>com.mysql.cj.jdbc.Driver</driver>
+          <url>jdbc:mysql://localhost:3306/bookstore</url>
+          <username>root</username>
+          <password>password</password>
+          <onError>continue</onError>
+          <autocommit>true</autocommit>
+          <fileset>
+            <basedir>${basedir}/target/generated-sql</basedir>
+            <includes>
+              <include>*.sql</include>
+            </includes>
+          </fileset>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <artifactId>mysql-connector-java</artifactId>
+            <groupId>mysql</groupId>
+            <version>8.0.21</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <!-- setting java version to 1.8 --> 
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+               <outputDirectory>libs</outputDirectory>
+               <includeScope>runtime</includeScope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+]]></source>
+
+<p>
+  This template contains the following definitions: 
+</p>
+<ul>
+  <li>
+    The runtime dependencies of your project to Torque
+    in the main dependencies section of the pom
+    (needed when you compile and use the generated java sources)
+  </li>
+  <li>
+    The configuration of the Torque maven 2 plugin in the plugins section
+  </li>
+  <li>
+    The configuration of the maven SQL plugin in the plugins section
+    (needed if you want to execute the generated SQL using maven)
+  </li>
+  <li>
+    The configuration of the java compiler in the plugins section
+    to allow java 1.8 code
+    (needed when you compile the generated java sources)
+  </li>
+  <li>
+    The configuration of the maven dependency plugin in the plugins section
+    (gathers all dependency libraries of the project).
+  </li>
+</ul>
+<p>
+  Configuring Maven 2 correctly is very important.
+  This enables the Torque generator to generate all of
+  the required sources and SQL for your specific
+  database.  If you experience problems later in this
+  tutorial, it would be wise to double-check this file.
+</p>
+
+</section>
+
+<section name="Where to next">
+
+  <p>
+    This completes the configuration of the Torque Maven 2 plugin
+    (and other settings to be made in the pom.xml).
+  </p>
+  <p>
+    Next we will look at
+    <a href="step2.html">Defining the database schema</a>.
+  </p>
+
+</section>
+
+<section name="User Comments">
+  <a href="https://cwiki.apache.org/DBTORQUE/TutorialUserCommentsStep2">User comments</a>
+  for this step
+</section>
+
+  </body>
+</document>

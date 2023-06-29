@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>Torque Runtime - Documentation</title>
+    <author email="jvanzyl@apache.com">Jason van Zyl</author>
+    <author email="mpoeschl@marmot.at">Martin Poeschl</author>
+    <author email="seade@backstagetech.com.au">Scott Eade</author>
+    <author email="fischer@seitenbau.de">Thomas Fischer</author>
+  </properties>
+
+  <body>
+
+    <section name="Torque Runtime">
+      <p>
+        The Torque runtime is the only part of Torque you need after you
+        have generated the persistence classes using the Torque Maven plugin
+        resp. the Torque generator.  It contains the classes the generated
+        classes depend on.
+      </p>
+      
+      <p>
+        This section contains information about how to work with the generated
+        classes.  For information of how to generate these classes, see the
+        <a href="../maven-plugin/index.html">Maven plugin reference</a>
+        or the
+        <a href="../generator/index.html">generator reference</a>.
+      </p>
+
+    </section>
+
+  </body>
+</document>

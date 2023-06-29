@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+  <properties>
+    <title>Torque Tutorial - Step 6 - Compiling and Running the Sample Application using Maven</title>
+    <author email="pete-apache-dev@kazmier.com">Pete Kazmier</author>
+    <author email="seade@backstagetech.com.au">Scott Eade</author>
+    <author email="fischer@seitenbau.de">Thomas Fischer</author>
+  </properties>
+  <body>
+
+
+<section name="Step 6: Compiling and Running the sample application">
+
+<subsection name="Setting up the classpath">
+
+<p>
+  The libraries which the generated classes depend on
+  are specified in the file <em>pom.xml</em>
+  in the top level directory of the project.
+  You already created this file in step 1 of the
+  tutorial; and it already contains the dependencies
+  to the Torque runtime, the mysql driver, and log4j,
+  so nothing needs to be changed there.
+</p>
+
+<p>
+  <b>
+    Note: There is no need to include the torque-generator
+    or torque-templates dependencies in your project.
+  </b>
+</p>
+
+</subsection>
+
+
+<subsection name="Building the sample application">
+
+<p>
+  Now that you've generated your object model with
+  Torque, and created a sample application, you are
+  now ready to compile and build everything.  Again, Maven is used
+  to control the build process.
+  You can build your application
+  by typing the following in the top-level directory
+  of your project:
+</p>
+
+<source><![CDATA[
+mvn package
+]]></source>
+
+<p>
+  If you've done everything correctly, this should
+  build without any errors.  This means all of the source files
+  will have been compiled to the target/classes folder 
+  and all libraries on which your application depends on
+  will have been copied to the target/dependency folder.
+  If the compiler misses any external libraries, review the
+  &lt;dependencies&gt; section in your
+  <em>project.xml</em>.  Should you
+  encounter other errors, go back and review your
+  application code.
+</p>
+
+</subsection>
+
+<subsection name="Running the sample application">
+
+<p>
+  Before you run the sample application, you must
+  first set your classpath (this was done
+  automatically for you by Maven when you
+  compiled).  The classpath must include most
+  of the jars in the target/dependency folder
+  (There are some jars which are transitive dependencies to other jars
+  which are not used, but there is no harm in including these).
+  The classpath alsmo must include all of your application
+  and object model classes located in <em>target/classes</em>.
+  To run the application, change into the target directory
+  of the application and type
+</p>
+
+<source><![CDATA[
+linux:
+java -cp target/classes:lib/runtime/commons-beanutils-core-1.9.4.jar:lib/runtime/commons-dbcp2-2.7.jar:lib/runtime/commons-collections-3.2.2.jar:lib/runtime/commons-configuration2-2.7.jar:lib/runtime/commons-lang3-3.10.jar:lib/runtime/commons-logging-1.2.jar:lib/runtime/commons-pool2-2.7.0.jar:lib/runtime/log4j-1.2-api-2.13.3.jar:lib/runtime/mysql-connector-java-8.0.21.jar:lib/runtime/torque-runtime-5.0.jar org.apache.torque.tutorial.om.Bookstore
+
+windows:
+java -cp target/classes;lib/runtime/commons-beanutils-core-1.9.4.jar;lib/runtime/commons-dbcp2-2.7.jar;lib/runtime/commons-collections-3.2.2.jar;lib/runtime/commons-configuration2-2.7.jar;lib/runtime/commons-lang3-3.10.jar;lib/runtime/commons-logging-1.2.jar;lib/runtime/commons-pool2-2.7.0.jar;lib/runtime/log4j-1.2-api-2.13.3.jar;lib/runtime/mysql-connector-java-8.0.21.jar;lib/runtime/torque-runtime-5.0.jar org.apache.torque.tutorial.om.Bookstore
+
+]]></source>
+
+<p>
+  If all goes well, you should see the following
+  output:
+</p>
+
+<source><![CDATA[
+  Full booklist:
+
+  Title:     TCP/IP Illustrated, Volume 1
+  ISBN:      0-201-63346-9
+  Publisher: Addison Wesley Professional
+  Author:    Stevens, W.
+
+  Title:     Effective Java
+  ISBN:      0-618-12902-2
+  Publisher: Addison Wesley Professional
+  Author:    Bloch, Joshua
+
+  Booklist (specific ISBN):
+
+  Title:     TCP/IP Illustrated, Volume 1
+  ISBN:      0-201-63346-9
+  Publisher: Addison Wesley Professional
+  Author:    Stevens, W.
+
+  Booklist (authors swapped):
+
+  Title:     TCP/IP Illustrated, Volume 1
+  ISBN:      0-201-63346-9
+  Publisher: Addison Wesley Professional
+  Author:    Bloch, Joshua
+
+  Title:     Effective Java
+  ISBN:      0-618-12902-2
+  Publisher: Addison Wesley Professional
+  Author:    Stevens, W.
+
+  Booklist (should be empty):
+]]></source>
+
+<p>
+  If your application throws an exception, it could be
+  for one of many reasons, most of which are not very
+  descriptive unfortunately.  Do not be discouraged if your
+  application does not run the first time.  Carefully
+  retrace all of the steps outlined in this tutorial.
+  If you are still not able to get your application to
+  run, use the Torque user
+  <a href="../../../mail-lists.html">mailing list</a> to your
+  advantage.
+</p>
+
+</subsection>
+
+</section>
+
+<section name="Where to Go From Here">
+
+<p>
+  Congratulations!  You have completed the Torque ORM
+  tutorial.  Although this has only been an introduction
+  to Torque, it should be sufficient to get you started
+  with Torque in your applications.  For those of you
+  seeking additional information, there are several other
+  documents on this site that can provide details on
+  various subjects.  Lastly, the source code is an
+  invaluable resource when all else fails to provide
+  answers!
+</p>
+
+</section>
+
+<section name="User Comments">
+  <a href="https://cwiki.apache.org/DBTORQUE/TutorialUserCommentsStep6">User comments</a>
+  for this step
+</section>
+
+  </body>
+</document>

@@ -1,0 +1,255 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<document>
+
+  <properties>
+    <title>Downloading DB Torque</title>
+  </properties>
+
+<body>
+
+<section name="Download released versions">
+<p>
+The currently released versions of Torque are listed below.
+</p>
+
+<subsection name="Binary versions">
+<p>
+  <table>
+    <tr>
+      <th>Version</th>
+      <th>Runtime</th>
+      <th>Generator</th>
+      <th>Templates</th>
+      <th>Ant tasks</th>
+      <th>Maven Plugin</th>
+      <th>Documentation</th>
+    </tr>
+    
+      <tr>
+      <td rowspan="2"><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/">Torque 5.0</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-runtime-5.0-bin.tar.gz">TAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-runtime-5.0-bin.tar.gz.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-runtime-5.0-bin.tar.gz.sha512">SHA512</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-generator-5.0-bin.tar.gz">TAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-generator-5.0-bin.tar.gz.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-generator-5.0-bin.tar.gz.sha5121">SHA512</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-templates-5.0.tar.gz">TAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-templates-5.0.tar.gz.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-templates-5.0.tar.gz.sha512">SHA512</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-ant-tasks-5.0-bin.tar.gz">TAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-ant-tasks-5.0-bin.tar.gz.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-ant-tasks-5.0-bin.tar.gz.sha512">SHA512</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-maven-plugin-5.0.jar">JAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-maven-plugin-5.0.jar.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-maven-plugin-5.0.jar.sha512">SHA512</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-site-5.0-site.tar.gz">TAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-site-5.0-site.tar.gz.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-site-5.0-site.tar.gz.sha512">SHA512</a></td>
+    </tr>
+    
+     <tr>
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-runtime-5.0-bin.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-runtime-5.0-bin.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-runtime-5.0-bin.zip.sha512">SHA512</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-generator-5.0-bin.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-generator-5.0-bin.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-generator-5.0-bin.zip.sha512">SHA512</a></td>
+          
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-templates-5.0.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-templates-5.0.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-templates-5.0.zip.sha512">SHA512</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-ant-tasks-5.0-bin.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-ant-tasks-5.0-bin.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-ant-tasks-5.0-bin.zip.sha512">SHA512</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-maven-plugin-5.0.pom">POM</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-maven-plugin-5.0.pom.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-maven-plugin-5.0.pom.sha512">SHA512</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/binaries/torque-site-5.0-site.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-site-5.0-site.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/binaries/torque-site-5.0-site.zip.sha512">SHA512</a></td>
+    </tr>
+
+    <tr>
+      <td rowspan="2"><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/">Torque 4.0</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-runtime-4.0-bin.tar.gz">TAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-runtime-4.0-bin.tar.gz.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-runtime-4.0-bin.tar.gz.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-runtime-4.0-bin.tar.gz.sha1">SHA1</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-generator-4.0-bin.tar.gz">TAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-generator-4.0-bin.tar.gz.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-generator-4.0-bin.tar.gz.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-generator-4.0-bin.tar.gz.sha1">SHA1</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-templates-4.0.tar.gz">TAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-templates-4.0.tar.gz.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-templates-4.0.tar.gz.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-templates-4.0.tar.gz.sha1">SHA1</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-ant-tasks-4.0-bin.tar.gz">TAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-ant-tasks-4.0-bin.tar.gz.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-ant-tasks-4.0-bin.tar.gz.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-ant-tasks-4.0-bin.tar.gz.sha1">SHA1</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-maven-plugin-4.0.jar">JAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-maven-plugin-4.0.jar.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-maven-plugin-4.0.jar.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-maven-plugin-4.0.jar.sha1">SHA1</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-site-4.0-site.tar.gz">TAR</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-site-4.0-site.tar.gz.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-site-4.0-site.tar.gz.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-site-4.0-site.tar.gz.sha1">SHA1</a></td>
+    </tr>
+
+    <tr>
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-runtime-4.0-bin.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-runtime-4.0-bin.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-runtime-4.0-bin.zip.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-runtime-4.0-bin.zip.sha1">SHA1</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-generator-4.0-bin.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-generator-4.0-bin.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-generator-4.0-bin.zip.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-generator-4.0-bin.zip.sha1">SHA1</a></td>
+          
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-templates-4.0.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-templates-4.0.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-templates-4.0.zip.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-templates-4.0.zip.sha1">SHA1</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-ant-tasks-4.0-bin.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-ant-tasks-4.0-bin.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-ant-tasks-4.0-bin.zip.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-ant-tasks-4.0-bin.zip.sha1">SHA1</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-maven-plugin-4.0.pom">POM</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-maven-plugin-4.0.pom.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-maven-plugin-4.0.pom.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-maven-plugin-4.0.pom.sha1">SHA1</a></td>
+
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/binaries/torque-site-4.0-site.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-site-4.0-site.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-site-4.0-site.zip.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/binaries/torque-site-4.0-site.zip.sha1">SHA1</a></td>
+    </tr>
+  </table>
+</p>
+</subsection>
+
+<subsection name="Source version">
+<p>
+  <table>
+    <tr>
+      <th>Version</th>
+      <th>Download</th>
+    </tr>
+
+    <tr>
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.1/">Torque 5.1</a></td>
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/source/torque-5.1-source-release.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.1/source/torque-5.1-source-release.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.1/source/torque-5.1-source-release.zip.sha512">SHA512</a></td>
+      </tr>
+    
+     <tr>
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/">Torque 5.0</a></td>
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-5.0/source/torque-5.0-source-release.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/source/torque-5.0-source-release.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-5.0/source/torque-5.0-source-release.zip.sha512">SHA512</a></td>
+    </tr>
+
+    <tr>
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/">Torque 4.0</a></td>
+      <td><a href="http://www.apache.org/dyn/closer.cgi/db/torque/torque-4.0/source/torque-4.0-source-release.zip">ZIP</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/source/torque-4.0-source-release.zip.asc">Sig.</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/source/torque-4.0-source-release.zip.md5">MD5</a>&nbsp;
+          <a href="https://downloads.apache.org/db/torque/torque-4.0/source/torque-4.0-source-release.zip.sha1">SHA1</a></td>
+    </tr>
+
+  </table>
+</p>
+<p>
+  Please check the integrity of the download using the 
+  <a href="https://downloads.apache.org/db/torque/KEYS">KEYS</a> file
+  and the signature files.
+</p>
+<p> 
+  The PGP signatures can be verified using PGP or GPG. 
+  First download the 
+  <a href="https://downloads.apache.org/db/torque/KEYS">KEYS</a> 
+  as well as the asc signature file for the relevant distribution. 
+  Make sure you get these files from the main distribution directory,
+  rather than from a mirror. Then verify the signatures using e.g.
+</p>
+<source>
+% pgpk -a KEYS
+% pgpv torque-5.0.tar.gz.asc
+or
+% pgp -ka KEYS
+% pgp torque-5.0.tar.gz.asc
+or
+% gpg --import KEYS
+% gpg --verify torque-5.0.tar.gz.asc <br/>
+</source>
+
+</subsection>
+<subsection name="Older versions">
+<p>
+  Older versions of Torque can be found at the
+  <a href="http://db.apache.org/torque/download.html">Torque 3.3 download page</a>.
+</p>
+<p>
+  Still older versions of Torque can be found in the 
+  <a href="http://archive.apache.org/dist/db/torque/">archive</a>.
+</p>
+</subsection>
+</section>
+
+<section name="Getting The Development Source From SVN">
+  <p>
+    You can check out the latest source from the DB SVN module.<br/>
+     Current developer trunk version is 5.1-SNAPSHOT.
+     <source><![CDATA[svn checkout http://svn.apache.org/repos/asf/db/torque/trunk]]></source>.
+     
+    Torque 4 and 5.0 versions reside in the db/torque/torque4 tree.
+    
+    <source><![CDATA[svn checkout http://svn.apache.org/repos/asf/db/torque/torque4/trunk]]></source>
+
+    or browse the source code through <a href="http://svn.apache.org/viewvc/db/torque/trunk">ViewVC</a>.
+   </p>
+</section>
+
+</body>
+</document>
