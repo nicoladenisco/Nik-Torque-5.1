@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.apache.torque</groupId>
+    <artifactId>torque</artifactId>
+    <version>5.1</version>
+    <relativePath>..</relativePath>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>torque-maven-plugin</artifactId>
+  <packaging>maven-plugin</packaging>
+  <name>Torque Generator Maven 2 Plugin</name>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/db/torque/tags/torque-5-1/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/db/torque/tags/torque-5-1/trunk</developerConnection>
+    <url>http://svn.apache.org/viewvc/db/torque/tags/torque-5-1/trunk</url>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.torque</groupId>
+      <artifactId>torque-generator</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-core</artifactId>
+      <version>${maven.api.version}</version>
+      <!-- guava throws an owasp warning and is used in indexer-core to run maven, but not to build this plugin -->
+      <exclusions>
+           <exclusion>
+              <groupId>com.google.guava</groupId>
+              <artifactId>guava</artifactId>
+           </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <version>3.6.2</version>
+      <!-- annotations are not used at runtime because @Retention(value=CLASS), they are needed only to build the plugin -->
+      <optional>true</optional> 
+       <exclusions>
+            <exclusion> 
+               <groupId>*</groupId>
+               <artifactId>*</artifactId>
+            </exclusion>
+        </exclusions> 
+    </dependency>
+    <dependency>
+      <!-- 
+        We do not depend on any xerces features. However, the standard 
+        xml parser packaged in java is sometimes buggy (e.g.1.6.0_20 on windows)
+        so better explicitly use a working parser
+      -->
+      <!-- upgrading to 2.12. due to https://nvd.nist.gov/vuln/detail/CVE-2012-0881 -->
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.12.1</version>
+    </dependency>
+
+    <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+    
+    <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-slf4j-impl</artifactId>
+        <version>${log4j2.version}</version>
+    </dependency>
+    
+     <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>${log4j2.version}</version>
+     </dependency>
+
+    
+     <dependency>
+         <groupId>org.junit.jupiter</groupId>
+         <artifactId>junit-jupiter</artifactId>
+         <scope>test</scope>
+     </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>${basedir}/../src/main/checkstyle/checkstyle.xml</configLocation>
+          <headerLocation>${basedir}/../src/main/checkstyle/license-header.txt</headerLocation>
+          <suppressionsLocation>${basedir}/../src/main/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+          <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <configuration>
+           <suppressionFiles>
+            <suppressionFile>${project.parent.basedir}/suppression-owasp-fp.xml</suppressionFile>
+            </suppressionFiles>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-plugin-plugin</artifactId>
+         <version>3.6.2</version>
+      </plugin>
+    </plugins>
+  </reporting>
+  
+  <properties>
+    <maven.api.version>3.8.4</maven.api.version>
+  </properties>
+
+</project>
