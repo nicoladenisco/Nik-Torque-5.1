@@ -706,6 +706,7 @@ public class SourceElement implements Serializable
         result.append(",");
       }
     }
+
     result.append("),children=(");
     Iterator<SourceElement> childIt = children.iterator();
     while(childIt.hasNext())
@@ -722,6 +723,60 @@ public class SourceElement implements Serializable
       if(childIt.hasNext())
       {
         result.append(",");
+      }
+    }
+    result.append("))");
+  }
+
+  public String prettyDump()
+  {
+    Set<SourceElement> alreadyProcessed = new HashSet<>();
+    StringBuilder result = new StringBuilder();
+    prettyDump("", alreadyProcessed, result);
+    return result.toString();
+  }
+
+  /**
+   * Creates a String representation of the element for debugging purposes.
+   * @param alreadyProcessed the elements which are already processed
+   * (for avoiding loops). The current element is added to this set.
+   * @param result the String builder to which the string representation
+   * should be appended.
+   */
+  private void prettyDump(
+     final String rientro,
+     final Set<SourceElement> alreadyProcessed,
+     final StringBuilder result)
+  {
+    alreadyProcessed.add(this);
+    result.append("(name=").append(name).append(",\n").append(rientro).append("  attributes=(");
+    Iterator<Map.Entry<String, Object>> entryIt = attributes.entrySet().iterator();
+    while(entryIt.hasNext())
+    {
+      Map.Entry<String, Object> entry = entryIt.next();
+      result.append(entry.getKey()).append("=").append(entry.getValue());
+      if(entryIt.hasNext())
+      {
+        result.append(",");
+      }
+    }
+
+    result.append("),\n").append(rientro).append("  children=(");
+    Iterator<SourceElement> childIt = children.iterator();
+    while(childIt.hasNext())
+    {
+      SourceElement child = childIt.next();
+      if(alreadyProcessed.contains(child))
+      {
+        result.append("<<loop detected (").append(child.name).append(")>>");
+      }
+      else
+      {
+        child.prettyDump(rientro + "    ", alreadyProcessed, result);
+      }
+      if(childIt.hasNext())
+      {
+        result.append(",\n").append(rientro);
       }
     }
     result.append("))");

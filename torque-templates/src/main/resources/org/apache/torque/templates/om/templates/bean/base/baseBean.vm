@@ -142,11 +142,12 @@ $torqueGen.mergepoint("fieldDefinitionsReferencingObjects")
     }
 
 $torqueGen.mergepoint("gettersSetters")
-##
+
 #if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
 $torqueGen.mergepoint("gettersSettersReferencedObjects")
 $torqueGen.mergepoint("gettersSettersReferencingObjects")
 #end
+
 $torqueGen.mergepoint("getCurrentDate")##
 $torqueGen.mergepoint("getCurrentTime")##
 $torqueGen.mergepoint("getCurrentTimestamp")##

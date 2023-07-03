@@ -19,7 +19,7 @@ package org.apache.torque.templates.transformer.om;
  * under the License.
  */
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.torque.generator.control.ControllerState;
@@ -212,7 +212,7 @@ public class OMTransformer implements SourceTransformer
          controllerState);
     }
 
-    // dumpDebug(root);
+    //dumpDebug(root);
     return root;
   }
 
@@ -250,13 +250,11 @@ public class OMTransformer implements SourceTransformer
   public static void dumpDebug(SourceElement root)
   {
     File out = new File(System.getProperty("java.io.tmpdir"), "source-root.txt");
-    System.out.println("Dump in " + out.getAbsolutePath());
+    System.out.println("Dump SourceElement root in " + out.getAbsolutePath());
 
-    try(FileOutputStream os = new FileOutputStream(out))
+    try(FileWriter os = new FileWriter(out))
     {
-      String dump = root.toString();
-      byte[] bytes = dump.replace("=(", "=\n(").getBytes("UTF-8");
-      os.write(bytes);
+      os.write(root.prettyDump());
     }
     catch(Exception ex)
     {

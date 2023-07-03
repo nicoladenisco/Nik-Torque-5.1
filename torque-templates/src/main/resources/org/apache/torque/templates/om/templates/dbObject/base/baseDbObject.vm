@@ -109,10 +109,17 @@ $torqueGen.mergepoint("tableMapGetter")
 
 #if ($torqueGen.booleanOption("torque.om.generateBeans"))
 $torqueGen.mergepoint("objectBeanMethods")
+
+## #if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+## $torqueGen.mergepoint("getBeanDeep")
+## #end
+
 #end
+
 #if (${useManagers} == "true")
 $torqueGen.mergepoint("isCacheOnSave")
 #end
+
 $torqueGen.mergepoint("getCurrentDate")##
 $torqueGen.mergepoint("getCurrentTime")##
 $torqueGen.mergepoint("getCurrentTimestamp")##
