@@ -34,6 +34,13 @@ It's a generale improvment e bug correction for Torque 5.1.
     - torque-test (internal only)
 
 
+### Changes in torque-maven-plugin
+
+The flag *runOnlyOnSourceChange* has a incorrect behavory when generate SQL script.
+Now it is ingored until *defaultOutputDirUsage* is equal to compile or test-compile
+(otherways it is used only for java om generation).
+
+
 ### Changes in torque-templates
 
 Re activated by default *retrieveByPKs* for compatibiliti with previous code.
