@@ -36,6 +36,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
     public static List<${dbObjectClassName}> doSelect(Criteria criteria)
             throws TorqueException
@@ -97,6 +98,7 @@
      * @return The results of the query, not null.
      *
      * @throws TorqueException if querying the database fails.
+     * @deprecated use version with explicit connection
      */
     public static <T> List<T> doSelect(
                 Criteria criteria,
@@ -172,6 +174,7 @@
      * @return The results of the query, not null.
      *
      * @throws TorqueException if querying the database fails.
+     * @deprecated use version with explicit connection
      */
     public static <T> List<T> doSelect(
                 String query,
@@ -245,6 +248,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
     public static List<${dbObjectClassName}> doSelect($dbObjectClassName obj)
             throws TorqueException
@@ -262,6 +266,7 @@
      *
      * @throws TorqueException If more than one record is selected or if
      *         an error occurs when processing the query.
+     * @deprecated use version with explicit connection
      */
     public static ${dbObjectClassName} doSelectSingleRecord(
                 Criteria criteria)
@@ -300,6 +305,7 @@
      * @return The selected row, or null if no records was selected.
      *
      * @throws TorqueException if querying the database fails.
+     * @deprecated use version with explicit connection
      */
     public static <T> T doSelectSingleRecord(
                 org.apache.torque.criteria.Criteria criteria,
@@ -343,6 +349,7 @@
      *
      * @throws TorqueException If more than one record is selected or if
      *         an error occurs when processing the query.
+     * @deprecated use version with explicit connection
      */
     public static ${dbObjectClassName} doSelectSingleRecord(
                 $dbObjectClassName obj)

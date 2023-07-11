@@ -46,6 +46,7 @@
      *
 #end
      * @throws $saveException if an error occurs during saving.
+     * @deprecated use version with explicit connection
      */
     public void save(${methodInputParam}) throws $saveException
     {
@@ -90,6 +91,7 @@
      *        should be saved.
      *
      * @throws $saveException if an error occurs during saving.
+     * @deprecated use version with explicit connection
      */
     public void save(${methodInputParamWithComma}String dbName) 
             throws $saveException

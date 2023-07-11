@@ -39,6 +39,7 @@
      *
      * @throws TorqueException if executing the statement fails
      *         or no database connection can be established.
+     * @deprecated use version with explicit connection
      */
     public static int executeStatement(String statementString) 
             throws TorqueException
@@ -60,6 +61,7 @@
      *
      * @throws TorqueException if executing the statement fails
      *         or no database connection can be established.
+     * @deprecated use version with explicit connection
      */
     public static int executeStatement(
                 String statementString,
@@ -87,6 +89,7 @@
      *
      * @throws TorqueException if executing the statement fails
      *         or no database connection can be established.
+     * @deprecated use version with explicit connection
      */
     public static int executeStatement(
             String statementString,
@@ -144,6 +147,7 @@
      * @return The number of rows affected.
      *
      * @throws TorqueException if executing the statement fails.
+     * @deprecated use version with explicit connection
      */
     public static int executeStatement(
             final String statementString,
@@ -174,6 +178,7 @@
      * @return The number of rows affected.
      *
      * @throws TorqueException if executing the statement fails.
+     * @deprecated use version with explicit connection
      */
     public static int executeStatement(
                 final String statementString,

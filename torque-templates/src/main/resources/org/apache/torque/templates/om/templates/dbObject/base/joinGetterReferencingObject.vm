@@ -57,6 +57,7 @@
      * @return $fieldType the collection
      * @param criteria the criteria to use when filling the collection.
      * @throws TorqueException if associated objects are not found
+     * @deprecated use version with explicit connection
      */
     ${getterAccessModifier} $fieldType ${getter}(Criteria criteria) throws TorqueException
     {

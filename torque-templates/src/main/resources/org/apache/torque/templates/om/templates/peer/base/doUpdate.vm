@@ -35,6 +35,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
     public static int doUpdate(ColumnValues columnValues) throws TorqueException
     {
@@ -72,6 +73,7 @@
      * @return the number of affected rows.
      *
      * @throws TorqueException if updating fails.
+     * @deprecated use version with explicit connection
      */
     public static int doUpdate(
                 Criteria selectCriteria,
@@ -118,6 +120,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
     public static int doUpdate($dbObjectClassName obj) throws TorqueException
     {

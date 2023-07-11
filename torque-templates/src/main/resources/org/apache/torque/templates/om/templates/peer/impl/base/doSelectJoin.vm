@@ -51,6 +51,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
     public List<${dbObjectClassName}> ${peerJoinSelectMethod}(Criteria criteria)
         throws TorqueException

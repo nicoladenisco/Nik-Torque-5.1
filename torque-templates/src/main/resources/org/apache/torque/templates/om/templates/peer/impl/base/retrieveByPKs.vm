@@ -42,6 +42,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
     public List<${dbObjectClassName}> retrieveByTypedPKs(Collection<${columnFieldType}> pks)
         throws TorqueException
@@ -96,6 +97,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
     public List<${dbObjectClassName}> retrieveByObjectKeys(Collection<ObjectKey<?>> pks)
         throws TorqueException
@@ -134,7 +136,6 @@
         return result;
     }
 
-  #if ($torqueGen.booleanOption("torque.om.retrieve.bypk.deprecated"))
     /**
      * Retrieve a multiple objects by pk.
      *
@@ -146,8 +147,7 @@
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
      *
-     * @deprecated This method has been renamed to retrieveByObjectKeys.
-     *             This method will not be generated any more in future versions of Torque.
+     * @deprecated use version with explicit connection
      */
     public List<${dbObjectClassName}> retrieveByPKs(Collection<ObjectKey<?>> pks)
         throws TorqueException
@@ -166,9 +166,6 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
-     *
-     * @deprecated This method has been renamed to retrieveByObjectKeys.
-     *             This method will not be generated any more in future versions of Torque.
      */
     public List<${dbObjectClassName}> retrieveByPKs(Collection<ObjectKey<?>> pks, Connection con)
         throws TorqueException
@@ -176,7 +173,6 @@
         return retrieveByObjectKeys(pks, con);
     }
 
-  #end
 #end
 
     /** Query db and return only the first record if have, otherwise null. Connection my be null. */

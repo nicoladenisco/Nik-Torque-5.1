@@ -31,6 +31,7 @@
      * @param toSave the object to be saved, not null.
      *
      * @throws $saveException if an error occurs during saving.
+     * @deprecated use version with explicit connection
      */
     public static void save(${dbObjectClassName} toSave) throws $saveException
     {
@@ -46,6 +47,7 @@
      *        should be saved.
      *
      * @throws $saveException if an error occurs during saving.
+     * @deprecated use version with explicit connection
      */
     public static void save(${dbObjectClassName} toSave, String dbName) 
             throws $saveException

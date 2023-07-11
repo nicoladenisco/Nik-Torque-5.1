@@ -60,6 +60,7 @@
      *
      * @throws TorqueException if an error accessing the database occurs.
      * @throws NullPointerException if toSave is null or contains null elements.
+     * @deprecated use version with explicit connection
      */
     public static void ${setAndSaveMethodName}(
             ${localDbObjectClassName} toLinkTo,

@@ -48,3 +48,22 @@ allows the recovery of the record through the values of the alternating key.
 New method *getFirst*.
 Useful to select the first record of a Criteria.
 
+Mark as *deprecated* every function access db without an explicit connection.
+When complex data saving operations under transaction are implemented,
+it is necessary to use a single connection to the db to avoid the dreaded dead-lock.
+The nature of peers tends to hide access to the db easily causing the problem.
+By marking methods that don't use an explicit connection with deprecated it becomes
+easy to identify these situations by getting direct help from the java compiler.
+Thus the methods remain usable but it becomes easy to write safe code that does not cause dead-locks.
+
+Change default option *retainSchemaNamesInJavaName* to true.
+*torque.om.retainSchemaNamesInJavaName = true*
+It's necessary to avoid name conflict when same tablename is multiple schemas.
+
+Change default option *generateFillers* to true.
+*torque.om.complexObjectModel.generateFillers = true*
+It's very useful when use complex object model.
+
+Change default option *bypk.deprecated* to true.
+torque.om.retrieve.bypk.deprecated = true
+Since there is no name conflict or anything else, it is not clear why not to keep the old name too to simplify compatibility.

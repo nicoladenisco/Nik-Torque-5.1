@@ -40,6 +40,7 @@
      *         rethrown wrapped into a TorqueException.
      * @throws NoRowsException Primary key was not found in database.
      * @throws TooManyRowsException Primary key was not found in database.
+     * @deprecated use version with explicit connection
      */
     public $dbObjectClassName retrieveByPK($columnFieldType pk)
         throws TorqueException, NoRowsException, TooManyRowsException
@@ -74,6 +75,7 @@
     #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
      * @param $columnField $columnFieldType
     #end
+     * @deprecated use version with explicit connection
      */
     public $dbObjectClassName retrieveByPK(
     #set ( $elementCount = 1 )
@@ -142,6 +144,7 @@
      *         rethrown wrapped into a TorqueException.
      * @throws NoRowsException Primary key was not found in database.
      * @throws TooManyRowsException Primary key was not found in database.
+     * @deprecated use version with explicit connection
      */
     public $dbObjectClassName retrieveByPK(ObjectKey<?> pk)
         throws TorqueException, NoRowsException, TooManyRowsException

@@ -36,6 +36,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
      public static int doDelete(Criteria criteria) throws TorqueException
      {
@@ -71,6 +72,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
     public static int doDelete(${dbObjectClassName} obj) throws TorqueException
     {
@@ -109,6 +111,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
     public static int doDelete(Collection<${dbObjectClassName}> objects)
             throws TorqueException
@@ -148,6 +151,7 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
+     * @deprecated use version with explicit connection
      */
     public static int doDelete(ObjectKey<?> pk) throws TorqueException
     {

@@ -44,6 +44,7 @@
      *
      * @throws TorqueException if an error querying the database occurs.
      * @throws NullPointerException if toFill is null or contains null elements.
+     * @deprecated use version with explicit connection
      */
     public static List<${fieldContainedType}> ${filler}(
             Collection<${localDbObjectClassName}> toFill) 
@@ -65,6 +66,7 @@
      *
      * @throws TorqueException if an error querying the database occurs.
      * @throws NullPointerException if toFill is null or contains null elements.
+     * @deprecated use version with explicit connection
      */
     public static List<${fieldContainedType}> ${filler}(
             Collection<${localDbObjectClassName}> toFill,
