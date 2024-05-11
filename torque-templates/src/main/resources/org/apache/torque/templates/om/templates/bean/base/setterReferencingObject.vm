@@ -54,6 +54,13 @@
 #set ( $localbeanClassName   = $tableLocal.getAttribute("beanClassName") )
 #set ( $foreignbeanClassName = $tableForeign.getAttribute("beanClassName") )
 
+#set ($index = $field.indexOf('RelatedBy'))
+#if  ($index == -1)
+#set ($val1 = "")
+#else
+#set ($val1 = $field.substring($index))
+#end
+
     /**
      * Add at the collection of ${foreignbeanClassName} the specified value
      */
@@ -66,7 +73,7 @@
     
         if (list != null && !list.isEmpty())
         {
-            list.forEach((obj) -> obj.set${localbeanClassName}((${localbeanClassName})this));
+            list.forEach((obj) -> obj.set${localbeanClassName}${val1}((${localbeanClassName})this));
             ${field}.addAll(list);
         }
     }
@@ -82,7 +89,7 @@
             this.$field = new ${initializerType}();
         }
     
-        obj.set${localbeanClassName}((${localbeanClassName})this);
+        obj.set${localbeanClassName}${val1}((${localbeanClassName})this);
         ${field}.add(obj);
     }
 
