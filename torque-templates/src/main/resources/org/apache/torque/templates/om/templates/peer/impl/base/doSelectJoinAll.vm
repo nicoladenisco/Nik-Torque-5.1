@@ -26,12 +26,14 @@
 ## The options and the attributes of the current source element must be set
 ## as velocity variables.  
 ##
-#set ( $foreignKeyElement = $torqueGen.getParent() )
-#set ( $tableElement = $foreignKeyElement.getParent() )
-#set ( $foreignKeyElements = $tableElement.getChildren("foreign-key"))
-#if ($foreignKeyElements.size() > 2)
+
+#set ( $foreignKeyElements = $torqueGen.getChildren("foreign-key"))
+#set ( $peerJoinAllSelectMethod = "doSelectJoinAll" )
+
+#if ($foreignKeyElements.size() > 0)
+  #set ( $tableElement = $foreignKeyElements.get(0).getParent() )
+  
   #set ( $tableName = $tableElement.getAttribute("name") )
-  #set ( $excludeTableElement = $foreignKeyElement.getChild("table") )
   #set ( $peerClassName = $tableElement.getAttribute("peerClassName") )
   #set ( $peerImplClassName = $tableElement.getAttribute("peerImplClassName") )
   #set ( $tableField = $tableElement.getAttribute("field") )
@@ -54,13 +56,13 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
-    public List<${dbObjectClassName}> ${peerJoinAllExceptSelectMethod}(Criteria criteria)
+    public List<${dbObjectClassName}> ${peerJoinAllSelectMethod}(Criteria criteria)
         throws TorqueException
     {
         try (TorqueConnection connection = Transaction.begin(getDatabaseName()))
         {
             List<${dbObjectClassName}> result
-                    = $peerClassName.${peerJoinAllExceptSelectMethod}(criteria, connection);
+                    = ${peerJoinAllSelectMethod}(criteria, connection);
             Transaction.commit(connection);
             return result;
         }
@@ -79,7 +81,7 @@
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
      */
-    public List<${dbObjectClassName}> ${peerJoinAllExceptSelectMethod}(Criteria criteria, Connection conn)
+    public List<${dbObjectClassName}> ${peerJoinAllSelectMethod}(Criteria criteria, Connection conn)
         throws TorqueException
     {
         setDbName(criteria);
@@ -89,7 +91,6 @@
         ${peerClassName}.addSelectColumns(criteria);
         int offset = ${peerClassName}.numColumns;
   #foreach ($joinedForeignKeyElement in $foreignKeyElements)
-    #if ($joinedForeignKeyElement != $foreignKeyElement)
       #set ( $joinedTableElement = $joinedForeignKeyElement.getChild("table"))
       #set ( $joinedTableName = $joinedTableElement.getAttribute("name"))
       ## want to cover this case, but the code is not there yet.
@@ -113,7 +114,6 @@
         compositeMapper.addMapper(new ${joinedRecordMapperClassName}(), offset);
         offset = offset + ${joinedPeer}.numColumns;
       #end
-    #end
   #end
 
         correctBooleans(criteria);
@@ -126,7 +126,6 @@
             $dbObjectClassName $tableField = ($dbObjectClassName) rawResultRow.get(0);
   #set ( $index = 0 )
   #foreach ($joinedForeignKeyElement in $foreignKeyElements)
-    #if ($joinedForeignKeyElement != $foreignKeyElement)
       #set ( $joinedTableElement = $joinedForeignKeyElement.getChild("table"))
       #set ( $joinedTableName = $joinedTableElement.getAttribute("name"))
       ## want to cover this case, but the code is not there yet.
@@ -172,10 +171,24 @@
             }
         #end
       #end
-    #end
   #end
             result.add($tableField);
         }
         return result;
     }
+
+#else    
+
+    public List<${dbObjectClassName}> ${peerJoinAllSelectMethod}(Criteria criteria, Connection conn)
+        throws TorqueException
+    {
+      return doSelect(criteria, conn);
+    }
+
 #end
+
+    public List<${dbObjectClassName}> ${peerJoinAllSelectMethod}ForBeans(Criteria criteria, Collection<String> ignoreTable, Connection conn)
+        throws TorqueException
+    {
+      return ${peerJoinAllSelectMethod}(criteria, conn);
+    }    

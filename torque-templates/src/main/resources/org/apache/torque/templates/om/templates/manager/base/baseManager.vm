@@ -37,6 +37,7 @@ import org.apache.torque.manager.CacheListener;
 import org.apache.torque.manager.MethodResultCache;
 import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.SimpleKey;
+import org.apache.torque.om.ComboKey;
 import org.apache.torque.om.Persistent;
 
 #if ($baseManagerPackage != $managerPackage)

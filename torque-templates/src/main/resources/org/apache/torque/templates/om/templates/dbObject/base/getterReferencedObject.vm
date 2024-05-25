@@ -38,8 +38,12 @@
 #set ( $conditional = "" )
 #set ( $arglist = "" )
 #set ( $argsize = 0 )
+#set ( $critlist = "" )
+
 #set ( $referenceElements = $foreignKeyElement.getChildren("reference") )
 #foreach ($referenceElement in $referenceElements)
+  #set ( $foreignColumnElement = $referenceElement.getChild("foreign-column").getChild("column"))
+  #set ( $foreignTablePeerColumnName = $foreignColumnElement.getAttribute("peerColumnName") )
   #set ( $localColumnElement = $referenceElement.getChild("local-column").getChild("column"))
   #set ( $localColumnField = ($localColumnElement.getAttribute("field")) )
   #set ( $localColumnFieldType = ($localColumnElement.getAttribute("fieldType")) )
@@ -63,6 +67,7 @@
       #set ( $arglist = "this.$localColumnField" )
     #end
   #end
+  #set ($critlist = "$critlist criteria.and(${foreignTablePeerClass}.${foreignTablePeerColumnName}, this.$localColumnField);")
   #set ( $argsize = $argsize + 1 )
 #end
     /**
@@ -165,6 +170,31 @@
 ##  #set ( $foreignFieldAdder = $foreignFieldElement.getAttribute("adder") )
 ##               $field.$foreignFieldAdder(this);
 ##            */
+        }
+        return $field;
+    }
+
+    /**
+     * Return the associated $fieldType object
+     * If it was not retrieved before, the object is retrieved from
+     * the database using the passed connection
+     *
+     * @param connection the connection used to retrieve the associated object
+     *        from the database, if it was not retrieved before
+     * @return the associated $fieldType object
+     * @throws TorqueException If a problem occurs with the get[$fieldType] method.
+     */
+    public $fieldType ${getter}JoinAll(Connection connection)
+        throws TorqueException
+    {
+        if ($field == null$conditional)
+        {
+            Criteria criteria = new Criteria();
+            $critlist
+            List l = ${foreignTablePeerClass}.doSelectJoinAllForBeans(criteria, null, connection);
+            
+            if(!l.isEmpty())
+              $field = ($fieldType)l.get(0);            
         }
         return $field;
     }

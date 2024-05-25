@@ -15,13 +15,5 @@
 ## specific language governing permissions and limitations
 ## under the License.
 ##
-######
-##
-## version $Id: getBeanDeep.vm 1331196 2012-04-27 02:56:12Z tfischer $
-##
-## This template creates source code for a base bean. 
-## The template expects as input a "table" element from the torque schema
-## which was processed by the OMTransformer.  
-##
 
-
+// prova referenced $field

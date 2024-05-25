@@ -18,7 +18,9 @@ package org.apache.torque.generator.source;
  * specific language governing permissions and limitations
  * under the License.
  */
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.Writer;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -203,6 +205,31 @@ public class SourceElement implements Serializable
       if(name.equals(sourceElement.getName()))
       {
         return sourceElement;
+      }
+    }
+    return null;
+  }
+
+  public SourceElement getChildByAttribute(final String nameAttr, final String valAttr)
+  {
+    for(SourceElement sourceElement : children)
+    {
+      Object attribute = sourceElement.getAttribute(nameAttr);
+      if(attribute != null && attribute.equals(valAttr))
+        return sourceElement;
+    }
+    return null;
+  }
+
+  public SourceElement getChildByAttributeAndName(final String name, final String nameAttr, final String valAttr)
+  {
+    for(SourceElement sourceElement : children)
+    {
+      if(name.equals(sourceElement.getName()))
+      {
+        Object attribute = sourceElement.getAttribute(nameAttr);
+        if(attribute != null && attribute.equals(valAttr))
+          return sourceElement;
       }
     }
     return null;
@@ -714,7 +741,7 @@ public class SourceElement implements Serializable
       SourceElement child = childIt.next();
       if(alreadyProcessed.contains(child))
       {
-        result.append("<<loop detected>>");
+        result.append("<<loop detected (").append(child.name).append(")>>");
       }
       else
       {
@@ -780,6 +807,65 @@ public class SourceElement implements Serializable
       }
     }
     result.append("))");
+  }
+
+  public void xmlDump(Writer wr)
+     throws IOException
+  {
+    Set<SourceElement> alreadyProcessed = new HashSet<>();
+    xmlDump("", alreadyProcessed, wr);
+  }
+
+  /**
+   * Creates a String representation of the element for debugging purposes.
+   * @param alreadyProcessed the elements which are already processed
+   * (for avoiding loops). The current element is added to this set.
+   * @param result the String builder to which the string representation
+   * should be appended.
+   */
+  private void xmlDump(
+     final String rientro,
+     final Set<SourceElement> alreadyProcessed,
+     final Writer result)
+     throws IOException
+  {
+    alreadyProcessed.add(this);
+    result.append("<").append(name).append(">\n");
+
+    if(!attributes.isEmpty())
+    {
+      result.append("  <attributes>\n");
+      for(Map.Entry<String, Object> entry : attributes.entrySet())
+      {
+        String key = entry.getKey();
+        Object val = entry.getValue();
+
+        result.append("    <").append(key).append(">")
+           .append(val.toString()).append("</").append(key).append(">\n");
+      }
+      result.append("  </attributes>\n");
+    }
+
+    result.append("  <children>\n");
+    Iterator<SourceElement> childIt = children.iterator();
+    while(childIt.hasNext())
+    {
+      SourceElement child = childIt.next();
+      if(alreadyProcessed.contains(child))
+      {
+        result.append(rientro).append("  <loop-detected name=\"").append(child.name).append("\"/>\n");
+      }
+      else
+      {
+        child.xmlDump(rientro + "  ", alreadyProcessed, result);
+      }
+      if(childIt.hasNext())
+      {
+        result.append("\n").append(rientro);
+      }
+    }
+    result.append("  </children>\n");
+    result.append("</").append(name).append(">\n");
   }
 
   /**
@@ -960,5 +1046,39 @@ public class SourceElement implements Serializable
       }
       return previousParent;
     }
+  }
+
+  /**
+   * Gets the elements which can be reached from this element by a given path.
+   *
+   * @param path the path to use, not null.
+   * @return the list of matching source elements, not null, may be empty.
+   * @see <a href="http://www.w3.org/TR/xpath#axes">xpath axes</a>
+   */
+  public List<SourceElement> getElements(final String path)
+  {
+    return SourcePath.getElements(this, path);
+  }
+
+  /**
+   * Gets a single source element which can be reached from this element by a given path.
+   *
+   * @param path the path to use, not null.
+   * @return the single matching source elements, may be null
+   * @see <a href="http://www.w3.org/TR/xpath#axes">xpath axes</a>
+   */
+  public SourceElement getElement(final String path)
+  {
+    List<SourceElement> ls = getElements(path);
+    return ls.isEmpty() ? null : ls.get(0);
+  }
+
+  /**
+   * Crea accumulatore per semplificare fusione di stringhe in velocity.
+   * @return
+   */
+  public Accumulator createAccumulator()
+  {
+    return new Accumulator();
   }
 }

@@ -118,6 +118,17 @@
         return result;
     }
 
+    public $beanClassName updateBean($beanClassName result)
+    {
+#set ( $columnElements = $torqueGen.getChildren("column") )
+#foreach ($columnElement in $columnElements)
+  #set ( $setter = $columnElement.getAttribute("setter") )
+  #set ( $getter = $columnElement.getAttribute("getter") )
+        result.${setter}(${getter}());
+#end
+        return result;
+    }    
+    
     /**
      * Creates an instance of $javaName with the contents
      * of a $beanClassName.
@@ -249,6 +260,7 @@
      * Method called to associate a $foreignClassName object to this object.
      * In contrast to ${adder}($foreignClassName), this method does not change 
      * <code>toAdd</code>. 
+     * This method dont perform query on db.
      *
      * @param toAdd $className
      */

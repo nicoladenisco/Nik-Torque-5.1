@@ -83,6 +83,9 @@
     <mergepoint name="peerUnices">
       <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.peerUnices"/>
     </mergepoint>
+    <mergepoint name="doSelectJoinAll">
+      <action xsi:type="applyAction" outlet="torque.om.peer.impl.base.doSelectJoinAll"/>
+    </mergepoint>
     <mergepoint name="doSelectJoin">
       <action xsi:type="traverseAllAction" element="foreign-key/foreign-field"
               outlet="torque.om.peer.impl.base.doSelectJoin"/>
@@ -208,6 +211,11 @@
   <outlet name="torque.om.peer.impl.base.doSelectJoin"
           xsi:type="velocityOutlet"
           path="peer/impl/base/doSelectJoin.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.impl.base.doSelectJoinAll"
+          xsi:type="velocityOutlet"
+          path="peer/impl/base/doSelectJoinAll.vm">
   </outlet>
 
   <outlet name="torque.om.peer.impl.base.doSelectJoinAllExcept"

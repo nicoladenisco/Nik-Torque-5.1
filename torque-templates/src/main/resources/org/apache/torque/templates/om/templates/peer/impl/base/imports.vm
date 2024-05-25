@@ -54,6 +54,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import org.apache.torque.NoRowsException;
 import org.apache.torque.OptimisticLockingFailedException;
 import org.apache.torque.TooManyRowsException;
@@ -75,6 +77,8 @@ import org.apache.torque.util.TorqueConnection;
 import org.apache.torque.util.Transaction;
 import org.apache.torque.util.ColumnValues;
 import org.apache.torque.util.JdbcTypedValue;
+import org.apache.torque.util.TorqueTableFetcher;
+import org.apache.torque.util.ModifyMonitorListener;
 
 #if ($basePeerPackage != $dbObjectPackage)
 import ${dbObjectPackage}.*;

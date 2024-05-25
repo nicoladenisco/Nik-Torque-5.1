@@ -114,6 +114,9 @@
       <action xsi:type="traverseAllAction" element="foreign-key/foreign-field"
               outlet="torque.om.peer.base.doSelectJoin"/>
     </mergepoint>
+    <mergepoint name="doSelectJoinAll">
+      <action xsi:type="applyAction" outlet="torque.om.peer.base.doSelectJoinAll"/>
+    </mergepoint>
     <mergepoint name="doSelectJoinAllExcept">
       <action xsi:type="traverseAllAction" element="foreign-key/foreign-field"
               outlet="torque.om.peer.base.doSelectJoinAllExcept"/>
@@ -398,6 +401,11 @@
   <outlet name="torque.om.peer.base.doSelectJoin"
           xsi:type="velocityOutlet"
           path="peer/base/doSelectJoin.vm">
+  </outlet>
+
+  <outlet name="torque.om.peer.base.doSelectJoinAll"
+          xsi:type="velocityOutlet"
+          path="peer/base/doSelectJoinAll.vm">
   </outlet>
 
   <outlet name="torque.om.peer.base.doSelectJoinAllExcept"

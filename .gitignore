@@ -25,3 +25,4 @@ replay_pid*
 derby.log
 target
 scratch.txt
+/copy-libs-to.sh

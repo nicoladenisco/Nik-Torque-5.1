@@ -96,6 +96,7 @@ public class TestProcessing
 
     overrideOptions.put(TemplateOptionName.OM_GENERATE_BEANS.getName(), "true");
     //overrideOptions.put(TemplateOptionName.OM_USE_MANAGERS.getName(), "true");
+    //overrideOptions.put("dumpxml", "true");
 
     CustomProjectPaths projectPaths = new CustomProjectPaths(
        new Maven2DirectoryProjectPaths(new File(".")));

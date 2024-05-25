@@ -50,6 +50,7 @@ import org.apache.torque.om.ObjectKey;
 import org.apache.torque.om.SimpleKey;
 import org.apache.torque.om.StringKey;
 import org.apache.torque.om.BooleanKey;
+import org.apache.torque.om.ComboKey;
 #if ($torqueGen.booleanOption("torque.om.addSaveMethods") && $saveMethodsInDbObjects == "true")
 import org.apache.torque.om.Persistent;
 #end
@@ -60,6 +61,8 @@ import org.apache.torque.om.ColumnAccessByName;
 import $torqueGen.option("torque.om.criteriaClass");
 #if ($torqueGen.booleanOption("torque.om.addSaveMethods") && $saveMethodsInDbObjects == "true")
 import org.apache.torque.util.Transaction;
+import org.apache.torque.util.TorqueTableFetcher;
+import org.apache.torque.util.ModifyMonitorListener;
 #end
 
 #foreach ($columnElement in $torqueGen.getSourceElement().getChildren("column"))

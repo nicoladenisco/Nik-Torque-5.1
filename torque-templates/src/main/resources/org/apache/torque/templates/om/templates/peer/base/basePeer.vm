@@ -75,6 +75,7 @@ $torqueGen.mergepoint("peerUnices")
   #if ($torqueGen.booleanOption("torque.om.objectIsCaching") && $torqueGen.booleanOption("torque.om.complexObjectModel.generateDoSelectJoin"))
 $torqueGen.mergepoint("doSelectJoin")
 $torqueGen.mergepoint("doSelectJoinAllExcept")
+$torqueGen.mergepoint("doSelectJoinAll")
   #end
   #if ($torqueGen.booleanOption("torque.om.objectIsCaching") && $torqueGen.booleanOption("torque.om.complexObjectModel.generateFillers"))
 $torqueGen.mergepoint("fillReferencedObjects")
@@ -85,4 +86,14 @@ $torqueGen.mergepoint("setAndSaveReferencing")
 $torqueGen.mergepoint("getTableMap")
 $torqueGen.mergepoint("initDatabaseMap")
 $torqueGen.mergepoint("extensions")
+
+    public static void setModifyListener(ModifyMonitorListener modifyListener)
+    {
+      ${peerImplGetter}().setModifyListener(modifyListener);
+    }
+
+    public ModifyMonitorListener getModifyListener()
+    {
+      return ${peerImplGetter}().getModifyListener();
+    }  
 }

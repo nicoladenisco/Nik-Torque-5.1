@@ -177,6 +177,23 @@
       <action xsi:type="applyAction"
               outlet="torque.om.dbObject.base.toString"/>
     </mergepoint>
+
+
+    <mergepoint name="getBeanDeep">
+      <action xsi:type="applyAction"
+              outlet="torque.om.dbObject.base.getBeanDeep"/>
+    </mergepoint>
+    <mergepoint name="getBeanDeepReferencingObjects">
+      <action xsi:type="traverseAllAction"
+              element="referencing-foreign-keys/foreign-key/foreign-field"
+              outlet="torque.om.dbObject.base.getBeanDeepReferencingObjects"/>
+    </mergepoint>
+    <mergepoint name="getBeanDeepReferencedObjects">
+      <action xsi:type="traverseAllAction"
+              element="referencing-foreign-keys/foreign-key/foreign-field"
+              outlet="torque.om.dbObject.base.getBeanDeepReferencedObjects"/>
+    </mergepoint>
+
     <mergepoint name="extensions"/>
   </outlet>
 
@@ -508,4 +525,30 @@
           xsi:type="velocityOutlet"
           path="dbObject/base/enumValue.vm">
   </outlet>
+
+  <outlet name="torque.om.dbObject.base.getBeanDeep"
+          xsi:type="velocityOutlet"
+          path="dbObject/base/getBeanDeep.vm">
+
+    <mergepoint name="getBeanDeepReferencedObjects">
+      <action xsi:type="traverseAllAction"
+              element="foreign-key/local-field"
+              outlet="torque.om.dbObject.base.getBeanDeepReferencedObjects"/>
+    </mergepoint>
+    <mergepoint name="getBeanDeepReferencingObjects">
+      <action xsi:type="traverseAllAction"
+              element="referencing-foreign-keys/foreign-key/foreign-field"
+              outlet="torque.om.dbObject.base.getBeanDeepReferencingObjects"/>
+    </mergepoint>
+  </outlet>
+
+  <outlet name="torque.om.dbObject.base.getBeanDeepReferencingObjects"
+          xsi:type="velocityOutlet"
+          path="dbObject/base/getBeanDeepReferencingObjects.vm">
+  </outlet>
+  <outlet name="torque.om.dbObject.base.getBeanDeepReferencedObjects"
+          xsi:type="velocityOutlet"
+          path="dbObject/base/getBeanDeepReferencedObjects.vm">
+  </outlet>
+
 </outlets>

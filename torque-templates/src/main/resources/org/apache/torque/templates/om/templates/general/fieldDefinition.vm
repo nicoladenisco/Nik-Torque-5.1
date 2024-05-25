@@ -26,14 +26,14 @@
 ##
 #if ($useDatabaseDefaultValue != "true")
   #if ($description)
-    /** $description */
+    //  $description
   #else
-    /** Defines the $field field. */
+    //  Defines the $field field.
   #end
 #else
   #if ($description)
     /** 
-      *$description
+      * $description
   #else
     /**
      * Defines the $field field.

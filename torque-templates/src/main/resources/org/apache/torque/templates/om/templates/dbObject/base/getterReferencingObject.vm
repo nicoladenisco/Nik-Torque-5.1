@@ -265,3 +265,90 @@ $torqueGen.mergepoint("backreference")##
         return ${otherTablePeerName}.doSelect(criteria, con);
 #end
     }
+
+    public $fieldType ${getter}JoinAll(Connection con)
+            throws TorqueException
+    {
+      return ${getter}JoinAll(new Criteria(), con);
+    }
+    
+    /**
+#if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+     * If this collection has already been initialized with
+     * an identical criteria, it returns the collection.
+     * Otherwise if this $thisObjectClassName has previously
+#else
+     * If this $thisObjectClassName has previously
+#end
+     * been saved, it will retrieve the related $fieldContainedType Objects
+     * from storage.
+     * If this $thisObjectClassName is new, it will return
+     * an empty collection or the current collection, the criteria
+     * is ignored on a new object.
+     * This method takes in the Connection also as input so that
+     * referenced objects can also be obtained using a Connection
+     * that is taken as input
+     *
+     * @param con the Connection
+     * @return $fieldType results of the collection
+     * @throws TorqueException If a problem occurs with the get[connection] method.
+     */
+    public $fieldType ${getter}JoinAll(Criteria criteria, Connection con)
+            throws TorqueException
+    {
+#if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+        if ($field == null)
+        {
+            if (isNew())
+            {
+               $initializer();
+            }
+            else
+            {
+  #foreach ($referenceElement in $referenceElements)
+    #set ( $otherTableColumnElement = $referenceElement.getChild("local-column").getChild("column") )
+    #set ( $thisTableColumnElement = $referenceElement.getChild("foreign-column").getChild("column") )
+    #set ( $otherTablePeerColumnName = $otherTableColumnElement.getAttribute("peerColumnName") )
+    #set ( $thisTableColumnGetter = $thisTableColumnElement.getAttribute("getter") )
+                criteria.and(${otherTablePeerName}.${otherTablePeerColumnName}, ${thisTableColumnGetter}());
+  #end
+                $field = ${otherTablePeerName}.doSelectJoinAllForBeans(criteria, null, con);
+$torqueGen.setVariable("indent", "                ")##
+$torqueGen.mergepoint("backreference")##
+            }
+        }
+        else
+        {
+             // criteria has no effect for a new object
+            if (!isNew())
+            {
+                // the following code is to determine if a new query is
+                // called for.  If the criteria is the same as the last
+                // one, just return the collection.
+#end
+#foreach ($referenceElement in $referenceElements)
+  #set ( $otherTableColumnElement = $referenceElement.getChild("local-column").getChild("column") )
+  #set ( $thisTableColumnElement = $referenceElement.getChild("foreign-column").getChild("column") )
+  #set ( $otherTablePeerColumnName = $otherTableColumnElement.getAttribute("peerColumnName") )
+  #set ( $thisTableColumnGetter = $thisTableColumnElement.getAttribute("getter") )
+                criteria.and(${otherTablePeerName}.${otherTablePeerColumnName}, ${thisTableColumnGetter}());
+#end
+#if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+                if (${criteriaCacheField} == null
+                        || !${criteriaCacheField}.equals(criteria))
+                {
+                    $field = ${otherTablePeerName}.doSelectJoinAllForBeans(criteria, null, con);
+$torqueGen.setVariable("indent", "                    ")##
+$torqueGen.mergepoint("backreference")##
+                }
+            }
+        }
+        ${criteriaCacheField} = criteria;
+
+        return $field;
+#else
+        return ${otherTablePeerName}.doSelectJoinAllForBeans(criteria, null, con);
+#end
+    }
+
+    

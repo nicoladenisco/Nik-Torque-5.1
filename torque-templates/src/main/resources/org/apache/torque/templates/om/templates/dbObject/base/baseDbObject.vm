@@ -110,9 +110,9 @@ $torqueGen.mergepoint("tableMapGetter")
 #if ($torqueGen.booleanOption("torque.om.generateBeans"))
 $torqueGen.mergepoint("objectBeanMethods")
 
-## #if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
-## $torqueGen.mergepoint("getBeanDeep")
-## #end
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+$torqueGen.mergepoint("getBeanDeep")
+#end
 
 #end
 

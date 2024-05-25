@@ -18,7 +18,6 @@ package org.apache.torque.templates.transformer.om;
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,66 +33,57 @@ import org.apache.torque.templates.TorqueSchemaElementName;
  *
  * So the source elements are (already processed by OMForeignKeyTransformer)
  * table
- *   foreign-key
- *     ...
- *     table (the foreign referenced table)
- *   foreign-key
- *     ...
- *     table
- *   ...
-
+ * foreign-key
+ * ...
+ * table (the foreign referenced table)
+ * foreign-key
+ * ...
+ * table
+ * ...
+ *
  * and the outcome is
  *
  * table
- *   foreign-key
- *     ...
- *     table (the referenced table in the foreign key)
- *   foreign-key
- *     ...
- *     table
- *   ...
- *   referencing-foreign-keys
- *     foreign-key (a foreign key where the foreignTable is the current table)
- *       ...
- *       table (the referenced table in the foreign key, i.e this table.)
- *     foreign-key
- *       ...
- *       table
- *   ...
+ * foreign-key
+ * ...
+ * table (the referenced table in the foreign key)
+ * foreign-key
+ * ...
+ * table
+ * ...
+ * referencing-foreign-keys
+ * foreign-key (a foreign key where the foreignTable is the current table)
+ * ...
+ * table (the referenced table in the foreign key, i.e this table.)
+ * foreign-key
+ * ...
+ * table
+ * ...
  *
  * On running this transformer, the table element in the foreign-key elements
  * must be set properly.
  */
 public class OMReferencingForeignKeyTableTransformer
 {
-    public void transform(
-            SourceElement table,
-            ControllerState controllerState)
-                    throws SourceTransformerException
+  public void transform(SourceElement table, ControllerState controllerState)
+     throws SourceTransformerException
+  {
+    SourceElement database = table.getParent();
+    String tableName = (String) table.getAttribute(TorqueSchemaAttributeName.NAME.getName());
+    List<SourceElement> referencingForeignKeys = new ArrayList<>();
+    for(SourceElement otherTable : database.getChildren(TorqueSchemaElementName.TABLE.getName()))
     {
-        SourceElement database = table.getParent();
-        String tableName = (String) table.getAttribute(
-                TorqueSchemaAttributeName.NAME.getName());
-        List<SourceElement> referencingForeignKeys
-            = new ArrayList<>();
-        for (SourceElement otherTable : database.getChildren(
-                TorqueSchemaElementName.TABLE.getName()))
-        {
-            List<SourceElement> referencingFromOtherTable
-            = FindHelper.findForeignKeyByReferencedTable(
-                    otherTable,
-                    tableName);
-            referencingForeignKeys.addAll(referencingFromOtherTable);
-        }
-
-        SourceElement referencingForeignKeysElement
-            = new SourceElement(
-                TableChildElementName.REFERENCING_FOREIGN_KEYS);
-        table.getChildren().add(referencingForeignKeysElement);
-
-        for (SourceElement foreignKey : referencingForeignKeys)
-        {
-            referencingForeignKeysElement.getChildren().add(foreignKey);
-        }
+      List<SourceElement> referencingFromOtherTable
+         = FindHelper.findForeignKeyByReferencedTable(otherTable, tableName);
+      referencingForeignKeys.addAll(referencingFromOtherTable);
     }
+
+    SourceElement referencingForeignKeysElement = new SourceElement(TableChildElementName.REFERENCING_FOREIGN_KEYS);
+    table.getChildren().add(referencingForeignKeysElement);
+
+    for(SourceElement foreignKey : referencingForeignKeys)
+    {
+      referencingForeignKeysElement.getChildren().add(foreignKey);
+    }
+  }
 }
