@@ -26,3 +26,4 @@ derby.log
 target
 scratch.txt
 /copy-libs-to.sh
+/copy-libs-2-caleido.sh
