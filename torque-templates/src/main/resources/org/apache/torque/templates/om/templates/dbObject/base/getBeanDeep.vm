@@ -194,11 +194,24 @@
       #set ( $conditional1 = $ac2.join(" && ") )
       #set ( $getparam = $ac3.join(",") )
       
-      #if ($numCol > 1)
+      if( $conditional )
+      {
+        #if ($numCol > 1)
+        SimpleKey[] sks = new SimpleKey[] {$getparam};    
+        ${relatedBeanClassName} relatedBean = (${relatedBeanClassName}) fetcher
+            .getCreatedBeen(${relatedClassName}Peer.TABLE_NAME, new ComboKey(sks));
+        #else
+        ${relatedBeanClassName} relatedBean = (${relatedBeanClassName}) fetcher
+            .getCreatedBeen(${relatedClassName}Peer.TABLE_NAME, ${getparam});
+        #end
 
-        if (get${objectMethodSuffix}JoinAll(conn) != null)
+        if (relatedBean == null && get${objectMethodSuffix}JoinAll(conn) != null)
         {
-            ${relatedBeanClassName} relatedBean = ${varName}.getBeanDeep(ignoreTableName, fetcher, conn);
+            relatedBean = ${varName}.getBeanDeep(ignoreTableName, fetcher, conn);
+        }
+
+        if( relatedBean != null)
+        {
             result.set${beanMethodSuffix}(relatedBean);
 
             #if($relatedClassName == $javaName)
@@ -208,34 +221,7 @@
               relatedBean.add${javaName}Bean${relCol}s(result);
             #end
         }
-
-      #else
-
-        if( $conditional )
-        {
-          SimpleKey[] sks = new SimpleKey[] {$getparam};    
-          ${relatedBeanClassName} relatedBean = (${relatedBeanClassName}) fetcher
-              .getCreatedBeen(${relatedClassName}Peer.TABLE_NAME, new ComboKey(sks));
-
-          if (relatedBean == null && get${objectMethodSuffix}JoinAll(conn) != null)
-          {
-              relatedBean = ${varName}.getBeanDeep(ignoreTableName, fetcher, conn);
-          }
-
-          if( relatedBean != null)
-          {
-              result.set${beanMethodSuffix}(relatedBean);
-
-              #if($relatedClassName == $javaName)
-              relatedBean.set${javaName}Bean${relCol}(result);
-              #else
-              if(!relatedBean.get${javaName}Bean${relCol}s().stream().anyMatch((b) -> b == result))
-                relatedBean.add${javaName}Bean${relCol}s(result);
-              #end
-          }
-        }
-
-      #end
+      }
 
     #end
   #end        
@@ -420,73 +406,45 @@
       #set ( $conditional1 = $ac2.join(" && ") )
       #set ( $getparam = $ac3.join(",") )
       
-      #if ($numCol > 1)
+      if( $conditional1 )
+      {
+        #foreach ($lc in $localColumns)
+          #set ( $column = $lc.getChild("column") )
+          #set ( $getter = $column.getAttribute("getter") )
+          #set ( $setter = $column.getAttribute("setter") )
+          copyObj.${setter}(this.${getter}());
+        #end        
+        copyObj.set${beanMethodSuffix}(null);
 
-        if( $conditional1 )
+        if( $conditional )
         {
-          // TODO: trovami
-          #foreach ($lc in $localColumns)
-            #set ( $column = $lc.getChild("column") )
-            #set ( $getter = $column.getAttribute("getter") )
-            #set ( $setter = $column.getAttribute("setter") )
-            copyObj.${setter}(this.${getter}());
-          #end
-          copyObj.set${beanMethodSuffix}(null);
+          #if ($numCol > 1)
+          SimpleKey[] sks = new SimpleKey[] {$getparam};    
+          ${relatedBeanClassName} relatedBean = (${relatedBeanClassName}) fetcher
+              .getCreatedBeen(${relatedClassName}Peer.TABLE_NAME, new ComboKey(sks));
+          #else
+          ${relatedBeanClassName} relatedBean = (${relatedBeanClassName}) fetcher
+              .getCreatedBeen(${relatedClassName}Peer.TABLE_NAME, ${getparam});
+          #end          
 
-          if( $conditional )
+          if (relatedBean == null && get${objectMethodSuffix}(conn) != null)
           {
-            if (get${objectMethodSuffix}s(conn) != null)
-            {
-                ${relatedBeanClassName} relatedBean = ${varName}.getBeanDeep(ignoreTableName, fetcher, conn);
-                copyObj.set${beanMethodSuffix}(relatedBean);
+              relatedBean = ${varName}.getBeanDeep(ignoreTableName, fetcher, conn);
+          }
 
-                #if($relatedClassName == $javaName)
-                relatedBean.set${javaName}Bean${relCol}(copyObj);
-                #else
-                if(!relatedBean.get${javaName}Bean${relCol}s().stream().anyMatch((b) -> b == copyObj))
-                  relatedBean.add${javaName}Bean${relCol}s(copyObj);
-                #end
-            }
+          if( relatedBean != null)
+          {
+              copyObj.set${beanMethodSuffix}(relatedBean);
+
+              #if($relatedClassName == $javaName)
+              relatedBean.set${javaName}Bean${relCol}(copyObj);
+              #else
+              if(!relatedBean.get${javaName}Bean${relCol}s().stream().anyMatch((b) -> b == copyObj))
+                relatedBean.add${javaName}Bean${relCol}s(copyObj);
+              #end
           }
         }
-
-      #else
-
-        #set ( $lc = $localColumns.get(0) )
-        #set ( $column = $lc.getChild("column") )
-        #set ( $number = $column.getAttribute("number") )        
-        #set ( $clo = $column.getAttribute("field") )
-      
-        if( $conditional1 )
-        {
-          copyObj.${setter}(this.${clo});
-          copyObj.set${beanMethodSuffix}(null);
-
-          if( $conditional )
-          {
-            SimpleKey[] sks = new SimpleKey[] {$getparam};    
-            ${relatedBeanClassName} relatedBean = (${relatedBeanClassName}) fetcher
-                .getCreatedBeen(${relatedClassName}Peer.TABLE_NAME, new ComboKey(sks));
-
-            if (relatedBean == null && get${objectMethodSuffix}(conn) != null)
-            {
-                relatedBean = ${varName}.getBeanDeep(ignoreTableName, fetcher, conn);
-            }
-
-            if( relatedBean != null)
-            {
-                copyObj.set${beanMethodSuffix}(relatedBean);
-
-                #if($relatedClassName == $javaName)
-                relatedBean.set${javaName}Bean${relCol}(copyObj);
-                #else
-                if(!relatedBean.get${javaName}Bean${relCol}s().stream().anyMatch((b) -> b == copyObj))
-                  relatedBean.add${javaName}Bean${relCol}s(copyObj);
-                #end
-            }
-          }
-        }
-      #end
+      }
 
     #end
     }

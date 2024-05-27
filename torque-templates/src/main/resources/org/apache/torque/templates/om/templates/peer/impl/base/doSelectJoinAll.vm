@@ -28,6 +28,7 @@
 ##
 
 #set ( $foreignKeyElements = $torqueGen.getChildren("foreign-key"))
+#set ( $primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column"))
 #set ( $peerJoinAllSelectMethod = "doSelectJoinAll" )
 
 #if ($foreignKeyElements.size() > 0)
@@ -116,11 +117,22 @@
       #end
   #end
 
+        #if($primaryKeyColumnElements.size() > 0)
+        // if sort is empty use primary key columns
+        if (criteria.getOrderByColumns().isEmpty())
+        {
+        #foreach ($col in $primaryKeyColumnElements)
+          #set ( $cup = $columnElement.getAttribute("peerColumnName") )
+          criteria.addAscendingOrderByColumn(${peerClassName}.$cup);
+        #end
+        }
+        #end
+        
         correctBooleans(criteria);
 
         List<$dbObjectClassName> result = new ArrayList<$dbObjectClassName>();
-        List<List<Object>> rawResult = doSelect(
-                criteria, compositeMapper, conn);
+        List<List<Object>> rawResult = doSelect(criteria, compositeMapper, conn);
+          
         for (List<Object> rawResultRow : rawResult)
         {
             $dbObjectClassName $tableField = ($dbObjectClassName) rawResultRow.get(0);
@@ -177,6 +189,125 @@
         return result;
     }
 
+    /**
+     * selects a collection of $className objects pre-filled with
+     * all related objects.
+     *
+     * @throws TorqueException Any exceptions caught during processing will be
+     *         rethrown wrapped into a TorqueException.
+     */
+    public List<${javaName}> doSelectJoinAllForBeans(Criteria criteria, Collection<String> ignoreTableName, Connection conn)
+        throws TorqueException
+    {
+        setDbName(criteria);
+
+        CompositeMapper compositeMapper = new CompositeMapper();
+        compositeMapper.addMapper(new ${recordMapperClassName}(), 0);
+        ${peerClassName}.addSelectColumns(criteria);
+        int offset = ${peerClassName}.numColumns;
+        HashSet<String> joinTables = new HashSet<>();
+        HashMap<String, Integer> joinTablesFields = new HashMap<>();
+        int nc = 1;
+        
+  #set ( $index = 1 )
+  #foreach ($joinedForeignKeyElement in $foreignKeyElements)
+      #set ( $joinedTableElement = $joinedForeignKeyElement.getChild("table"))
+      #set ( $joinedTableName = $joinedTableElement.getAttribute("name"))
+      ## want to cover this case, but the code is not there yet.
+      #if ( $joinedTableName != $tableName )
+        #set ( $joinedPeerClassName = $joinedTableElement.getAttribute("peerClassName") )
+        #set ( $joinedPeerImplClassName = $joinedTableElement.getAttribute("peerImplClassName") )
+        #set ( $joinedPeerPackage = $joinedTableElement.getAttribute("peerPackage") )
+        #set ( $joinedPeer = "${joinedPeerPackage}.${joinedPeerClassName}" )
+        #set ( $joinedPeerImpl = "${joinedPeerPackage}.${joinedPeerImplClassName}" )
+        #set ( $joinedRecordMapperClassName = $joinedTableElement.getAttribute("recordMapperClassName") )
+        #set ( $referenceElements = $joinedForeignKeyElement.getChildren("reference") )
+
+        if(ignoreTableName == null || !ignoreTableName.contains(${joinedPeer}.TABLE_NAME))
+        {        
+          ${joinedPeer}.addSelectColumns(criteria);
+          #foreach ($referenceElement in $referenceElements)
+            #set ( $columnElement = $referenceElement.getChild("local-column").getChild("column"))
+            #set ( $joinedColumnElement = $referenceElement.getChild("foreign-column").getChild("column"))
+            #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName") )
+            #set ( $joinedPeerColumnName = $joinedColumnElement.getAttribute("peerColumnName") )
+          criteria.addJoin(${peerClassName}.$peerColumnName, ${joinedPeer}.$joinedPeerColumnName);
+          #end
+          compositeMapper.addMapper(new ${joinedRecordMapperClassName}(), offset);
+          offset = offset + ${joinedPeer}.numColumns;
+          joinTables.add(${joinedPeer}.TABLE_NAME);
+          joinTablesFields.put(${joinedPeer}.TABLE_NAME+"|$index", nc++);
+        }
+      #set ( $index = $index + 1 )
+      #end
+  #end        
+                
+        #if($primaryKeyColumnElements.size() > 0)
+        // if sort is empty use primary key columns
+        if (criteria.getOrderByColumns().isEmpty())
+        {
+        #foreach ($col in $primaryKeyColumnElements)
+          #set ( $cup = $columnElement.getAttribute("peerColumnName") )
+          criteria.addAscendingOrderByColumn(${peerClassName}.$cup);
+        #end
+        }
+        #end
+
+        correctBooleans(criteria);
+
+        List<$dbObjectClassName> result = new ArrayList<$dbObjectClassName>();
+        List<List<Object>> rawResult = doSelect(criteria, compositeMapper, conn);
+          
+        for (List<Object> rawResultRow : rawResult)
+        {
+            Integer position;
+            $dbObjectClassName $tableField = ($dbObjectClassName) rawResultRow.get(0);
+            
+  #set ( $index = 0 )
+  #foreach ($joinedForeignKeyElement in $foreignKeyElements)
+      #set ( $joinedTableElement = $joinedForeignKeyElement.getChild("table"))
+      #set ( $joinedTableName = $joinedTableElement.getAttribute("name"))
+      ## want to cover this case, but the code is not there yet.
+      #if ( $joinedTableName != $tableName )
+        #set ( $joinedPeerClassName = $joinedTableElement.getAttribute("peerClassName") )
+        #set ( $joinedPeerPackage = $joinedTableElement.getAttribute("peerPackage") )
+        #set ( $joinedPeer = "${joinedPeerPackage}.${joinedPeerClassName}" )
+        #set ( $joinedDbObjectClassName = $joinedTableElement.getAttribute("dbObjectClassName") )
+        #set ( $joinedDbObjectPackage = $joinedTableElement.getAttribute("dbObjectPackage") )
+        #set ( $joinedDbObject = "${joinedDbObjectPackage}.${joinedDbObjectClassName}" )
+        #set ( $foreignField = $joinedForeignKeyElement.getChild("foreign-field") )
+        #set ( $adderInJoinedDbObject = $foreignField.getAttribute("adder") )
+        #set ( $initializerInJoinedDbObject = $foreignField.getAttribute("initializer") )
+        #set ( $localField = $joinedForeignKeyElement.getChild("local-field") )
+        #set ( $getter = $localField.getAttribute("getter") )
+        #set ( $index = $index + 1 )
+
+            if((position = joinTablesFields.get(${joinedPeer}.TABLE_NAME+"|$index")) != null)
+            {
+              $joinedDbObject obj$index = (${joinedDbObject}) rawResultRow.get(position);
+            
+              for (int j = 0; j < result.size(); j++)
+              {
+                  $dbObject temp_${tableField} = result.get(j);
+                  $joinedDbObject temp_obj$index = temp_${tableField}.${getter}();
+                  if (temp_obj${index}.getPrimaryKey().equals(obj${index}.getPrimaryKey()))
+                  {
+                  #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+                      temp_obj${index}.${adderInJoinedDbObject}FromBean($tableField);
+                  #end
+                      break;
+                  }
+              }
+            }
+      #end
+  #end
+            result.add($tableField);
+        }
+        return result;
+    }
+    
+    
+    
 #else    
 
     public List<${dbObjectClassName}> ${peerJoinAllSelectMethod}(Criteria criteria, Connection conn)
@@ -185,10 +316,11 @@
       return doSelect(criteria, conn);
     }
 
-#end
-
     public List<${dbObjectClassName}> ${peerJoinAllSelectMethod}ForBeans(Criteria criteria, Collection<String> ignoreTable, Connection conn)
         throws TorqueException
     {
       return ${peerJoinAllSelectMethod}(criteria, conn);
     }    
+    
+#end
+    
