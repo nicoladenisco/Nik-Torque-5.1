@@ -31,7 +31,7 @@
 #set ( $primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column"))
 #set ( $peerJoinAllSelectMethod = "doSelectJoinAll" )
 
-#if ($foreignKeyElements.size() > 0)
+#if ($torqueGen.booleanOption("torque.om.generateBeans") && $foreignKeyElements.size() > 0)
   #set ( $tableElement = $foreignKeyElements.get(0).getParent() )
   
   #set ( $tableName = $tableElement.getAttribute("name") )
