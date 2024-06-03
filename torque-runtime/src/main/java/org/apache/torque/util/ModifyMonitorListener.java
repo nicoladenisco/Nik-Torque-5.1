@@ -19,6 +19,7 @@
 package org.apache.torque.util;
 
 import java.sql.Connection;
+import java.util.List;
 import org.apache.torque.TorqueException;
 import org.apache.torque.criteria.Criteria;
 import org.apache.torque.om.ObjectKey;
@@ -50,10 +51,13 @@ public interface ModifyMonitorListener
    * @param tableName nome della tabella
    * @param selectCriteria valori per selezione record
    * @param updateValues valori aggiornati nel record
+   * @param sql
+   * @param valori
    * @param con connessione sql
    * @throws TorqueException
    */
-  public void doUpdate(String dbName, String tableName, Criteria selectCriteria, ColumnValues updateValues, Connection con)
+  public void doUpdate(String dbName, String tableName, Criteria selectCriteria, ColumnValues updateValues,
+     String sql, List<Object> valori, Connection con)
      throws TorqueException;
 
   /**
@@ -62,9 +66,12 @@ public interface ModifyMonitorListener
    * @param dbName nome del database
    * @param tableName nome della tabella
    * @param selectCriteria valori per selezione record
+   * @param sql
+   * @param replacements
    * @param con connessione sql
    * @throws TorqueException
    */
-  public void doDelete(String dbName, String tableName, Criteria selectCriteria, Connection con)
+  public void doDelete(String dbName, String tableName, Criteria selectCriteria,
+     String sql, List<Object> replacements, Connection con)
      throws TorqueException;
 }

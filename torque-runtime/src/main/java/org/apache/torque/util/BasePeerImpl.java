@@ -34,11 +34,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.torque.Column;
 import org.apache.torque.ColumnImpl;
 import org.apache.torque.Database;
@@ -287,15 +286,16 @@ public class BasePeerImpl<T> implements Serializable
     }
     String sql = query.toString();
 
-    if(modifyListener != null)
-      modifyListener.doDelete(criteria.getDbName(), fullTableName, criteria, connection);
-
     try(PreparedStatement preparedStatement = connection.prepareStatement(sql))
     {
       List<Object> replacements = setPreparedStatementReplacements(
          preparedStatement,
          query.getPreparedStatementReplacements(),
          0);
+
+      if(modifyListener != null)
+        modifyListener.doDelete(criteria.getDbName(), fullTableName, criteria, sql, replacements, connection);
+
       StopWatch stopWatch = new StopWatch();
       log.debug("Executing delete {}, parameters = {}", sql, replacements);
 
@@ -1461,17 +1461,17 @@ public class BasePeerImpl<T> implements Serializable
        criteria.getDbName());
     query.getFromClause().add(new FromElement(fullTableName));
     query.getUpdateValues().putAll(updateValues);
+    String sql = query.toString();
 
     if(modifyListener != null)
-      modifyListener.doUpdate(criteria.getDbName(), fullTableName, criteria, updateValues, connection);
+      modifyListener.doUpdate(criteria.getDbName(), fullTableName, criteria, updateValues,
+         sql, query.getWhereClausePreparedStatementReplacements(), connection);
 
-    try(PreparedStatement preparedStatement = connection.prepareStatement(query.toString()))
+    try(PreparedStatement preparedStatement = connection.prepareStatement(sql))
     {
       int position = 1;
-      List<JdbcTypedValue> replacementObjects
-         = new ArrayList<>();
-      for(Map.Entry<Column, JdbcTypedValue> updateValue
-         : updateValues.entrySet())
+      List<JdbcTypedValue> replacementObjects = new ArrayList<>();
+      for(Map.Entry<Column, JdbcTypedValue> updateValue : updateValues.entrySet())
       {
         JdbcTypedValue replacementObject = updateValue.getValue();
         if(replacementObject.getSqlExpression() != null)
@@ -1494,10 +1494,12 @@ public class BasePeerImpl<T> implements Serializable
         replacementObjects.add(replacementObject);
         position++;
       }
+
       List<Object> replacements = setPreparedStatementReplacements(
          preparedStatement,
          query.getPreparedStatementReplacements(),
          position - 1);
+
       StopWatch stopWatch = new StopWatch();
       log.debug("Executing update {} using update parameters {} and query parameters {}",
          () -> query.toString(), () -> replacementObjects, () -> replacements);
