@@ -36,6 +36,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import java.util.Objects;
+import org.apache.commons.collections.map.IdentityMap;
 
 #if ($baseBeanPackage != $beanPackage)
   import ${beanPackage}.*;
@@ -65,7 +66,7 @@ public abstract class $baseBeanClassName
 #if ( $torqueGen.option("beanExtendsClass") && $torqueGen.option("beanExtendsClass") != "" ) 
     extends $torqueGen.option("beanExtendsClass")
 #end
-    implements Serializable
+    implements Serializable, Cloneable
 {
 $torqueGen.mergepoint("serialVersionUid")
 
@@ -141,11 +142,19 @@ $torqueGen.mergepoint("fieldDefinitionsReferencingObjects")
         return this.modified;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+      return super.clone();
+    }
+  
 $torqueGen.mergepoint("gettersSetters")
+$torqueGen.mergepoint("copyMethods")
 
 #if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
 $torqueGen.mergepoint("gettersSettersReferencedObjects")
 $torqueGen.mergepoint("gettersSettersReferencingObjects")
+$torqueGen.mergepoint("deepClone")
 #end
 
 $torqueGen.mergepoint("getCurrentDate")##

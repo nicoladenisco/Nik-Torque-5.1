@@ -35,6 +35,6 @@ import java.io.Serializable;
 $torqueGen.mergepoint("classJavadoc")
 public class $beanClassName
     extends $beanExtends
-    implements Serializable
+    implements Serializable, Cloneable
 {
 }

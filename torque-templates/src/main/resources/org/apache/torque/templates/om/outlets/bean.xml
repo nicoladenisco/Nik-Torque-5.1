@@ -72,6 +72,14 @@
       <action xsi:type="applyAction"
               outlet="torque.om.dbObject.base.getCurrentTimestamp"/>
     </mergepoint>
+    <mergepoint name="deepClone">
+      <action xsi:type="applyAction"
+              outlet="torque.om.bean.base.deepClone"/>
+    </mergepoint>
+    <mergepoint name="copyMethods">
+      <action xsi:type="applyAction"
+              outlet="torque.om.bean.base.copyMethods"/>
+    </mergepoint>
     <mergepoint name="extensions"/>
   </outlet>
 
@@ -167,6 +175,16 @@
   <outlet name="torque.om.bean.classJavadoc"
           xsi:type="velocityOutlet"
           path="bean/classJavadoc.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.deepClone"
+          xsi:type="velocityOutlet"
+          path="bean/base/deepClone.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.copyMethods"
+          xsi:type="velocityOutlet"
+          path="bean/base/copyMethods.vm">
   </outlet>
 
 </outlets>
