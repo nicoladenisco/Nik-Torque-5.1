@@ -223,6 +223,8 @@
         #set ( $joinedRecordMapperClassName = $joinedTableElement.getAttribute("recordMapperClassName") )
         #set ( $referenceElements = $joinedForeignKeyElement.getChildren("reference") )
 
+        // collegamenti multipli alla stessa tabella non sono supportati al momento
+        if(!joinTables.contains(${joinedPeer}.TABLE_NAME))
         if(ignoreTableName == null || !ignoreTableName.contains(${joinedPeer}.TABLE_NAME))
         {        
           ${joinedPeer}.addSelectColumns(criteria);
