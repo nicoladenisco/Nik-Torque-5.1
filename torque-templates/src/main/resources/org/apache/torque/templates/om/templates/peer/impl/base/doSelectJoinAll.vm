@@ -225,21 +225,21 @@
 
         // collegamenti multipli alla stessa tabella non sono supportati al momento
         if(!joinTables.contains(${joinedPeer}.TABLE_NAME))
-        if(ignoreTableName == null || !ignoreTableName.contains(${joinedPeer}.TABLE_NAME))
-        {        
-          ${joinedPeer}.addSelectColumns(criteria);
-          #foreach ($referenceElement in $referenceElements)
-            #set ( $columnElement = $referenceElement.getChild("local-column").getChild("column"))
-            #set ( $joinedColumnElement = $referenceElement.getChild("foreign-column").getChild("column"))
-            #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName") )
-            #set ( $joinedPeerColumnName = $joinedColumnElement.getAttribute("peerColumnName") )
-          criteria.addJoin(${peerClassName}.$peerColumnName, ${joinedPeer}.$joinedPeerColumnName);
-          #end
-          compositeMapper.addMapper(new ${joinedRecordMapperClassName}(), offset);
-          offset = offset + ${joinedPeer}.numColumns;
-          joinTables.add(${joinedPeer}.TABLE_NAME);
-          joinTablesFields.put(${joinedPeer}.TABLE_NAME+"|$index", nc++);
-        }
+          if(ignoreTableName == null || !ignoreTableName.contains(${joinedPeer}.TABLE_NAME))
+          {        
+            ${joinedPeer}.addSelectColumns(criteria);
+            #foreach ($referenceElement in $referenceElements)
+              #set ( $columnElement = $referenceElement.getChild("local-column").getChild("column"))
+              #set ( $joinedColumnElement = $referenceElement.getChild("foreign-column").getChild("column"))
+              #set ( $peerColumnName = $columnElement.getAttribute("peerColumnName") )
+              #set ( $joinedPeerColumnName = $joinedColumnElement.getAttribute("peerColumnName") )
+            criteria.addJoin(${peerClassName}.$peerColumnName, ${joinedPeer}.$joinedPeerColumnName);
+            #end
+            compositeMapper.addMapper(new ${joinedRecordMapperClassName}(), offset);
+            offset = offset + ${joinedPeer}.numColumns;
+            joinTables.add(${joinedPeer}.TABLE_NAME);
+            joinTablesFields.put(${joinedPeer}.TABLE_NAME+"|$index", nc++);
+          }
       #set ( $index = $index + 1 )
       #end
   #end        
@@ -287,22 +287,35 @@
             if((position = joinTablesFields.get(${joinedPeer}.TABLE_NAME+"|$index")) != null)
             {
               $joinedDbObject obj$index = (${joinedDbObject}) rawResultRow.get(position);
+              org.apache.torque.om.ObjectKey<?> primary = obj${index}.getPrimaryKey();
             
+              boolean found = false;
               for (int j = 0; j < result.size(); j++)
               {
                   $dbObject temp_${tableField} = result.get(j);
-                  $joinedDbObject temp_obj$index = temp_${tableField}.${getter}();
-                  if (temp_obj${index}.getPrimaryKey().equals(obj${index}.getPrimaryKey()))
+                  $joinedDbObject temp_obj$index = temp_${tableField}.${getter}(conn);
+                  if (temp_obj${index} != null && temp_obj${index}.getPrimaryKey().equals(primary))
                   {
                   #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
                       temp_obj${index}.${adderInJoinedDbObject}FromBean($tableField);
                   #end
+                      ${tableField}.set${joinedDbObjectClassName}(temp_obj${index});
+                      found = true;
                       break;
                   }
+              }
+              
+              if(!found)
+              {
+                  #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+                      obj${index}.${adderInJoinedDbObject}FromBean($tableField);
+                  #end
+                  ${tableField}.set${joinedDbObjectClassName}(obj$index);              
               }
             }
       #end
   #end
+  
             result.add($tableField);
         }
         return result;
