@@ -155,22 +155,20 @@
         #set ( $getter = $localField.getAttribute("getter") )
         #set ( $index = $index + 1 )
 
-            $joinedDbObject obj$index = (${joinedDbObject}) rawResultRow.get($index);
-         #if ($index == 1)
-           #set ( $boolean = "boolean " )
-         #else
-           #set ( $boolean = "")
-         #end
-            ${boolean}newObject = true;
+          {
+            $joinedDbObject obj = (${joinedDbObject}) rawResultRow.get($index);
+            ObjectKey<?> primary = obj.getPrimaryKey();
+            
+            boolean newObject = true;            
             for (int j = 0; j < result.size(); j++)
             {
                 $dbObject temp_${tableField} = result.get(j);
-                $joinedDbObject temp_obj$index = temp_${tableField}.${getter}();
-                if (temp_obj${index}.getPrimaryKey().equals(obj${index}.getPrimaryKey()))
+                $joinedDbObject temp_obj = temp_${tableField}.${getter}();
+                if (temp_obj != null && temp_obj.getPrimaryKey().equals(primary))
                 {
                     newObject = false;
                 #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
-                    temp_obj${index}.${adderInJoinedDbObject}($tableField);
+                    temp_obj.${adderInJoinedDbObject}($tableField);
                 #end
                     break;
                 }
@@ -178,10 +176,11 @@
         #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
             if (newObject)
             {
-                obj${index}.${initializerInJoinedDbObject}();
-                obj${index}.${adderInJoinedDbObject}($tableField);
+                obj.${initializerInJoinedDbObject}();
+                obj.${adderInJoinedDbObject}($tableField);
             }
         #end
+          }
       #end
   #end
             result.add($tableField);
@@ -248,7 +247,6 @@
         // if sort is empty use primary key columns
         if (criteria.getOrderByColumns().isEmpty())
         {
-        // $primaryKeyColumnElements
         #foreach ($col in $primaryKeyColumnElements)
           #set ( $cup = $col.getAttribute("peerColumnName") )
           criteria.addAscendingOrderByColumn(${peerClassName}.$cup);
@@ -288,20 +286,20 @@
 
             if((position = joinTablesFields.get(${joinedPeer}.TABLE_NAME+"|$index")) != null)
             {
-              $joinedDbObject obj$index = (${joinedDbObject}) rawResultRow.get(position);
-              org.apache.torque.om.ObjectKey<?> primary = obj${index}.getPrimaryKey();
+              $joinedDbObject obj = (${joinedDbObject}) rawResultRow.get(position);
+              ObjectKey<?> primary = obj.getPrimaryKey();
             
               boolean newObject = true;
               for (int j = 0; j < result.size(); j++)
               {
                   $dbObject temp_${tableField} = result.get(j);
-                  $joinedDbObject temp_obj$index = temp_${tableField}.${getter}(conn);
-                  if (temp_obj${index} != null && temp_obj${index}.getPrimaryKey().equals(primary))
+                  $joinedDbObject temp_obj = temp_${tableField}.${getter}(conn);
+                  if (temp_obj != null && temp_obj.getPrimaryKey().equals(primary))
                   {
                   #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
-                      temp_obj${index}.${adderInJoinedDbObject}FromBean($tableField);
+                      temp_obj.${adderInJoinedDbObject}FromBean($tableField);
                   #end
-                      ${tableField}.${setter}(temp_obj${index});
+                      ${tableField}.${setter}(temp_obj);
                       newObject = false;
                       break;
                   }
@@ -310,9 +308,9 @@
               if(newObject)
               {
                   #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
-                      obj${index}.${adderInJoinedDbObject}FromBean($tableField);
+                      obj.${adderInJoinedDbObject}FromBean($tableField);
                   #end
-                  ${tableField}.${setter}(obj$index);              
+                  ${tableField}.${setter}(obj);              
               }
             }
       #end
