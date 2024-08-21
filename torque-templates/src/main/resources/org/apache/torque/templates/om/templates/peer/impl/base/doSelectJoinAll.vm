@@ -122,7 +122,7 @@
         if (criteria.getOrderByColumns().isEmpty())
         {
         #foreach ($col in $primaryKeyColumnElements)
-          #set ( $cup = $columnElement.getAttribute("peerColumnName") )
+          #set ( $cup = $col.getAttribute("peerColumnName") )
           criteria.addAscendingOrderByColumn(${peerClassName}.$cup);
         #end
         }
@@ -248,8 +248,9 @@
         // if sort is empty use primary key columns
         if (criteria.getOrderByColumns().isEmpty())
         {
+        // $primaryKeyColumnElements
         #foreach ($col in $primaryKeyColumnElements)
-          #set ( $cup = $columnElement.getAttribute("peerColumnName") )
+          #set ( $cup = $col.getAttribute("peerColumnName") )
           criteria.addAscendingOrderByColumn(${peerClassName}.$cup);
         #end
         }
@@ -282,6 +283,7 @@
         #set ( $initializerInJoinedDbObject = $foreignField.getAttribute("initializer") )
         #set ( $localField = $joinedForeignKeyElement.getChild("local-field") )
         #set ( $getter = $localField.getAttribute("getter") )
+        #set ( $setter = $localField.getAttribute("setter") )
         #set ( $index = $index + 1 )
 
             if((position = joinTablesFields.get(${joinedPeer}.TABLE_NAME+"|$index")) != null)
@@ -289,7 +291,7 @@
               $joinedDbObject obj$index = (${joinedDbObject}) rawResultRow.get(position);
               org.apache.torque.om.ObjectKey<?> primary = obj${index}.getPrimaryKey();
             
-              boolean found = false;
+              boolean newObject = true;
               for (int j = 0; j < result.size(); j++)
               {
                   $dbObject temp_${tableField} = result.get(j);
@@ -299,18 +301,18 @@
                   #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
                       temp_obj${index}.${adderInJoinedDbObject}FromBean($tableField);
                   #end
-                      ${tableField}.set${joinedDbObjectClassName}(temp_obj${index});
-                      found = true;
+                      ${tableField}.${setter}(temp_obj${index});
+                      newObject = false;
                       break;
                   }
               }
               
-              if(!found)
+              if(newObject)
               {
                   #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
                       obj${index}.${adderInJoinedDbObject}FromBean($tableField);
                   #end
-                  ${tableField}.set${joinedDbObjectClassName}(obj$index);              
+                  ${tableField}.${setter}(obj$index);              
               }
             }
       #end
