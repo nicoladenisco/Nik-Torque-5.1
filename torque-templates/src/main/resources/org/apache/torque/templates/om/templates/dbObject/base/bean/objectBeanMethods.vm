@@ -126,6 +126,9 @@
   #set ( $getter = $columnElement.getAttribute("getter") )
         result.${setter}(${getter}());
 #end
+
+        result.setModified(isModified());
+        result.setNew(isNew());
         return result;
     }    
     
