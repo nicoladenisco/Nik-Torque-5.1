@@ -217,7 +217,8 @@
             #if($relatedClassName == $javaName)
             relatedBean.set${javaName}Bean${relCol}(result);
             #else
-            if(!relatedBean.get${javaName}Bean${relCol}s().stream().anyMatch((b) -> b == result))
+            if((relatedBean.get${javaName}Bean${relCol}s() == null) 
+               || (!relatedBean.get${javaName}Bean${relCol}s().stream().anyMatch((b) -> b == result)))
               relatedBean.add${javaName}Bean${relCol}s(result);
             #end
         }
@@ -298,7 +299,8 @@
                     related.set${locCol}((${javaName}) this);
                     ${relatedBeanClassName} relatedBean = related.getBeanDeep(ignoreTableName, fetcher, conn);
 
-                    if(!result.get${beanRelCol}().stream().anyMatch((b) -> b == relatedBean))
+                    if((result.get${beanRelCol}() == null)                    
+                        || (!result.get${beanRelCol}().stream().anyMatch((b) -> b == relatedBean)))
                       result.add${beanRelCol}(relatedBean);
                 }
             }
@@ -439,7 +441,8 @@
               #if($relatedClassName == $javaName)
               relatedBean.set${javaName}Bean${relCol}(copyObj);
               #else
-              if(!relatedBean.get${javaName}Bean${relCol}s().stream().anyMatch((b) -> b == copyObj))
+              if((relatedBean.get${javaName}Bean${relCol}s() == null)
+                  || (!relatedBean.get${javaName}Bean${relCol}s().stream().anyMatch((b) -> b == copyObj)))
                 relatedBean.add${javaName}Bean${relCol}s(copyObj);
               #end
           }
