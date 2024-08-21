@@ -37,7 +37,7 @@
     /**
      * The criteria used to select the current contents of $field
      */
-    private Criteria $criteriaCacheField = null;
+    protected Criteria $criteriaCacheField = null;
 
 #end
     /**

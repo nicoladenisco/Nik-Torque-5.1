@@ -24,7 +24,7 @@
 ## which was processed by the OMTransformer.  
 ##
     /** The Peer class */
-    private static final $peerPackage.$peerClassName peer
+    protected static final $peerPackage.$peerClassName peer
             = new $peerPackage.$peerClassName();
 
     /**

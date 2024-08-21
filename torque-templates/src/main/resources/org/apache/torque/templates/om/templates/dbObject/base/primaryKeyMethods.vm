@@ -120,8 +120,8 @@
 
 #elseif ($primaryKeyColumnElements.size() > 1)
 
-    private final SimpleKey<?>[] pks = new SimpleKey[$primaryKeyColumnElements.size()];
-    private final ComboKey comboPK = new ComboKey(pks);
+    protected final SimpleKey<?>[] pks = new SimpleKey[$primaryKeyColumnElements.size()];
+    protected final ComboKey comboPK = new ComboKey(pks);
 
     /**
      * Set the PrimaryKey with an ObjectKey

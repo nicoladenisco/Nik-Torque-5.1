@@ -26,5 +26,5 @@
      * Note that this flags does not always display the current database state,
      * there is no magical connection between this flag and the database.
      */
-    private boolean deleted = false;
+    protected boolean deleted = false;
 

@@ -24,7 +24,7 @@
 ##
 #if ($torqueGen.booleanOption("torque.om.trackModified"))
     /** Whether this object was modified after loading or after last save. */
-    private boolean modified = true;
+    protected boolean modified = true;
 
 #end
 #if ($torqueGen.booleanOption("torque.om.trackNew"))
@@ -32,6 +32,6 @@
      * Whether this object was loaded from the database or already saved 
      * (false) or whether it is not yet in the database(true).
      */
-    private boolean isNew = true;
+    protected boolean isNew = true;
 
 #end

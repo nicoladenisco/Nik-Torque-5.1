@@ -22,5 +22,5 @@
 ## This template creates the saving field for a BaseDBObject.
 ##
     /** Flag which indicates whether this object is currently saving. */
-    private boolean saving = false;
+    protected boolean saving = false;
 

@@ -26,5 +26,5 @@
 ## The schema needs to be processed by the OMTransformer.
 ##
     /** The implementation of the peer. */
-    private static ${peerImplClassName} ${peerImplFieldName};
+    protected static ${peerImplClassName} ${peerImplFieldName};
 

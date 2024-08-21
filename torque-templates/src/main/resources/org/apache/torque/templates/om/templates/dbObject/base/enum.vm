@@ -31,14 +31,14 @@ public enum $enumClassName
 $torqueGen.mergepoint("values")##
 
     /** The database value represented by the enum value. */
-    private ${enumValueClassName} value;
+    protected ${enumValueClassName} value;
 
     /**
      * Constructor.
      *
      * @param value The database value represented by the enum value.
      */
-    private ${enumClassName}(${enumValueClassName} value)
+    protected ${enumClassName}(${enumValueClassName} value)
     {
         this.value = value;
     }

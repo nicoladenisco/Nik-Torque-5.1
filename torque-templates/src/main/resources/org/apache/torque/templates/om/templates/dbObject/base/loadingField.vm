@@ -25,5 +25,5 @@
      * Flag which indicates whether this object is currently loaded
      * from the database. 
      */
-    private boolean loading = false;
+    protected boolean loading = false;
 

@@ -134,7 +134,7 @@
      * Populate multi to one relations (one is ${javaName}).
      * we have one istance (aForeignTableName)
      */
-    private void populateBeanOne($beanClassName result, Stack<String> ignoreTableName, TorqueTableFetcher fetcher, Connection conn)
+    protected void populateBeanOne($beanClassName result, Stack<String> ignoreTableName, TorqueTableFetcher fetcher, Connection conn)
        throws Exception
     {
       if(isNew())
@@ -232,7 +232,7 @@
      * Populate one to multi relations (multi is ${tblname}).
      * we have a list of istance (List<ForeignTableName>).
      */
-    private void populateBeanMulti($beanClassName result, Stack<String> ignoreTableName, TorqueTableFetcher fetcher, Connection conn)
+    protected void populateBeanMulti($beanClassName result, Stack<String> ignoreTableName, TorqueTableFetcher fetcher, Connection conn)
        throws Exception
     {  
   ## foreign references to this Object
@@ -292,7 +292,8 @@
                  (b) -> add${relCol2}FromBean(($relatedClassName) b));
             }
 
-            if (${collName} != null && ${collName}.size() != result.get${beanRelCol}().size())
+            if (${collName} != null && 
+               (result.get${beanRelCol}() == null || ${collName}.size() != result.get${beanRelCol}().size()))
             {
                 for ($relatedClassName related : $collName)
                 {
@@ -350,7 +351,7 @@
     /**
      * Update one to multi relations (multi is ${javaName}).
      */
-    private void updateBeanOne($beanClassName copyObj, Stack<String> ignoreTableName, TorqueTableFetcher fetcher, Connection conn)
+    protected void updateBeanOne($beanClassName copyObj, Stack<String> ignoreTableName, TorqueTableFetcher fetcher, Connection conn)
        throws Exception
     {    
     #foreach ($foreignKeyElement in $foreignKeyElements)

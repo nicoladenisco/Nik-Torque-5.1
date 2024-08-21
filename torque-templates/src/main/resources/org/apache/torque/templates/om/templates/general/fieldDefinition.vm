@@ -48,7 +48,7 @@
 #end
 ${torqueGen.mergepoint("annotations")}##
 #if (!$fieldAccessModifier)
-  #set ( $fieldAccessModifier = "private" )
+  #set ( $fieldAccessModifier = "protected" )
 #end
     $fieldAccessModifier $fieldType $field#if($defaultValue) = $defaultValue#end;
 
