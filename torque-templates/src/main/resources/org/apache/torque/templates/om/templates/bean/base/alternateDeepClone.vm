@@ -1,0 +1,116 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+
+## The template expects as input a "table" element from the torque schema
+## which was processed by the OMTransformer.  
+
+    /**
+     * Restituisce un clone completo di questo oggetto.
+     * Nessuna collezione o dato di copyObj avra elementi in comune.
+     */
+    public $beanClassName deepClone(IdentityMap createdBeans)
+    {
+        $beanClassName copyObj = ($beanClassName) createdBeans.get(this);
+        if(copyObj != null)
+          return copyObj;
+
+        copyObj = new ${beanClassName}();
+        createdBeans.put(this, copyObj);
+        
+#set ( $columnElements = $torqueGen.getChildren("column") )
+#foreach ($columnElement in $columnElements)
+  #set ( $setter = $columnElement.getAttribute("setter") )
+  #set ( $columnField = $columnElement.getAttribute("field") )
+  #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+  #set ( $defaultValue = $columnElement.getAttribute("defaultValue") )
+  #if($columnElement.getAttribute("primaryKey") != "true")
+        copyObj.${setter}($columnField);
+  #else
+    #if($columnElement.getAttribute("primitive") == "true")
+        copyObj.${setter}($defaultValue);
+    #else
+        copyObj.${setter}((${columnFieldType}) $defaultValue);
+    #end
+  #end
+#end
+
+      // --- relazione uno a molti ${name} ---
+  #set ($foreignKeyElements = $torqueGen.getChildren("foreign-key"))
+  #foreach ($foreignKeyElement in $foreignKeyElements)
+    #set ( $foreignTableElement = $foreignKeyElement.getChild("table") )
+    #set ( $foreignTableName = $foreignTableElement.getAttribute("name"))
+    #set ( $foreignClassName = $foreignTableElement.getAttribute("javaName") )
+    #set ( $foreignClassNamePeer = $foreignTableElement.getAttribute("peerClassName") )
+    #set ( $foreignBeanClassName = $foreignTableElement.getAttribute("beanClassName") )
+    #set ( $localFieldElement = $foreignKeyElement.getChild("local-field") )
+    #set ( $localFieldType = $localFieldElement.getAttribute("fieldType") )
+    #set ( $setter = $localFieldElement.getAttribute("setter") )
+    #set ( $beanFieldElement = $foreignKeyElement.getChild("local-field-in-bean") )
+    #set ( $beanField = $beanFieldElement.getAttribute("field") )
+    #set ( $beanGetter = $beanFieldElement.getAttribute("getter") )
+    #set ( $beanSetter = $beanFieldElement.getAttribute("setter") )
+    #set ( $foreignFieldElement = $foreignKeyElement.getChild("foreign-field"))
+    ## if the referencing table is in an external schema, 
+    ## foreignFieldElement is null. In this case,skip the foolowing code.
+    #if ($foreignFieldElement)
+      #if ($foreignTableName != $name)
+        #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+          ## field can be null if the generator property
+          ## torque.silentDbFetch is set to false
+            if($beanField != null)
+              copyObj.${beanSetter}(${beanField}.deepClone(createdBeans));
+        #end
+      #end
+    #end
+  #end        
+
+      // --- relazione molti a uno ${name} ---
+  #set ($foreignKeyElements = $torqueGen.getChild("referencing-foreign-keys").getChildren("foreign-key"))
+  #foreach ($foreignKeyElement in $foreignKeyElements)
+    #set ( $foreignFieldElement = $foreignKeyElement.getChild("foreign-field"))
+    #set ( $foreignBeanElement = $foreignKeyElement.getChild("foreign-field-in-bean"))
+    ## if the referencing table is in an external schema, 
+    ## foreignFieldElement is null. In this case,skip the foolowing code.
+    #if ($foreignFieldElement)
+      #set ( $foreignTableElement = $foreignKeyElement.getParent())
+      #set ( $foreignTableName = $foreignTableElement.getAttribute("name"))
+      #set ( $columnField = $foreignFieldElement.getAttribute("field"))
+      #set ( $columnFieldBean = $foreignBeanElement.getAttribute("field"))
+      #set ( $columnFieldType = $foreignFieldElement.getAttribute("fieldType"))
+      #set ( $columnFieldContainedType = $foreignFieldElement.getAttribute("fieldContainedType"))
+      #set ( $columnFieldContainedTypeBean = $foreignBeanElement.getAttribute("fieldContainedType"))
+      #set ( $getter = $foreignBeanElement.getAttribute("getter"))
+      #set ( $adder = $foreignBeanElement.getAttribute("setter").replace("set", "add"))
+      #if ($foreignTableName != $name)
+        #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+          ## field can be null if the generator property
+          ## torque.silentDbFetch is set to false                    
+          
+            copyObj.${columnFieldBean}.clear();
+            if (!${columnFieldBean}.isEmpty())
+            {
+                for (${columnFieldContainedTypeBean} obj : ${columnFieldBean})
+                    copyObj.${adder}(obj.deepClone(createdBeans));
+            }
+        #end
+      #end
+    #end
+  #end      
+      
+      return copyObj;
+    }

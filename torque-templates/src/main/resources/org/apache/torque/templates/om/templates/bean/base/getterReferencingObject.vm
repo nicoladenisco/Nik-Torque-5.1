@@ -32,8 +32,7 @@
      */
     public $fieldType ${getter}()
     {
-        //return $field;
-        return $field == null ? Collections.EMPTY_LIST : $field;
+        return $field;
     }
 
     

@@ -40,10 +40,17 @@
               element="foreign-key/local-field-in-bean"
               outlet="torque.om.fieldDefinition"/>
     </mergepoint>
+    <!--
     <mergepoint name="fieldDefinitionsReferencingObjects">
       <action xsi:type="traverseAllAction"
               element="referencing-foreign-keys/foreign-key/foreign-field-in-bean"
               outlet="torque.om.fieldDefinition"/>
+    </mergepoint>
+    -->
+    <mergepoint name="fieldDefinitionsReferencingObjects">
+      <action xsi:type="traverseAllAction"
+              element="referencing-foreign-keys/foreign-key/foreign-field-in-bean"
+              outlet="torque.om.bean.base.alternateFieldDefinitionReferencingObject"/>
     </mergepoint>
     <mergepoint name="gettersSetters">
       <action xsi:type="traverseAllAction"
@@ -72,13 +79,25 @@
       <action xsi:type="applyAction"
               outlet="torque.om.dbObject.base.getCurrentTimestamp"/>
     </mergepoint>
+    <!--
     <mergepoint name="deepClone">
       <action xsi:type="applyAction"
               outlet="torque.om.bean.base.deepClone"/>
     </mergepoint>
+    -->
+    <mergepoint name="deepClone">
+      <action xsi:type="applyAction"
+              outlet="torque.om.bean.base.alternateDeepClone"/>
+    </mergepoint>
+    <!--
     <mergepoint name="copyMethods">
       <action xsi:type="applyAction"
               outlet="torque.om.bean.base.copyMethods"/>
+    </mergepoint>
+    -->
+    <mergepoint name="copyMethods">
+      <action xsi:type="applyAction"
+              outlet="torque.om.bean.base.alternateCopyMethods"/>
     </mergepoint>
     <mergepoint name="extensions"/>
   </outlet>
@@ -144,9 +163,15 @@
       <action xsi:type="applyAction"
               outlet="torque.om.bean.base.getterReferencingObject"/>
     </mergepoint>
+    <!--
     <mergepoint name="setter">
       <action xsi:type="applyAction"
               outlet="torque.om.bean.base.setterReferencingObject"/>
+    </mergepoint>
+    -->
+    <mergepoint name="setter">
+      <action xsi:type="applyAction"
+              outlet="torque.om.bean.base.alternateSetterReferencingObject"/>
     </mergepoint>
   </outlet>
 
@@ -158,6 +183,11 @@
   <outlet name="torque.om.bean.base.setterReferencingObject"
           xsi:type="velocityOutlet"
           path="bean/base/setterReferencingObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.alternateSetterReferencingObject"
+          xsi:type="velocityOutlet"
+          path="bean/base/alternateSetterReferencingObject.vm">
   </outlet>
 
   <outlet name="torque.om.bean.bean"
@@ -182,9 +212,24 @@
           path="bean/base/deepClone.vm">
   </outlet>
 
+  <outlet name="torque.om.bean.base.alternateDeepClone"
+          xsi:type="velocityOutlet"
+          path="bean/base/alternateDeepClone.vm">
+  </outlet>
+
   <outlet name="torque.om.bean.base.copyMethods"
           xsi:type="velocityOutlet"
           path="bean/base/copyMethods.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.alternateCopyMethods"
+          xsi:type="velocityOutlet"
+          path="bean/base/alternateCopyMethods.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.alternateFieldDefinitionReferencingObject"
+          xsi:type="velocityOutlet"
+          path="bean/base/alternateFieldDefinitionReferencingObject.vm">
   </outlet>
 
 </outlets>

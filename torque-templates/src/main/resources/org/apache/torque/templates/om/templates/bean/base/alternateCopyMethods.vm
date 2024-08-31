@@ -1,0 +1,148 @@
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##   http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing,
+## software distributed under the License is distributed on an
+## "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+## KIND, either express or implied.  See the License for the
+## specific language governing permissions and limitations
+## under the License.
+##
+######
+##
+## version $Id: copyMethods.vm 1850502 2019-01-05 16:47:35Z painter $
+##
+## Creates the copy methods for a database base object.
+## This template expects as input a "table" element from the torque schema
+## which was processed by the OMTransformer.  
+##
+    /**
+     * Makes a copy of this object.
+     * It creates a new object filling in the simple attributes.
+  #if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+     * It then fills all the association collections and sets the
+     * related objects to isNew=true.
+  #end
+     */
+    public $beanClassName copy()
+    {
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+        return copy(true);
+#else
+        $beanClassName copyObj = new ${beanClassName}();
+        return copyInto(copyObj);
+#end
+    }
+
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+    /**
+     * Makes a copy of this object.
+     * It creates a new object filling in the simple attributes.
+     * If the parameter deepcopy is true, it then fills all the
+     * association collections and sets the related objects to
+     * isNew=true.
+     *
+     * @param deepcopy whether to copy the associated objects.
+     */
+    public $beanClassName copy(boolean deepcopy)
+    {
+        $beanClassName copyObj = new ${beanClassName}();
+        return copyInto(copyObj, deepcopy);
+    }
+#end
+  
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+    /**
+     * Fills the copyObj with the contents of this object.
+     * The associated objects are also copied and treated as new objects.
+     *
+     * @param copyObj the object to fill.
+     */
+    public $beanClassName copyInto($beanClassName copyObj)
+    {
+        return copyInto(copyObj, true);
+    }
+#end
+  
+    /**
+     * Fills the copyObj with the contents of this object.
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+     * If deepcopy is true, The associated objects are also copied
+     * and treated as new objects.
+     *
+#end
+     * @param copyObj the object to fill.
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+     * @param deepcopy whether the associated objects should be copied.
+#end
+     */
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+    public $beanClassName copyInto($beanClassName copyObj, boolean deepcopy)
+#else
+    public $beanClassName copyInto($beanClassName copyObj)
+#end
+    {
+#set ( $columnElements = $torqueGen.getChildren("column") )
+#foreach ($columnElement in $columnElements)
+  #set ( $setter = $columnElement.getAttribute("setter") )
+  #set ( $columnField = $columnElement.getAttribute("field") )
+  #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
+  #set ( $defaultValue = $columnElement.getAttribute("defaultValue") )
+  #if($columnElement.getAttribute("primaryKey") != "true")
+        copyObj.${setter}($columnField);
+  #else
+    #if($columnElement.getAttribute("primitive") == "true")
+        copyObj.${setter}($defaultValue);
+    #else
+        copyObj.${setter}((${columnFieldType}) $defaultValue);
+    #end
+  #end
+#end
+
+#if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
+  #set ($foreignKeyElements = $torqueGen.getChild("referencing-foreign-keys").getChildren("foreign-key"))
+        if (deepcopy)
+        {
+  #foreach ($foreignKeyElement in $foreignKeyElements)
+    #set ( $foreignFieldElement = $foreignKeyElement.getChild("foreign-field"))
+    #set ( $foreignBeanElement = $foreignKeyElement.getChild("foreign-field-in-bean"))
+    ## if the referencing table is in an external schema, 
+    ## foreignFieldElement is null. In this case,skip the foolowing code.
+    #if ($foreignFieldElement)
+      #set ( $foreignTableElement = $foreignKeyElement.getParent())
+      #set ( $foreignTableName = $foreignTableElement.getAttribute("name"))
+      #set ( $columnField = $foreignFieldElement.getAttribute("field"))
+      #set ( $columnFieldBean = $foreignBeanElement.getAttribute("field"))
+      #set ( $columnFieldType = $foreignFieldElement.getAttribute("fieldType"))
+      #set ( $columnFieldContainedType = $foreignFieldElement.getAttribute("fieldContainedType"))
+      #set ( $columnFieldContainedTypeBean = $foreignBeanElement.getAttribute("fieldContainedType"))
+      #set ( $getter = $foreignBeanElement.getAttribute("getter"))
+      #set ( $adder = $foreignBeanElement.getAttribute("setter").replace("set", "add"))
+      #if ($foreignTableName != $name)
+        #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
+          ## field can be null if the generator property
+          ## torque.silentDbFetch is set to false
+          
+            copyObj.${columnFieldBean}.clear();
+            if (!${columnFieldBean}.isEmpty())
+            {
+                for (${columnFieldContainedTypeBean} obj : ${columnFieldBean})
+                    copyObj.${adder}(obj.copy());
+            }
+        #end
+      #end
+    #end
+  #end
+        }
+#end
+        return copyObj;
+    }
+        
+    
