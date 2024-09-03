@@ -38,6 +38,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static List<${dbObjectClassName}> doSelect(Criteria criteria)
             throws TorqueException
     {
@@ -100,6 +101,7 @@
      * @throws TorqueException if querying the database fails.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static <T> List<T> doSelect(
                 Criteria criteria,
                 RecordMapper<T> mapper)
@@ -176,6 +178,7 @@
      * @throws TorqueException if querying the database fails.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static <T> List<T> doSelect(
                 String query,
                 RecordMapper<T> mapper,
@@ -250,6 +253,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static List<${dbObjectClassName}> doSelect($dbObjectClassName obj)
             throws TorqueException
     {
@@ -268,8 +272,8 @@
      *         an error occurs when processing the query.
      * @deprecated use version with explicit connection
      */
-    public static ${dbObjectClassName} doSelectSingleRecord(
-                Criteria criteria)
+    @Deprecated
+    public static ${dbObjectClassName} doSelectSingleRecord(Criteria criteria)
             throws TorqueException
     {
         return ${peerImplGetter}().doSelectSingleRecord(criteria);
@@ -307,6 +311,7 @@
      * @throws TorqueException if querying the database fails.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static <T> T doSelectSingleRecord(
                 org.apache.torque.criteria.Criteria criteria,
                 RecordMapper<T> mapper)
@@ -351,6 +356,7 @@
      *         an error occurs when processing the query.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static ${dbObjectClassName} doSelectSingleRecord(
                 $dbObjectClassName obj)
             throws TorqueException

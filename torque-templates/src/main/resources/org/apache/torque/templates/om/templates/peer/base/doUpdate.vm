@@ -37,6 +37,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int doUpdate(ColumnValues columnValues) throws TorqueException
     {
         return ${peerImplGetter}().doUpdate(columnValues);
@@ -75,6 +76,7 @@
      * @throws TorqueException if updating fails.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int doUpdate(
                 Criteria selectCriteria,
                 ColumnValues updateValues)
@@ -122,6 +124,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int doUpdate($dbObjectClassName obj) throws TorqueException
     {
         return ${peerImplGetter}().doUpdate(obj);

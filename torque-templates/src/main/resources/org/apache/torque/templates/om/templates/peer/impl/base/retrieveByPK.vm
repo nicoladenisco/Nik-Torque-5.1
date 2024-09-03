@@ -42,6 +42,7 @@
      * @throws TooManyRowsException Primary key was not found in database.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public $dbObjectClassName retrieveByPK($columnFieldType pk)
         throws TorqueException, NoRowsException, TooManyRowsException
     {
@@ -77,6 +78,7 @@
     #end
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public $dbObjectClassName retrieveByPK(
     #set ( $elementCount = 1 )
     #foreach ($columnElement in $primaryKeyColumnElements)
@@ -146,6 +148,7 @@
      * @throws TooManyRowsException Primary key was not found in database.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public $dbObjectClassName retrieveByPK(ObjectKey<?> pk)
         throws TorqueException, NoRowsException, TooManyRowsException
     {

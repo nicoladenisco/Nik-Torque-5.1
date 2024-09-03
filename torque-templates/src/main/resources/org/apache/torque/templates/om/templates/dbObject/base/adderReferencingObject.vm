@@ -47,7 +47,9 @@
      * @throws TorqueException if retrieval of the associated objects fails.
 #end
      * @throws NullPointerException if toAdd is null.
+     * @deprecated use version with explicit connection
      */
+    @Deprecated
     public void ${adder}($fieldContainedType toAdd)
 #if ($silentDbFetch)
         throws TorqueException

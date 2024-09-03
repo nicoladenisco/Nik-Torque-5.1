@@ -30,8 +30,10 @@
      * It then fills all the association collections and sets the
      * related objects to isNew=true.
   #end
-	 * @throws TorqueException if retrieval of the associated objects fails  
+     * @throws TorqueException if retrieval of the associated objects fails  
+     * @deprecated use version with explicit connection
      */
+    @Deprecated
     public $dbObjectClassName copy() throws TorqueException
     {
 #if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
@@ -66,7 +68,9 @@ $torqueGen.mergepoint("createObjectInstance")
      *
      * @param deepcopy whether to copy the associated objects.
      * @throws TorqueException if retrieval of the associated objects fails
+     * @deprecated use version with explicit connection
      */
+    @Deprecated
     public $dbObjectClassName copy(boolean deepcopy) throws TorqueException
     {
 $torqueGen.mergepoint("createObjectInstance")
@@ -98,7 +102,9 @@ $torqueGen.mergepoint("createObjectInstance")
      *
      * @param copyObj the object to fill.
      * @throws TorqueException if retrieval of the associated objects fails
+     * @deprecated use version with explicit connection
      */
+    @Deprecated
     public $dbObjectClassName copyInto($dbObjectClassName copyObj) throws TorqueException
     {
         return copyInto(copyObj, true);
@@ -130,7 +136,9 @@ $torqueGen.mergepoint("createObjectInstance")
      * @param deepcopy whether the associated objects should be copied.
 #end
      * @throws TorqueException if retrieval of the associated objects fails
+     * @deprecated use version with explicit connection
      */
+    @Deprecated
 #if ($torqueGen.booleanOption("torque.om.complexObjectModel") && $torqueGen.booleanOption("torque.om.objectIsCaching"))
     protected $dbObjectClassName copyInto($dbObjectClassName copyObj, boolean deepcopy) throws TorqueException
 #else

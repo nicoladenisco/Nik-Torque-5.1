@@ -38,6 +38,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+     @Deprecated
      public static int doDelete(Criteria criteria) throws TorqueException
      {
         return ${peerImplGetter}().doDelete(criteria);
@@ -74,6 +75,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int doDelete(${dbObjectClassName} obj) throws TorqueException
     {
         return ${peerImplGetter}().doDelete(obj);
@@ -113,6 +115,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int doDelete(Collection<${dbObjectClassName}> objects)
             throws TorqueException
     {
@@ -153,6 +156,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int doDelete(ObjectKey<?> pk) throws TorqueException
     {
         return ${peerImplGetter}().doDelete(pk);

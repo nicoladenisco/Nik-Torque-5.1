@@ -48,6 +48,7 @@
      * @throws $saveException if an error occurs during saving.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public void save(${methodInputParam}) throws $saveException
     {
 #if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
@@ -93,6 +94,7 @@
      * @throws $saveException if an error occurs during saving.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public void save(${methodInputParamWithComma}String dbName) 
             throws $saveException
     {

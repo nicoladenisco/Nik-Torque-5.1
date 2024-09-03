@@ -81,7 +81,9 @@
 #if ($silentDbFetch)
      * @throws TorqueException when reading from the database fails.
 #end
+     * @deprecated use version with explicit connection
      */
+    @Deprecated
     public $fieldType ${getter}()
 #if ($silentDbFetch)
         throws TorqueException

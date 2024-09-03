@@ -45,6 +45,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     protected static List<${dbObjectClassName}> ${peerJoinAllExceptSelectMethod}(Criteria criteria)
         throws TorqueException
     {

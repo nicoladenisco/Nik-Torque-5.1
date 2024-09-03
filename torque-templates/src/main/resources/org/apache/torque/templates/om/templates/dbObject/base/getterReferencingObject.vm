@@ -59,6 +59,7 @@
 #end
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public $fieldType ${getter}()
 #if ($silentDbFetch)
         throws TorqueException
@@ -100,6 +101,7 @@ $torqueGen.mergepoint("backreference")##
      * @throws TorqueException If a problem occurs with the get[criteria] method.     
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public $fieldType ${getter}(Criteria criteria) throws TorqueException
     {
 #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))

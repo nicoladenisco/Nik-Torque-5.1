@@ -42,6 +42,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static ObjectKey<?> doInsert(ColumnValues columnValues) 
             throws TorqueException
     {
@@ -76,6 +77,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static void doInsert($dbObjectClassName obj)
             throws TorqueException
     {
@@ -110,6 +112,7 @@
      * @throws TorqueException if a database error occurs.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int doInsert(
                 final Column[] toInsertInto,
                 final Criteria criteria)
@@ -132,6 +135,7 @@
      * @throws TorqueException if a database error occurs.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int doInsert(
                 final Column[] toInsertInto,
                 final Criteria criteria,

@@ -59,6 +59,7 @@
      * @throws TorqueException if associated objects are not found
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     ${getterAccessModifier} $fieldType ${getter}(Criteria criteria) throws TorqueException
     {
         try (TorqueConnection connection = Transaction.begin(criteria.getDbName()))

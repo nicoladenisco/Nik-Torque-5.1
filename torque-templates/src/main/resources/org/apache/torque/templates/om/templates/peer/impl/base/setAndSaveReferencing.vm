@@ -71,6 +71,7 @@
      * @throws NullPointerException if toSave is null or contains null elements.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public void ${setAndSaveMethodName}(
             ${localDbObjectClassName} toLinkTo,
             Collection<${foreignDbObjectClassName}> toSave) 

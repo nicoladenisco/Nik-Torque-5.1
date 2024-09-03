@@ -140,6 +140,7 @@
      *
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public ${dbObjectClassName} ${retrieveMethod}Quiet($uniqueFuncParams)
     {
         try (TorqueConnection connection = Transaction.begin(getDatabaseName()))

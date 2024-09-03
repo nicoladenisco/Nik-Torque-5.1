@@ -41,6 +41,7 @@
      *         or no database connection can be established.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int executeStatement(String statementString) 
             throws TorqueException
     {
@@ -63,6 +64,7 @@
      *         or no database connection can be established.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int executeStatement(
                 String statementString,
                 List<JdbcTypedValue> replacementValues)
@@ -91,6 +93,7 @@
      *         or no database connection can be established.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int executeStatement(
             String statementString,
             String dbName,
@@ -149,6 +152,7 @@
      * @throws TorqueException if executing the statement fails.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int executeStatement(
             final String statementString,
             final Map<String, JdbcTypedValue> replacementValues)
@@ -180,6 +184,7 @@
      * @throws TorqueException if executing the statement fails.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static int executeStatement(
                 final String statementString,
                 final String dbName,

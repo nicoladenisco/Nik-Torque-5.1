@@ -38,6 +38,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public int doDelete($dbObjectClassName obj) throws TorqueException
     {
 #set ( $primaryKeyColumnElements = $torqueGen.getChild("primary-keys").getChildren("column"))
@@ -92,6 +93,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public int doDelete(Collection<${dbObjectClassName}> objects)
             throws TorqueException
     {

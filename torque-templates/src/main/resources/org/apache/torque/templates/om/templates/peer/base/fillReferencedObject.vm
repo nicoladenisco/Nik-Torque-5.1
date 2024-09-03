@@ -47,6 +47,7 @@
      * @throws NullPointerException if toFill is null or contains null elements.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static List<${fieldType}> ${filler}(
             Collection<${localDbObjectClassName}> toFill) 
         throws TorqueException
@@ -70,6 +71,7 @@
      * @throws NullPointerException if toFill is null or contains null elements.
      * @deprecated use version with explicit connection
      */
+    @Deprecated
     public static List<${fieldType}> ${filler}(
             Collection<${localDbObjectClassName}> toFill,
             int chunkSize)

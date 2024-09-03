@@ -79,6 +79,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use equivalent with specific connection
      */
+    @Deprecated
     public static List<${dbObjectClassName}> retrieveByTypedPKs(Collection<${columnFieldType}> pks)
         throws TorqueException
     {
@@ -116,6 +117,7 @@
      *         rethrown wrapped into a TorqueException.
      * @deprecated use equivalent with specific connection
      */
+    @Deprecated
     public static List<${dbObjectClassName}> retrieveByObjectKeys(Collection<ObjectKey<?>> pks)
         throws TorqueException
     {
@@ -149,9 +151,9 @@
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
      *
-     * @deprecated This method has been renamed to retrieveByObjectKeys.
-     *             This method will not be generated any more in future versions of Torque.
+     * @deprecated use equivalent with specific connection
      */
+    @Deprecated
     public static List<${dbObjectClassName}> retrieveByPKs(Collection<ObjectKey<?>> pks)
         throws TorqueException
     {
@@ -168,9 +170,6 @@
      *
      * @throws TorqueException Any exceptions caught during processing will be
      *         rethrown wrapped into a TorqueException.
-     *
-     * @deprecated This method has been renamed to retrieveByObjectKeys.
-     *             This method will not be generated any more in future versions of Torque.
      */
     public static List<${dbObjectClassName}> retrieveByPKs(Collection<ObjectKey<?>> pks, Connection con)
         throws TorqueException
