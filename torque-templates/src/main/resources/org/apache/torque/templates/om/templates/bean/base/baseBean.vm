@@ -150,6 +150,7 @@ $torqueGen.mergepoint("fieldDefinitionsReferencingObjects")
   
 $torqueGen.mergepoint("gettersSetters")
 $torqueGen.mergepoint("copyMethods")
+$torqueGen.mergepoint("toString")
 
 #if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
 $torqueGen.mergepoint("gettersSettersReferencedObjects")

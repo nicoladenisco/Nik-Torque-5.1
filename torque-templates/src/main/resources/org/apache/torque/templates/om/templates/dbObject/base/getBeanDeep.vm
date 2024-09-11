@@ -330,11 +330,24 @@
         return updateBean(copyObj);
 
       // NOTE: copy all fields BUT NOT the foreign keys (different from updateBean())
-      #foreach ($col in $table.Columns)
-        #if (!$col.isForeignKey())
-        copyObj.${col.SetterName}($col.UncapitalisedJavaName);
-        #end
-      #end
+#set ( $accuNoSetter = $torqueGen.createAccumulator() )
+#foreach ($foreignKeyElement in $foreignKeyElements)
+  #set ( $localColumns = $foreignKeyElement.getChild("reference").getChildren("local-column") )
+  #foreach ($lc in $localColumns)
+    #set ( $column = $lc.getChild("column") )
+    #set ( $setter = $column.getAttribute("setter") )    
+    #set ( $dummy = $accuNoSetter.add($setter) )
+  #end
+#end
+      // ignored: $accuNoSetter
+#set ( $columnElements = $torqueGen.getChildren("column") )
+#foreach ($columnElement in $columnElements)
+  #set ( $setter = $columnElement.getAttribute("setter") )
+  #set ( $getter = $columnElement.getAttribute("getter") )
+  #if(!$accuNoSetter.contains($setter))
+      copyObj.${setter}(${getter}());
+  #end
+#end
 
       Stack<String> ignoreTableName = fetcher.getIgnoreTables();
       updateBeanOne(copyObj, ignoreTableName, fetcher, conn);

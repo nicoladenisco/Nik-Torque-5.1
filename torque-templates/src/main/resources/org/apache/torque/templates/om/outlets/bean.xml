@@ -99,6 +99,12 @@
       <action xsi:type="applyAction"
               outlet="torque.om.bean.base.alternateCopyMethods"/>
     </mergepoint>
+
+    <mergepoint name="toString">
+      <action xsi:type="applyAction"
+              outlet="torque.om.bean.base.toString"/>
+    </mergepoint>
+
     <mergepoint name="extensions"/>
   </outlet>
 
@@ -230,6 +236,11 @@
   <outlet name="torque.om.bean.base.alternateFieldDefinitionReferencingObject"
           xsi:type="velocityOutlet"
           path="bean/base/alternateFieldDefinitionReferencingObject.vm">
+  </outlet>
+
+  <outlet name="torque.om.bean.base.toString"
+          xsi:type="velocityOutlet"
+          path="bean/base/toString.vm">
   </outlet>
 
 </outlets>
