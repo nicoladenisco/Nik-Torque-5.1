@@ -147,7 +147,7 @@
     {
         return create${javaName}(bean, new IdentityMap());
     }
-
+    
     /**
      * Creates an instance of ${javaName} with the contents
      * of a $beanClassName.
@@ -163,6 +163,27 @@
      * @throws TorqueException if unable to create the bean
      */
     public static ${javaName} create${javaName}(${beanClassName} bean, IdentityMap createdObjects)
+        throws TorqueException
+    {
+      return create${javaName}(bean, true, createdObjects);
+    }
+
+    /**
+     * Creates an instance of ${javaName} with the contents
+     * of a $beanClassName.
+     * This behaviour could have also been achieved using a constructor,
+     * however as this class is abstract no constructors are allowed.
+     *
+     * This method is intended for internal use only.
+     * @param bean the $beanClassName which contents are used to create
+     *        the resulting class
+     * @param deepCopy copy related bean too
+     * @param createdObjects a IdentityMap which maps beans
+     *        to already created objects
+     * @return an instance of ${javaName} with the contents of bean
+     * @throws TorqueException if unable to create the bean
+     */
+    public static ${javaName} create${javaName}(${beanClassName} bean, boolean deepCopy, IdentityMap createdObjects)
         throws TorqueException
     {
         ${javaName} result = (${javaName}) createdObjects.get(bean);
@@ -185,6 +206,8 @@
 #end
 
 #if ($torqueGen.booleanOption("torque.om.complexObjectModel"))
+  if(deepCopy)
+  {
   ## foreign references to this Object
   #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
     #foreach ($foreignKeyElement in $referencingForeignKeyElements)
@@ -206,7 +229,7 @@
             {
                 for ($foreignBeanClassName relatedBean : relatedBeans)
                 {
-                    ${foreignClassName} related = ${foreignClassName}.create${foreignClassName}(relatedBean, createdObjects);
+                    ${foreignClassName} related = ${foreignClassName}.create${foreignClassName}(relatedBean, deepCopy, createdObjects);
                     result.${adder}FromBean(related);
                 }
             }
@@ -230,13 +253,15 @@
             ${foreignBeanClassName} relatedBean = bean.${beanGetter}();
             if (relatedBean != null)
             {
-                ${localFieldType} relatedObject = ${localFieldType}.create${localFieldType}(relatedBean, createdObjects);
+                ${localFieldType} relatedObject = ${localFieldType}.create${localFieldType}(relatedBean, deepCopy, createdObjects);
                 result.${setter}(relatedObject);
             }
         }
     #end
-  #end
+  #end      
+  }     
 #end
+
         result.setModified(bean.isModified());
         result.setNew(bean.isNew());
         return result;
