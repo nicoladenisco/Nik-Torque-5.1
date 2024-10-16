@@ -32,22 +32,12 @@
         copyObj = new ${beanClassName}();
         createdBeans.put(this, copyObj);
         
-#set ( $columnElements = $torqueGen.getChildren("column") )
-#foreach ($columnElement in $columnElements)
+  #set ( $columnElements = $torqueGen.getChildren("column") )
+  #foreach ($columnElement in $columnElements)
   #set ( $setter = $columnElement.getAttribute("setter") )
   #set ( $columnField = $columnElement.getAttribute("field") )
-  #set ( $columnFieldType = $columnElement.getAttribute("fieldType") )
-  #set ( $defaultValue = $columnElement.getAttribute("defaultValue") )
-  #if($columnElement.getAttribute("primaryKey") != "true")
-        copyObj.${setter}($columnField);
-  #else
-    #if($columnElement.getAttribute("primitive") == "true")
-        copyObj.${setter}($defaultValue);
-    #else
-        copyObj.${setter}((${columnFieldType}) $defaultValue);
-    #end
+    copyObj.${setter}($columnField);
   #end
-#end
 
       // --- relazione uno a molti ${name} ---
   #set ($foreignKeyElements = $torqueGen.getChildren("foreign-key"))
@@ -72,8 +62,11 @@
         #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
           ## field can be null if the generator property
           ## torque.silentDbFetch is set to false
-            if($beanField != null)
-              copyObj.${beanSetter}(${beanField}.deepClone(createdBeans));
+            if($beanField != null) {
+              $foreignBeanClassName tmp = ${beanField}.deepClone(createdBeans);
+              if(tmp != null)
+                copyObj.${beanSetter}(tmp);
+            }
         #end
       #end
     #end
@@ -105,7 +98,11 @@
             if (!${columnFieldBean}.isEmpty())
             {
                 for (${columnFieldContainedTypeBean} obj : ${columnFieldBean})
-                    copyObj.${adder}(obj.deepClone(createdBeans));
+                {
+                    $columnFieldContainedTypeBean tmp = obj.deepClone(createdBeans);
+                    if(tmp != null)
+                      copyObj.${adder}(tmp);
+                }
             }
         #end
       #end

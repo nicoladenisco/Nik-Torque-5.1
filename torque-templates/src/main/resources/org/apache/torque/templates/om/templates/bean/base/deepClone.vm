@@ -72,8 +72,11 @@
         #if ($torqueGen.booleanOption("torque.om.objectIsCaching"))
           ## field can be null if the generator property
           ## torque.silentDbFetch is set to false
-            if($beanField != null)
-              copyObj.${beanSetter}(${beanField}.deepClone(createdBeans));
+            if($beanField != null) {
+              $foreignBeanClassName tmp = ${beanField}.deepClone(createdBeans);
+              if(tmp != null)
+                copyObj.${beanSetter}(tmp);
+            }          
         #end
       #end
     #end
@@ -103,7 +106,11 @@
             if (${columnFieldBean} != null)
             {
                 for (${columnFieldContainedTypeBean} obj : ${columnFieldBean})
-                    copyObj.${adder}(obj.deepClone(createdBeans));
+                {
+                    $columnFieldContainedTypeBean tmp = obj.deepClone(createdBeans);
+                    if(tmp != null)
+                      copyObj.${adder}(tmp);
+                }            
             }
             else
             {
