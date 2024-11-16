@@ -22,17 +22,20 @@
 
   <modelVersion>4.0.0</modelVersion>
 
+<!--
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <version>24</version>
   </parent>
+-->
 
-  <groupId>org.apache.torque</groupId>
+  <groupId>io.github.nicoladenisco</groupId>
   <artifactId>torque</artifactId>
-  <packaging>pom</packaging>
-  <name>Torque Maven Parent</name>
   <version>5.1</version>
+  <packaging>pom</packaging>
+
+  <name>Torque Maven Parent</name>
   <description>Torque parent project</description>
   <url>https://db.apache.org/torque/</url>
 
@@ -45,6 +48,7 @@
     <module>torque-site</module>
   </modules>
 
+<!--
   <issueManagement>
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/TORQUE</url>
@@ -63,7 +67,9 @@
   </ciManagement>
 
   <inceptionYear>2000</inceptionYear>
+-->
 
+<!--
   <mailingLists>
     <mailingList>
       <name>Torque User List</name>
@@ -78,6 +84,7 @@
       <archive>http://mail-archives.apache.org/mod_mbox/db-torque-dev/</archive>
     </mailingList>
   </mailingLists>
+-->
 
   <developers>
     <developer>
@@ -249,6 +256,12 @@
       </roles>
       <timezone>+1</timezone>
     </developer>
+    <developer>
+      <name>Nicola De Nisco</name>
+      <email>nicoladenisco@gmail.com</email>
+      <organization>Github</organization>
+      <organizationUrl>https://github.com/nicoladenisco</organizationUrl>
+    </developer>
   </developers>
 
   <contributors>
@@ -315,9 +328,9 @@
   </contributors>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/db/torque/tags/torque-5-1</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/db/torque/tags/torque-5-1</developerConnection>
-    <url>http://svn.apache.org/viewvc/db/torque/tags/torque-5-1</url>
+    <connection>scm:git:git@github.com:nicoladenisco/Nik-Torque-5.1.git</connection>
+    <developerConnection>scm:git:git@github.com:nicoladenisco/Nik-Torque-5.1.git</developerConnection>
+    <url>https://github.com/nicoladenisco/Nik-Torque-5.1</url>
   </scm>
 
   <dependencyManagement>

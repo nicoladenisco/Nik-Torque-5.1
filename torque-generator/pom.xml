@@ -19,7 +19,7 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <groupId>org.apache.torque</groupId>
+    <groupId>io.github.nicoladenisco</groupId>
     <artifactId>torque</artifactId>
     <version>5.1</version>
     <relativePath>..</relativePath>
@@ -32,9 +32,9 @@
   <name>Torque Generator</name>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/db/torque/tags/torque-5-1/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/db/torque/tags/torque-5-1/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/db/torque/tags/torque-5-1/trunk</url>
+    <connection>scm:git:git@github.com:nicoladenisco/Nik-Torque-5.1.git</connection>
+    <developerConnection>scm:git:git@github.com:nicoladenisco/Nik-Torque-5.1.git</developerConnection>
+    <url>https://github.com/nicoladenisco/Nik-Torque-5.1</url>
   </scm>
 
   <dependencies>
@@ -44,17 +44,17 @@
       <artifactId>org.eclipse.jgit</artifactId>
       <version>5.13.0.202109080827-r</version>
     </dependency>
-    
+
    <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-1.2-api</artifactId>
     </dependency>
-    
+
     <dependency>
        <groupId>org.apache.logging.log4j</groupId>
        <artifactId>log4j-core</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
        <artifactId>log4j-jcl</artifactId>
@@ -110,59 +110,59 @@
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-jmx</artifactId>
-          </exclusion>          
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-datetime</artifactId>
-          </exclusion>                    
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-xml</artifactId>
-          </exclusion>    
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-docgenerator</artifactId>
-          </exclusion>    
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-test</artifactId>
-          </exclusion> 
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-nio</artifactId>
-          </exclusion>            
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-macro</artifactId>
-          </exclusion>  
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-swing</artifactId>
-          </exclusion>  
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-jsr223</artifactId>
-          </exclusion> 
+          </exclusion>
            <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-console</artifactId>
-          </exclusion> 
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-servlet</artifactId>
-          </exclusion> 
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-groovysh</artifactId>
-          </exclusion> 
+          </exclusion>
           <exclusion>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-groovydoc</artifactId>
-          </exclusion> 
+          </exclusion>
         </exclusions>
     </dependency>
-     <!-- 
-        We do not depend on any xerces features. However, the standard 
+     <!--
+        We do not depend on any xerces features. However, the standard
         xml parser packaged in java is sometimes buggy (e.g.1.6.0_20 on windows)
         so better explicitly use a working parser
       -->
@@ -172,7 +172,7 @@
       <artifactId>xercesImpl</artifactId>
       <version>2.12.1</version>
     </dependency>
-    
+
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-core</artifactId>

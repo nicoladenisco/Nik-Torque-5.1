@@ -19,7 +19,7 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <groupId>org.apache.torque</groupId>
+    <groupId>io.github.nicoladenisco</groupId>
     <artifactId>torque</artifactId>
     <version>5.1</version>
     <relativePath>..</relativePath>
@@ -32,10 +32,9 @@
   <name>Torque Templates</name>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/db/torque/tags/torque-5-1/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/db/torque/tags/torque-5-1/trunk
-    </developerConnection>
-    <url>http://svn.apache.org/viewvc/db/torque/tags/torque-5-1/trunk</url>
+    <connection>scm:git:git@github.com:nicoladenisco/Nik-Torque-5.1.git</connection>
+    <developerConnection>scm:git:git@github.com:nicoladenisco/Nik-Torque-5.1.git</developerConnection>
+    <url>https://github.com/nicoladenisco/Nik-Torque-5.1</url>
   </scm>
 
   <dependencies>
