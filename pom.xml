@@ -613,6 +613,7 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
+        <version>0.16.1</version>
         <configuration>
           <excludes>
             <exclude>velocity.log</exclude>
