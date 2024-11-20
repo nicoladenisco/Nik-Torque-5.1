@@ -18,8 +18,6 @@ package org.apache.torque.templates.transformer.om;
  * specific language governing permissions and limitations
  * under the License.
  */
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.torque.generator.control.ControllerState;
@@ -249,16 +247,16 @@ public class OMTransformer implements SourceTransformer
    */
   public static void dumpDebug(SourceElement root)
   {
-    File out = new File(System.getProperty("java.io.tmpdir"), "source-root.txt");
-    System.out.println("Dump SourceElement root in " + out.getAbsolutePath());
-
-    try(FileWriter os = new FileWriter(out))
-    {
-      os.write(root.prettyDump());
-    }
-    catch(Exception ex)
-    {
-      System.err.println("FATAL ERROR: " + ex.getMessage());
-    }
+//    File out = new File(System.getProperty("java.io.tmpdir"), "source-root.txt");
+//    System.out.println("Dump SourceElement root in " + out.getAbsolutePath());
+//
+//    try(FileWriter os = new FileWriter(out))
+//    {
+//      os.write(root.prettyDump());
+//    }
+//    catch(Exception ex)
+//    {
+//      System.err.println("FATAL ERROR: " + ex.getMessage());
+//    }
   }
 }

@@ -39,7 +39,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.torque</groupId>
+      <groupId>io.github.nicoladenisco</groupId>
       <artifactId>torque-generator</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -49,6 +49,7 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>

@@ -22,13 +22,11 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-<!--
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <version>24</version>
   </parent>
--->
 
   <groupId>io.github.nicoladenisco</groupId>
   <artifactId>torque</artifactId>
@@ -40,51 +38,49 @@
   <url>https://db.apache.org/torque/</url>
 
   <modules>
-    <module>torque-runtime</module>
     <module>torque-generator</module>
     <module>torque-templates</module>
     <module>torque-maven-plugin</module>
     <module>torque-ant-tasks</module>
-    <module>torque-site</module>
   </modules>
 
-<!--
-  <issueManagement>
-    <system>JIRA</system>
-    <url>http://issues.apache.org/jira/browse/TORQUE</url>
-  </issueManagement>
+  <!--
+    <issueManagement>
+      <system>JIRA</system>
+      <url>http://issues.apache.org/jira/browse/TORQUE</url>
+    </issueManagement>
 
-  <ciManagement>
-    <system>jenkins</system>
-    <url>https://ci-builds.apache.org/</url>
-    <notifiers>
-      <notifier>
-        <type>email</type>
-        <sendOnError>true</sendOnError>
-        <sendOnFailure>true</sendOnFailure>
-      </notifier>
-    </notifiers>
-  </ciManagement>
+    <ciManagement>
+      <system>jenkins</system>
+      <url>https://ci-builds.apache.org/</url>
+      <notifiers>
+        <notifier>
+          <type>email</type>
+          <sendOnError>true</sendOnError>
+          <sendOnFailure>true</sendOnFailure>
+        </notifier>
+      </notifiers>
+    </ciManagement>
 
-  <inceptionYear>2000</inceptionYear>
--->
+    <inceptionYear>2000</inceptionYear>
+  -->
 
-<!--
-  <mailingLists>
-    <mailingList>
-      <name>Torque User List</name>
-      <subscribe>torque-user-subscribe@db.apache.org</subscribe>
-      <unsubscribe>torque-user-unsubscribe@db.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/db-torque-user/</archive>
-    </mailingList>
-    <mailingList>
-      <name>Torque Developer List</name>
-      <subscribe>torque-dev-subscribe@db.apache.org</subscribe>
-      <unsubscribe>torque-dev-unsubscribe@db.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/db-torque-dev/</archive>
-    </mailingList>
-  </mailingLists>
--->
+  <!--
+    <mailingLists>
+      <mailingList>
+        <name>Torque User List</name>
+        <subscribe>torque-user-subscribe@db.apache.org</subscribe>
+        <unsubscribe>torque-user-unsubscribe@db.apache.org</unsubscribe>
+        <archive>http://mail-archives.apache.org/mod_mbox/db-torque-user/</archive>
+      </mailingList>
+      <mailingList>
+        <name>Torque Developer List</name>
+        <subscribe>torque-dev-subscribe@db.apache.org</subscribe>
+        <unsubscribe>torque-dev-unsubscribe@db.apache.org</unsubscribe>
+        <archive>http://mail-archives.apache.org/mod_mbox/db-torque-dev/</archive>
+      </mailingList>
+    </mailingLists>
+  -->
 
   <developers>
     <developer>

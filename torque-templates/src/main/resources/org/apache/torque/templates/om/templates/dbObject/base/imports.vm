@@ -66,8 +66,8 @@ import $torqueGen.option("torque.om.criteriaClass");
 #if ($torqueGen.booleanOption("torque.om.addSaveMethods") && $saveMethodsInDbObjects == "true")
 import org.apache.torque.util.TorqueConnection;
 import org.apache.torque.util.Transaction;
-import org.apache.torque.util.TorqueTableFetcher;
-import org.apache.torque.util.ModifyMonitorListener;
+import ${baseDbObjectPackage}.TorqueTableFetcher;
+import ${baseDbObjectPackage}.ModifyMonitorListener;
 #end
 
 #foreach ($columnElement in $torqueGen.getSourceElement().getChildren("column"))

@@ -39,7 +39,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.torque</groupId>
+      <groupId>io.github.nicoladenisco</groupId>
       <artifactId>torque-generator</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -49,10 +49,10 @@
       <version>${maven.api.version}</version>
       <!-- guava throws an owasp warning and is used in indexer-core to run maven, but not to build this plugin -->
       <exclusions>
-           <exclusion>
-              <groupId>com.google.guava</groupId>
-              <artifactId>guava</artifactId>
-           </exclusion>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -61,12 +61,12 @@
       <version>3.6.2</version>
       <!-- annotations are not used at runtime because @Retention(value=CLASS), they are needed only to build the plugin -->
       <optional>true</optional>
-       <exclusions>
-            <exclusion>
-               <groupId>*</groupId>
-               <artifactId>*</artifactId>
-            </exclusion>
-        </exclusions>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <!--
@@ -81,30 +81,30 @@
     </dependency>
 
     <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <scope>test</scope>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
     </dependency>
 
 
     <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-slf4j-impl</artifactId>
-        <version>${log4j2.version}</version>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j-impl</artifactId>
+      <version>${log4j2.version}</version>
     </dependency>
 
-     <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-1.2-api</artifactId>
-            <version>${log4j2.version}</version>
-     </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-1.2-api</artifactId>
+      <version>${log4j2.version}</version>
+    </dependency>
 
 
-     <dependency>
-         <groupId>org.junit.jupiter</groupId>
-         <artifactId>junit-jupiter</artifactId>
-         <scope>test</scope>
-     </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
@@ -124,9 +124,9 @@
         <groupId>org.owasp</groupId>
         <artifactId>dependency-check-maven</artifactId>
         <configuration>
-           <suppressionFiles>
+          <suppressionFiles>
             <suppressionFile>${project.parent.basedir}/suppression-owasp-fp.xml</suppressionFile>
-            </suppressionFiles>
+          </suppressionFiles>
         </configuration>
       </plugin>
     </plugins>
@@ -137,7 +137,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-         <version>3.6.2</version>
+        <version>3.6.2</version>
       </plugin>
     </plugins>
   </reporting>
