@@ -77,8 +77,8 @@ import org.apache.torque.util.TorqueConnection;
 import org.apache.torque.util.Transaction;
 import org.apache.torque.util.ColumnValues;
 import org.apache.torque.util.JdbcTypedValue;
-import org.apache.torque.util.TorqueTableFetcher;
-import org.apache.torque.util.ModifyMonitorListener;
+import ${baseDbObjectPackage}.TorqueTableFetcher;
+import ${baseDbObjectPackage}.ModifyMonitorListener;
 
 #if ($basePeerPackage != $dbObjectPackage)
 import ${dbObjectPackage}.*;

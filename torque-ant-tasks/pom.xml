@@ -40,7 +40,7 @@
   <dependencies>
     <!-- includes generator and runtime -->
     <dependency>
-      <groupId>org.apache.torque</groupId>
+      <groupId>io.github.nicoladenisco</groupId>
       <artifactId>torque-templates</artifactId>
       <version>${project.version}</version>
     </dependency>

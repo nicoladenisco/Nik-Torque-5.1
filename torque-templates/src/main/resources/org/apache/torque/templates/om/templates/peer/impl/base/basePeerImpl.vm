@@ -30,6 +30,7 @@
 package ${basePeerPackage};
 
 $torqueGen.mergepoint("imports")
+import org.apache.torque.sql.SqlBuilder;
 
 $torqueGen.mergepoint("classJavadoc")
 @SuppressWarnings("unused")
@@ -40,6 +41,19 @@ public abstract class $basePeerImplClassName
 {
 $torqueGen.mergepoint("serialVersionUid")
 
+  /** listener per operazioni update, insert, delete */
+  private ModifyMonitorListener modifyListener = null;
+
+  public void setModifyListener(ModifyMonitorListener modifyListener)
+  {
+    this.modifyListener = modifyListener;
+  }
+
+  public ModifyMonitorListener getModifyListener()
+  {
+    return this.modifyListener;
+  }
+  
 $torqueGen.mergepoint("constructor")
 $torqueGen.mergepoint("getDbObjectInstance")
 $torqueGen.mergepoint("doUpdate")
@@ -65,5 +79,73 @@ $torqueGen.mergepoint("fillReferencingObjects")
   #end
 $torqueGen.mergepoint("setAndSaveReferencing")
 #end
+
+  @Override
+  public int doDelete(
+     final Criteria criteria,
+     final Connection connection)
+     throws TorqueException
+  {
+    int rv = super.doDelete(criteria, connection);
+
+    if(modifyListener != null)
+    {
+      String fullTableName = SqlBuilder.getFullTableName(
+         getTableMap().getFullyQualifiedTableName(),
+         criteria.getDbName());
+
+      modifyListener.doDelete(criteria.getDbName(), fullTableName, criteria, null, null, connection);
+    }
+
+    return rv;
+  }
+
+  @Override
+  public ObjectKey<?> doInsert(
+     final ColumnValues insertValues,
+     final Connection connection)
+     throws TorqueException
+  {
+    ObjectKey<?> id = super.doInsert(insertValues, connection);
+
+    if(modifyListener != null)
+    {
+      String databaseNameFromInsertValues = insertValues.getDbName();
+      if(databaseNameFromInsertValues == null)
+        databaseNameFromInsertValues = getDatabaseName();
+
+      String fullTableName = SqlBuilder.getFullTableName(
+         getTableMap().getFullyQualifiedTableName(),
+         databaseNameFromInsertValues);
+
+      modifyListener.doInsert(databaseNameFromInsertValues, fullTableName, id, insertValues, connection);
+    }
+
+    return id;
+  }
+
+  @Override
+  public int doUpdate(
+     final Criteria criteria,
+     final ColumnValues updateValues,
+     final Connection connection)
+     throws TorqueException
+  {
+    int rv = super.doUpdate(criteria, updateValues, connection);
+
+    if(modifyListener != null)
+    {
+      String fullTableName = SqlBuilder.getFullTableName(
+         getTableMap().getFullyQualifiedTableName(),
+         criteria.getDbName());
+
+      modifyListener.doUpdate(criteria.getDbName(), fullTableName, criteria, updateValues,
+         null, null, connection);
+    }
+
+    return rv;
+  }
+
+
 $torqueGen.mergepoint("extensions")
 }
